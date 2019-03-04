@@ -5,8 +5,8 @@
 #- name: Windows Password Complexity is Enabled | windows-account-102
      #  Security Policy PasswordComplexity should eq 1
 
-#- name: Minimum Windows Password Length Configured to be at Least 8 Characters | windows-account-103
-     #  Security Policy MinimumPasswordLength should not eq 0
+- name: Minimum Windows Password Length Configured to be at Least 8 Characters | windows-account-103
+     Security Policy MinimumPasswordLength should not eq 0
 
 #- name: Set Windows Account lockout threshold | windows-account-104
      #  Security Policy LockoutBadCount should not eq 0

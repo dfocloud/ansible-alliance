@@ -26,5 +26,5 @@
 - include: security_policy.yml
   tags: security_policy
 
-- include: user_rights.yml
-  tags: user_rights
+#- include: user_rights.yml
+  #tags: user_rights
