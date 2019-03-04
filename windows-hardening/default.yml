@@ -3,7 +3,7 @@
   hosts: windows-servers
   strategy: free
   roles:
-    - ansible-windows-hardening
+    - windows-hardening
   vars:
     win_security_SeRemoteInteractiveLogonRight: '*S-1-1-0, *S-1-5-32-544, *S-1-5-32-545, *S-1-5-32-551'
     win_security_SeTcbPrivilege: '*S-1-0-0'
