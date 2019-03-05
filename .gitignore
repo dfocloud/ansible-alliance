@@ -3,8 +3,15 @@
 *.vscode/
 
 # Child git projects
-ansible-windows-hardening/
+#ansible-windows-hardening/
 ansible-windows-hardening/.git/
+ansible-windows-hardening/.github/
+ansible-windows-hardening/README.md
+ansible-windows-hardening/CONTRIBUTING.md
 
-ansible-harden-windows/
+#ansible-harden-windows/
 ansible-harden-windows/.git/
+ansible-harden-windows/README.md
+ansible-harden-windows/README-references.md
+ansible-harden-windows/CHANGELOG.md
+ansible-harden-windows/LICENSE
