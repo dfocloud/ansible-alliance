@@ -6,4 +6,5 @@
 ansible-windows-hardening/
 ansible-windows-hardening/.git/
 
+ansible-harden-windows/
 ansible-harden-windows/.git/
