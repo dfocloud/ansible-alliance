@@ -3,5 +3,7 @@
 *.vscode/
 
 # Child git projects
-ansible-harden-windows/.git/
+ansible-windows-hardening/
 ansible-windows-hardening/.git/
+
+ansible-harden-windows/.git/
