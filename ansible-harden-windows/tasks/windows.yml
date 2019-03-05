@@ -1,0 +1,245 @@
+---
+# https://docs.ansible.com/ansible/intro_windows.html
+# Client should have PowerShell remoting configured
+# Execute: https://github.com/ansible/ansible/blob/devel/examples/scripts/ConfigureRemotingForAnsible.ps1
+
+# https://benchmarks.cisecurity.org/downloads/browse/index.cfm?category=benchmarks.os.windows
+# https://technet.microsoft.com/en-us/library/gg236605.aspx
+# https://technet.microsoft.com/en-us/library/cc677002.aspx
+# http://iase.disa.mil/stigs/Pages/index.aspx
+# http://iase.disa.mil/stigs/Pages/stig-viewing-guidance.aspx
+
+- name: Create ansible directories
+  win_file:
+    path: "{{ item }}"
+    state: directory
+#  raw: "mkdir {{ item }}"
+  with_items:
+    - "{{ harden_win_temp_dir }}"
+    - "{{ harden_win_log_dir }}"
+  ignore_errors: true
+
+- name: Restrict permissions for ansible directories
+  win_acl:
+    path: "{{ item.p }}"
+    user: "{{ item.u }}"
+    rights: "{{ item.r }}"
+    type: "{{ item.t }}"
+    state: "{{ item.s }}"
+    inherit: "{{ item.i }}"
+    propagation: "{{ item.pr }}"
+  with_items:
+    - { p: "{{ harden_win_temp_dir }}",
+        u: 'BUILTIN\Users',
+        r: 'ReadAndExecute,Write,AppendData',
+        t: allow,
+        s: absent,
+        i: 'ContainerInherit, ObjectInherit',
+        pr: 'None'
+      }
+    - { p: "{{ harden_win_temp_dir }}",
+        u: 'Authenticated Users',
+        r: 'ReadAndExecute,Write,AppendData',
+        t: allow,
+        s: absent,
+        i: 'ContainerInherit, ObjectInherit',
+        pr: 'None'
+      }
+    - { p: "{{ harden_win_log_dir }}",
+        u: 'BUILTIN\Users',
+        r: 'ReadAndExecute,Write,AppendData',
+        t: allow,
+        s: absent,
+        i: 'ContainerInherit, ObjectInherit',
+        pr: 'None'
+      }
+
+## FIXME! failing on second pass, https://groups.google.com/forum/#!topic/ansible-project/_ydkYXZibrM
+- name: Ensure user _test is present
+  win_user:
+    name: _test
+    password: "{{ harden_win_test_password }}"
+    state: present
+    groups:
+      - Users
+  when: harden_win_testing
+
+## [WARNING]: Module invocation had junk after the JSON data:
+- name: Install all security/critical updates
+  win_updates:
+    category: SecurityUpdates
+    logPath: "{{ harden_win_temp_dir }}\\ansible-updates.log"
+  when: harden_win_securityupdates is defined and harden_win_securityupdates
+  tags:
+    - updates
+
+## https://github.com/ansible/ansible/issues/13856
+## FIXME! FAILED! => {"changed": false, "choco_bootstrap_output": ["Getting latest version of the Chocolatey
+##  package for download.", "Getting Chocolatey from https://chocolatey.org/api/v2/package/chocolatey/0.10.3.",
+##  "Downloading 7-Zip commandline tool prior to extraction.", "Extracting
+##  C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\chocolatey\\chocInstall\\chocolatey.zip to
+##  C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\chocolatey\\chocInstall...", "Installing chocolatey on this machine",
+##  "Creating ChocolateyInstall as an environment variable (targeting 'Machine') ", "  Setting ChocolateyInstall to
+##  'C:\\ProgramData\\chocolatey'", "WARNING: It's very likely you will need to close and reopen your shell ", "
+##  before you can use choco."], "failed": true, "msg": "Chocolatey bootstrap installation failed."}
+- name: Chocolatey installation
+  win_chocolatey: name=chocolatey state=present upgrade=no
+
+#- name: Fix problem with Chocolatey .99 (https://github.com/ansible/ansible-modules-extras/issues/378)
+#  raw: Chocolatey feature enable -n allowGlobalConfirmation
+
+- name: Install packages
+  win_chocolatey:
+    name: "{{ item }}"
+  with_items: "{{ harden_win_chocolateypkgs }}"
+## for package asking for reboot
+  ignore_errors: true
+  tags:
+    - packages
+
+## FIXME!
+#- name: Ensure no users-writeable dir in general paths
+#  win_acl:
+#    path: "{{ item }}"
+#    user: Users
+#    rights: AppendData,WriteData,Write,FullControl
+#    type: allow
+#    state: absent
+#    inherit: ContainerInherit,ObjectInherit
+##    propagation: InheritOnly
+#    propagation: None
+#  win_command: "icacls \"{{ item }}\" /remove:g Users:(W)(AD)(WD) /T /inheritance:d"
+#  with_items:
+#    - 'c:\opscode\inspec'
+#    - 'c:\ProgramData'
+#    - "{{ harden_win_temp_dir }}"
+#    - "{{ harden_win_log_dir }}"
+
+- name: check ipv4 interface status
+  raw: "netsh interface ipv4 show global | findstr MLD | findstr Level"
+  register: ipv4if
+  changed_when: false
+  ignore_errors: true
+
+- name: Disable IGMP on ipv4 interface
+  raw: "Netsh interface ipv4 set global mldlevel=none"
+  when: not ("none" in ipv4if.stdout)
+
+## win_regedit: New in ansible version 2.0
+- include: windows-registry.yml
+  when: harden_win_registry is defined and harden_win_registry
+  tags:
+    - registry
+
+- include: windows-ie.yml
+- include: windows-smb.yml
+- include: windows-wmi.yml
+- include: windows-online.yml
+- include: windows-ipv6.yml
+- include: windows-rdp.yml
+
+- include: windows-emet.yml
+  when: harden_win_emet_conf != ''
+
+- include: adobereader.yml
+  when: harden_win_adobereader is defined and harden_win_adobereader
+- include: windows-flash.yml
+  when: harden_win_flash is defined and harden_win_flash
+
+## PECaptureSvc, https://isc.sans.edu/forums/diary/Hunting+for+Executable+Code+in+Windows+Environments/20745/
+
+## access time within Ntfs
+## volume shadow copies
+## central logging / windows event log forwarding
+## https://blog.brankovucinec.com/2014/10/24/use-software-restriction-policies-to-block-viruses-and-malware/
+##      = SRP lock on %APPDATA%
+
+- include: windows-adminshares.yml
+  when: harden_win_disable_adminshares
+
+- include: windows-local-gpo.yml
+  when: harden_win_gpo_local is defined and harden_win_gpo_local
+
+- include: windows-nxlog.yml
+  when: harden_win_remotelogging is defined and harden_win_remotelogging
+
+- include: windows-vss.yml
+  when: harden_win_vss is defined and harden_win_vss
+
+- include: windows-wmi-monitor.yml
+  when: harden_win_wmi_monitor is defined and harden_win_wmi_monitor
+
+- include: windows-netcease.yml
+  when: harden_win_netcease is defined and harden_win_netcease
+
+- include: windows-dnscrypt.yml
+  when: harden_win_simplednscrypt
+
+- include: windows-error-reporting.yml
+  when: harden_win_configure_errorreporting
+
+- include: mbrfilter.yml
+  when: harden_win_mbrfilter
+
+- include: windows-usb.yml
+  when: harden_win_restrict_usb
+
+- include: windows10.yml
+  when: harden_windows_disable_win10cortana and ansible_distribution_major_version|int >= 10
+- include: windows-cortana.yml
+  when: harden_windows_disable_win10cortana and ansible_distribution_major_version|int >= 10
+
+- include: windows-dma.yml
+  when: harden_win_restrict_dma
+
+- include: windows-certificates.yml
+  when: harden_win_certificates_review
+
+- include: windows-disallowrun.yml
+  when: harden_win_disallowrun
+
+- include: windows-feature.yml
+
+- include: windows-paging.yml
+  when: harden_win_paging
+
+- include: windows-sticky-keys.yml
+  when: harden_win_stickykeys_disable
+
+- include: windows-laps.yml
+  when: harden_win_laps_enable
+
+- include: windows-wef.yml
+  when: harden_win_wef_enable
+
+- include: passwd-filters.yml
+  when: harden_win_passwd_filters
+
+- include: windows-acl.yml
+  when: not (ansible_env is defined and ansible_env.APPVEYOR is defined and ansible_env.APPVEYOR) and harden_win_acl
+
+- include: windows-samri.yml
+  when: harden_win_samri
+
+- include: windows-deviceguard.yml
+  when: harden_win_deviceguard
+
+- include: windows-taskmanager.yml
+  when: harden_win_disable_taskmanager
+
+- include: windows-defender.yml
+  when: harden_win_defender
+
+- include: forcing-afterhours-user-logoffs.yml
+  when: harden_win_forcing_afterhours_logoff
+
+- include: extras.yml
+
+- include: palantir-AutorunsToWinEventLog.yml
+  when: harden_win_palantir_AutorunsToWinEventLog
+
+- include: dc-krgtbt-reset.yml
+  when: harden_win_Is_DC
+
+# last to allow creation of scheduled tasks before
+- include: windows-taskscheduler.yml
