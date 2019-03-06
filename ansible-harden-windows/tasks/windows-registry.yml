@@ -25,7 +25,7 @@
 #  win_shell: >
 #    set-ItemProperty HKLM:SYSTEMCurrentControlSetservicesNetBTParametersInterfacestcpip* -Name NetbiosOptions -Value 2
 ### This one is working fine
-    win_command: "wmic /interactive:off nicconfig where TcpipNetbiosOptions= {{ item }} call SetTcpipNetbios 2" # using 'loop' instead of 'with_items'
+    win_command: "wmic \"/interactive:off nicconfig where TcpipNetbiosOptions= {{ item }} call SetTcpipNetbios 2\"" # using 'loop' instead of 'with_items'
     loop:
         - 0
         - 1
