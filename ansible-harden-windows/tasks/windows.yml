@@ -123,7 +123,7 @@
 
 - name: Disable IGMP on ipv4 interface
   raw: "Netsh interface ipv4 set global mldlevel=0" 
-  when: not (0 in ipv4.MldLevel)
+# when: not (0 in ipv4.MldLevel)
 # 0 = None, 1 =  SendOnly, 2 = All
 # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/nettcpipprov/msft-netipv4protocol
 
