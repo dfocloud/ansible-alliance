@@ -122,8 +122,10 @@
   ignore_errors: true
 
 - name: Disable IGMP on ipv4 interface
-  raw: "Netsh interface ipv4 set global mldlevel=none"
-  when: not ("none" in ipv4if.stdout)
+  raw: "Netsh interface ipv4 set global mldlevel=0" 
+  when: not (0 in ipv4if.stdout) 
+# 0 = None, 1 =  SendOnly, 2 = All
+# https://docs.microsoft.com/en-us/previous-versions/windows/desktop/nettcpipprov/msft-netipv4protocol
 
 ## win_regedit: New in ansible version 2.0
 - include: windows-registry.yml
