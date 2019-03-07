@@ -13,10 +13,10 @@
     - 0
     - 1
   register: nbtstate
-#  changed_when: false
+  changed_when: false
   ignore_errors: true
-  block:
-    - name: Disable Windows Netbios Name Service (NBT-NS)
+
+- name: Disable Windows Netbios Name Service (NBT-NS)
 ##  win_regedit:
 ##  key: HKLM:\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces\xxxGUIDxxx
 ##    value: NetbiosOptions
@@ -25,10 +25,10 @@
 #  win_shell: >
 #    set-ItemProperty HKLM:SYSTEMCurrentControlSetservicesNetBTParametersInterfacestcpip* -Name NetbiosOptions -Value 2
 ### This one is working fine
-      win_command: "wmic /interactive:off nicconfig where TcpipNetbiosOptions={{ item }} call SetTcpipNetbios 2"
-      loop:
-        - 0
-        - 1
+  win_command: "wmic /interactive:off nicconfig where TcpipNetbiosOptions={{ item }} call SetTcpipNetbios 2"
+  with_items:
+  - 0
+  - 1
   when: nbtstate.results[0] != "\r\r\n\r\r\n" and nbtstate.results[1] != "\r\r\n\r\r\n"
 
 - name: disable Windows Script Host (1)
@@ -37,6 +37,7 @@
     value: Enabled
     data: 0
     datatype: dword
+
 - name: disable Windows Script Host (2)
   win_regedit:
     key: HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings
