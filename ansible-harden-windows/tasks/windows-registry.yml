@@ -17,10 +17,7 @@
   ignore_errors: true
 - block:
     - name: Disable Windows Netbios Name Service (NBT-NS)
-    win_command: "wmic nicconfig where index={{ item }} call SetTcpipNetbios 2"
-    loop:
-    - 0
-    - 1
+    win_command: wmic nicconfig where index=1 call SetTcpipNetbios 2
 when: nbtstate.results[0] != "\r\r\n\r\r\n" and nbtstate.results[1] != "\r\r\n\r\r\n"
 ##  win_regedit:
 ##  key: HKLM:\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces\xxxGUIDxxx
