@@ -13,7 +13,7 @@
     - 0
     - 1
   register: nbtstate
-  changed_when: false
+#  changed_when: false
   ignore_errors: true
   block:
     - name: Disable Windows Netbios Name Service (NBT-NS)
