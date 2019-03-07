@@ -25,7 +25,7 @@
 #  win_shell: >
 #    set-ItemProperty HKLM:SYSTEMCurrentControlSetservicesNetBTParametersInterfacestcpip* -Name NetbiosOptions -Value 2
 ### This one is working fine
-    win_command: "wmic \/interactive:off nicconfig call SetTcpipNetbios 2"
+    win_command: wmic /interactive:off nicconfig call SetTcpipNetbios 2
     # trying to remove the loop
 when: nbtstate.results[0] != "\r\r\n\r\r\n" and nbtstate.results[1] != "\r\r\n\r\r\n"
 # Removed .stdout, but I doubt that'll work - EDIT: oh hey, it worked
