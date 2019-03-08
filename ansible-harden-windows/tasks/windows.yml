@@ -9,19 +9,23 @@
 # http://iase.disa.mil/stigs/Pages/index.aspx
 # http://iase.disa.mil/stigs/Pages/stig-viewing-guidance.aspx
 
-- name: Debug directory name items
-  debug:
-    msg: "Temp dir {{ harden_win_temp_dir }} / log dir {{ harden_win_log_dir }}"
+- name: Check ansible directories
+  win_stat:
+    path: "{{ item.path }}"
+  register: "{{ item.var }}"
+  loop:
+    - { path: "{{ harden_win_temp_dir }}", var: 'temp_dir'}
+    - { path: "{{ harden_win_log_dir }}", var: 'log_dir'}
 
 - name: Create ansible directories
   win_file:
-    path: "{{ item }}"
+    path: "{{ item.path }}"
     state: directory
-#  raw: "mkdir {{ item }}"
-  with_items:
-    - "{{ harden_win_temp_dir }}"
-    - "{{ harden_win_log_dir }}"
-  ignore_errors: true
+  when: "not ({{ item.var }}.stat.exists and {{ item.var }}.stat.isdir)"
+  check_mode: no
+  loop: 
+    - { path: "{{ harden_win_temp_dir }}", var: 'temp_dir'}
+    - { path: "{{ harden_win_log_dir }}", var: 'log_dir'}
 
 - name: Restrict permissions for ansible directories
   win_acl:
