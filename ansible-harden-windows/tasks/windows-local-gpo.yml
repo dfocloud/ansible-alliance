@@ -140,10 +140,10 @@
     
     - name: Set account to log on using the network logon type
       block:
-        win_user_right:
-          name: SeNetworkLogonRight
-          users: "{{ harden_win_inf_SeNetworkLogonRight_list }}"
-          action: set
+        - win_user_right:
+            name: SeNetworkLogonRight
+            users: "{{ harden_win_inf_SeNetworkLogonRight_list }}"
+            action: set
       rescue:
         - debug:
             msg: ansible_failed_result
