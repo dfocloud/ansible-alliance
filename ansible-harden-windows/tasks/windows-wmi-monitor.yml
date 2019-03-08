@@ -6,13 +6,9 @@
   register: wmimondl
 
 - name: Download WMI_Monitor
-  block:
-    - win_get_url:
-        url: https://raw.githubusercontent.com/realparisi/WMI_Monitor/master/WMIMonitor.ps1
-        dest: "{{ harden_win_temp_dir }}\\WMIMonitor.ps1"
-  rescue:
-    - debug:
-        msg: "{{ ansible_failed_result }}"
+  win_get_url:
+    url: https://raw.githubusercontent.com/realparisi/WMI_Monitor/master/WMIMonitor.ps1
+    dest: "{{ harden_win_temp_dir }}\\WMIMonitor.ps1"
   when: not wmimondl.stat.exists
 
 - name: Run WMIMonitor

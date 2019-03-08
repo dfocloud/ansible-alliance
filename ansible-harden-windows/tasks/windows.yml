@@ -37,7 +37,7 @@
         u: 'BUILTIN\Users',
         r: 'ReadAndExecute,Write,AppendData',
         t: allow,
-        s: absent,
+        s: present,
         i: 'ContainerInherit, ObjectInherit',
         pr: 'None'
       }
@@ -53,7 +53,7 @@
         u: 'BUILTIN\Users',
         r: 'ReadAndExecute,Write,AppendData',
         t: allow,
-        s: absent,
+        s: present,
         i: 'ContainerInherit, ObjectInherit',
         pr: 'None'
       }
