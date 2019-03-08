@@ -9,6 +9,10 @@
 # http://iase.disa.mil/stigs/Pages/index.aspx
 # http://iase.disa.mil/stigs/Pages/stig-viewing-guidance.aspx
 
+- name: Debug directory name items
+  debug:
+    msg: "Temp dir {{ harden_win_temp_dir }} / log dir {{ harden_win_log_dir }}"
+
 - name: Create ansible directories
   win_file:
     path: "{{ item }}"
@@ -161,14 +165,14 @@
 # - include: windows-adminshares.yml
 #   when: harden_win_disable_adminshares
 
-- include: windows-local-gpo.yml
-  when: harden_win_gpo_local is defined and harden_win_gpo_local
+# - include: windows-local-gpo.yml
+#   when: harden_win_gpo_local is defined and harden_win_gpo_local
 
-- include: windows-nxlog.yml
-  when: harden_win_remotelogging is defined and harden_win_remotelogging
+# - include: windows-nxlog.yml
+#   when: harden_win_remotelogging is defined and harden_win_remotelogging
 
-- include: windows-vss.yml
-  when: harden_win_vss is defined and harden_win_vss
+# - include: windows-vss.yml
+#   when: harden_win_vss is defined and harden_win_vss
 
 - include: windows-wmi-monitor.yml
   when: harden_win_wmi_monitor is defined and harden_win_wmi_monitor
