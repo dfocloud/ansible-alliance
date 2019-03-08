@@ -137,11 +137,16 @@
       set_fact:
         harden_win_inf_SeNetworkLogonRight_list: "{{ harden_win_inf_SeNetworkLogonRight_list }} + [ '_test' ]"
       when: harden_win_testing
+    
     - name: Set account to log on using the network logon type
-      win_user_right:
-        name: SeNetworkLogonRight
-        users: "{{ harden_win_inf_SeNetworkLogonRight_list }}"
-        action: set
+      block:
+        win_user_right:
+          name: SeNetworkLogonRight
+          users: "{{ harden_win_inf_SeNetworkLogonRight_list }}"
+          action: set
+      rescue:
+        - debug:
+            msg: ansible_failed_result
 
     - name: Set Explicitly denies an account the right to log on using the network logon type.
       win_user_right:

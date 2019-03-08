@@ -123,30 +123,31 @@
 
 - name: Disable IGMP on ipv4 interface
   raw: "Netsh interface ipv4 set global mldlevel=0" 
-# when: not (0 in ipv4.MldLevel) -> TODO: Find condition that works
+# when: not (0 in ipv4if.MldLevel) -> TODO: Find condition that works
 # 0 = None, 1 =  SendOnly, 2 = All
 # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/nettcpipprov/msft-netipv4protocol
 
-## win_regedit: New in ansible version 2.0
-- include: windows-registry.yml
-  when: harden_win_registry is defined and harden_win_registry
-  tags:
-    - registry
+## win_regedit: New in ansible version 2.0 - TEMP DISABLED FOR TESTING
+# - include: windows-registry.yml
+#   when: harden_win_registry is defined and harden_win_registry
+#   tags:
+#     - registry
 
-- include: windows-ie.yml
-- include: windows-smb.yml
-- include: windows-wmi.yml
-- include: windows-online.yml
-- include: windows-ipv6.yml
-- include: windows-rdp.yml
+## TEMP DISABLED FOR TESTING
+# - include: windows-ie.yml
+# - include: windows-smb.yml
+# - include: windows-wmi.yml
+# - include: windows-online.yml
+# - include: windows-ipv6.yml
+# - include: windows-rdp.yml
 
-- include: windows-emet.yml
-  when: harden_win_emet_conf != ''
+# - include: windows-emet.yml
+#   when: harden_win_emet_conf != ''
 
-- include: adobereader.yml
-  when: harden_win_adobereader is defined and harden_win_adobereader
-- include: windows-flash.yml
-  when: harden_win_flash is defined and harden_win_flash
+# - include: adobereader.yml
+#   when: harden_win_adobereader is defined and harden_win_adobereader
+# - include: windows-flash.yml
+#   when: harden_win_flash is defined and harden_win_flash
 
 ## PECaptureSvc, https://isc.sans.edu/forums/diary/Hunting+for+Executable+Code+in+Windows+Environments/20745/
 
@@ -156,8 +157,9 @@
 ## https://blog.brankovucinec.com/2014/10/24/use-software-restriction-policies-to-block-viruses-and-malware/
 ##      = SRP lock on %APPDATA%
 
-- include: windows-adminshares.yml
-  when: harden_win_disable_adminshares
+## TEMP DISABLED FOR TESTING
+# - include: windows-adminshares.yml
+#   when: harden_win_disable_adminshares
 
 - include: windows-local-gpo.yml
   when: harden_win_gpo_local is defined and harden_win_gpo_local
