@@ -6,6 +6,7 @@
 - name: check if netcease archive is present
   win_stat: path="{{ harden_win_temp_dir }}\\{{ harden_win_netcease_url | basename }}"
   register: netceasedl
+
 - name: Download Netcease - restrict Net Session Enumeration (NetSessionEnum) default permissions
   win_get_url:
     url: "{{ harden_win_netcease_url }}"

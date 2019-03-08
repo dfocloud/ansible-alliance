@@ -45,7 +45,7 @@
         u: 'Authenticated Users',
         r: 'ReadAndExecute,Write,AppendData',
         t: allow,
-        s: absent,
+        s: present,
         i: 'ContainerInherit, ObjectInherit',
         pr: 'None'
       }

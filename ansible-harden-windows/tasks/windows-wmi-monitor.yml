@@ -12,7 +12,7 @@
         dest: "{{ harden_win_temp_dir }}\\WMIMonitor.ps1"
   rescue:
     - debug:
-        msg: "ansible_failed_result"
+        msg: "{{ ansible_failed_result }}"
   when: not wmimondl.stat.exists
 
 - name: Run WMIMonitor
