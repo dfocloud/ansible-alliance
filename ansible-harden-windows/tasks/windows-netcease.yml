@@ -19,8 +19,9 @@
     path: "{{ harden_win_temp_dir }}\\{{ harden_win_netcease_url | basename }}"
   register: netcease_file
 
-- debug:
-    msg: "{{ netcease_file }}.stat.exists"
+- name: Debug file existence
+  debug:
+    msg: netcease_file.stat.exists
 
 - name: Uncompress Netcease
   win_unzip:
