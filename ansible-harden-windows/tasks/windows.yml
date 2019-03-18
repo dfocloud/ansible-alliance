@@ -9,13 +9,15 @@
 # http://iase.disa.mil/stigs/Pages/index.aspx
 # http://iase.disa.mil/stigs/Pages/stig-viewing-guidance.aspx
 
-- name: Check ansible directories
+- name: Check ansible temp directory
   win_stat:
-    path: "{{ item.path }}"
-  register: "{{ item.var }}"
-  loop:
-    - { path: "{{ harden_win_temp_dir }}", var: 'temp_dir'}
-    - { path: "{{ harden_win_log_dir }}", var: 'log_dir'}
+    path: "{{ harden_win_temp_dir }}"
+  register: temp_dir
+
+- name: Check ansible log directory
+  win_stat:
+    path: "{{ harden_win_log_dir }}"
+  register: log_dir
 
 - name: Create ansible directories
   win_file:
