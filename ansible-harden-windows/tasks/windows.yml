@@ -147,7 +147,7 @@
 #   tags:
 #     - registry
 
-## TEMP DISABLED FOR TESTING
+## TEMP DISABLED FOR TESTING (next 14 lines)
 # - include: windows-ie.yml
 # - include: windows-smb.yml
 # - include: windows-wmi.yml
@@ -171,7 +171,7 @@
 ## https://blog.brankovucinec.com/2014/10/24/use-software-restriction-policies-to-block-viruses-and-malware/
 ##      = SRP lock on %APPDATA%
 
-## TEMP DISABLED FOR TESTING
+## TEMP DISABLED FOR TESTING (next 14 lines)
 # - include: windows-adminshares.yml
 #   when: harden_win_disable_adminshares
 
@@ -184,8 +184,8 @@
 # - include: windows-vss.yml
 #   when: harden_win_vss is defined and harden_win_vss
 
-- include: windows-wmi-monitor.yml
-  when: harden_win_wmi_monitor is defined and harden_win_wmi_monitor
+# - include: windows-wmi-monitor.yml
+#   when: harden_win_wmi_monitor is defined and harden_win_wmi_monitor
 
 - include: windows-netcease.yml
   when: harden_win_netcease is defined and harden_win_netcease
