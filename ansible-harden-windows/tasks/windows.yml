@@ -19,15 +19,19 @@
     path: "{{ harden_win_log_dir }}"
   register: log_dir
 
-- name: Create ansible directories
+- name: Create ansible temp directory
   win_file:
-    path: "{{ item.path }}"
+    path: "{{ harden_win_temp_dir }}"
     state: directory
-  when: "not ({{ item.var }}.stat.exists and {{ item.var }}.stat.isdir)"
+  when: "not (temp_dir.stat.exists and temp_dir.stat.isdir)"
   check_mode: no
-  loop: 
-    - { path: "{{ harden_win_temp_dir }}", var: 'temp_dir'}
-    - { path: "{{ harden_win_log_dir }}", var: 'log_dir'}
+
+- name: Create ansible log directory
+  win_file:
+    path: "{{ harden_win_log_dir }}"
+    state: directory
+  when: "not (log_dir.stat.exists and log_dir.stat.isdir)"
+  check_mode: no
 
 - name: Restrict permissions for ansible directories
   win_acl:
