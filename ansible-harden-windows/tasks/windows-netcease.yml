@@ -15,13 +15,14 @@
   when: not netceasedl.stat.exists
 
 - name: Check temp dir contents after *download*
-  win_stat:
-    path: "{{ harden_win_temp_dir }}"
-  register: temp_dir
+  win_find:
+    paths: "{{ harden_win_temp_dir }}"
+    file_type: directory
+  register: dir_contents
 
 - name: Debug file existence
   debug:
-    var: temp_dir
+    var: dir_contents
 
 - name: Uncompress Netcease
   win_unzip:
