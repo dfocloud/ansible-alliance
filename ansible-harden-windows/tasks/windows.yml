@@ -9,29 +9,15 @@
 # http://iase.disa.mil/stigs/Pages/index.aspx
 # http://iase.disa.mil/stigs/Pages/stig-viewing-guidance.aspx
 
-- name: Check ansible temp directory
-  win_stat:
-    path: "{{ harden_win_temp_dir }}"
-  register: temp_dir
-
-- name: Check ansible log directory
-  win_stat:
-    path: "{{ harden_win_log_dir }}"
-  register: log_dir
-
-- name: Create ansible temp directory
+- name: Create ansible directories
   win_file:
-    path: "{{ harden_win_temp_dir }}"
+    path: "{{ item }}"
     state: directory
-  when: "not (temp_dir.stat.exists and temp_dir.stat.isdir)"
-  check_mode: no
-
-- name: Create ansible log directory
-  win_file:
-    path: "{{ harden_win_log_dir }}"
-    state: directory
-  when: "not (log_dir.stat.exists and log_dir.stat.isdir)"
-  check_mode: no
+#  raw: "mkdir {{ item }}"
+  with_items:
+    - "{{ harden_win_temp_dir }}"
+    - "{{ harden_win_log_dir }}"
+  ignore_errors: true
 
 - name: Restrict permissions for ansible directories
   win_acl:
@@ -141,27 +127,26 @@
 # 0 = None, 1 =  SendOnly, 2 = All
 # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/nettcpipprov/msft-netipv4protocol
 
-## win_regedit: New in ansible version 2.0 - TEMP DISABLED FOR TESTING
-# - include: windows-registry.yml
-#   when: harden_win_registry is defined and harden_win_registry
-#   tags:
-#     - registry
+## win_regedit: New in ansible version 2.0
+- include: windows-registry.yml
+  when: harden_win_registry is defined and harden_win_registry
+  tags:
+    - registry
 
-## TEMP DISABLED FOR TESTING (next 14 lines)
-# - include: windows-ie.yml
-# - include: windows-smb.yml
-# - include: windows-wmi.yml
-# - include: windows-online.yml
-# - include: windows-ipv6.yml
-# - include: windows-rdp.yml
+- include: windows-ie.yml
+- include: windows-smb.yml
+- include: windows-wmi.yml
+- include: windows-online.yml
+- include: windows-ipv6.yml
+- include: windows-rdp.yml
 
-# - include: windows-emet.yml
-#   when: harden_win_emet_conf != ''
+- include: windows-emet.yml
+  when: harden_win_emet_conf != ''
 
-# - include: adobereader.yml
-#   when: harden_win_adobereader is defined and harden_win_adobereader
-# - include: windows-flash.yml
-#   when: harden_win_flash is defined and harden_win_flash
+- include: adobereader.yml
+  when: harden_win_adobereader is defined and harden_win_adobereader
+- include: windows-flash.yml
+  when: harden_win_flash is defined and harden_win_flash
 
 ## PECaptureSvc, https://isc.sans.edu/forums/diary/Hunting+for+Executable+Code+in+Windows+Environments/20745/
 
@@ -171,21 +156,20 @@
 ## https://blog.brankovucinec.com/2014/10/24/use-software-restriction-policies-to-block-viruses-and-malware/
 ##      = SRP lock on %APPDATA%
 
-## TEMP DISABLED FOR TESTING (next 14 lines)
-# - include: windows-adminshares.yml
-#   when: harden_win_disable_adminshares
+- include: windows-adminshares.yml
+  when: harden_win_disable_adminshares
 
-# - include: windows-local-gpo.yml
-#   when: harden_win_gpo_local is defined and harden_win_gpo_local
+- include: windows-local-gpo.yml
+  when: harden_win_gpo_local is defined and harden_win_gpo_local
 
-# - include: windows-nxlog.yml
-#   when: harden_win_remotelogging is defined and harden_win_remotelogging
+- include: windows-nxlog.yml
+  when: harden_win_remotelogging is defined and harden_win_remotelogging
 
-# - include: windows-vss.yml
-#   when: harden_win_vss is defined and harden_win_vss
+- include: windows-vss.yml
+  when: harden_win_vss is defined and harden_win_vss
 
-# - include: windows-wmi-monitor.yml
-#   when: harden_win_wmi_monitor is defined and harden_win_wmi_monitor
+- include: windows-wmi-monitor.yml
+  when: harden_win_wmi_monitor is defined and harden_win_wmi_monitor
 
 - include: windows-netcease.yml
   when: harden_win_netcease is defined and harden_win_netcease
@@ -204,6 +188,7 @@
 
 - include: windows10.yml
   when: harden_windows_disable_win10cortana and ansible_distribution_major_version|int >= 10
+
 - include: windows-cortana.yml
   when: harden_windows_disable_win10cortana and ansible_distribution_major_version|int >= 10
 

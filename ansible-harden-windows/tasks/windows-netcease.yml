@@ -18,25 +18,13 @@
     force: yes
 ## FIXME! no checksum option, https://github.com/ansible/ansible-modules-core/issues/4901
   when: not netceasedl.stat.exists
-  check_mode: no
-
-- name: Check file existence after *download*
-  win_stat:
-    path: "{{ harden_win_temp_dir }}\\{{ harden_win_netcease_url | basename }}"
-  register: netcease_file
-
-- name: Debug file existence
-  debug:
-    var: netcease_file
 
 - name: Uncompress Netcease
   win_unzip:
     src: "{{ harden_win_temp_dir }}\\{{ harden_win_netcease_url | basename }}"
     dest: "{{ harden_win_temp_dir }}\\Netcease"
     creates: "{{ harden_win_temp_dir }}\\Netcease\\NetCease.ps1"
-  when: netcease_file.stat.exists
 
 ## FIXME! Note: Ansible has no module to edit ACL on registry entry... not idempotent
 - name: Execute Netcease
   win_shell: "\"{{ harden_win_temp_dir }}\\Netcease\\NetCease.ps1\""
-  when: netcease_file.stat.exists
