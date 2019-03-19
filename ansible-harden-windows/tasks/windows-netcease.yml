@@ -21,7 +21,7 @@
 
 - name: Debug file existence
   debug:
-    msg: netcease_file.stat.exists
+    msg: netcease_file
 
 - name: Uncompress Netcease
   win_unzip:
