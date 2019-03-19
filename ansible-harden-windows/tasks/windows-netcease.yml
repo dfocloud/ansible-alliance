@@ -18,6 +18,7 @@
     force: yes
 ## FIXME! no checksum option, https://github.com/ansible/ansible-modules-core/issues/4901
   when: not netceasedl.stat.exists
+  check_mode: no
 
 - name: Check temp dir contents after *download*
   win_find:
