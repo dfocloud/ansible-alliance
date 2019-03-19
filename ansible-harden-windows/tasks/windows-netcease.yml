@@ -7,10 +7,15 @@
   win_stat: path="{{ harden_win_temp_dir }}\\{{ harden_win_netcease_url | basename }}"
   register: netceasedl
 
+- name: Debug download url
+  debug:
+    msg: "{{ harden_win_netcease_url }}"
+
 - name: Download Netcease - restrict Net Session Enumeration (NetSessionEnum) default permissions
   win_get_url:
     url: "{{ harden_win_netcease_url }}"
     dest: "{{ harden_win_temp_dir }}\\{{ harden_win_netcease_url | basename }}"
+    force: yes
 ## FIXME! no checksum option, https://github.com/ansible/ansible-modules-core/issues/4901
   when: not netceasedl.stat.exists
 
