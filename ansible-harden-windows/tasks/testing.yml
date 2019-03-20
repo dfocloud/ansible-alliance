@@ -26,6 +26,7 @@
   rescue:
     - debug:
         msg: Couldn't ensure inspec package installation
+    - set_fact:
         has_inspec: false
   when: harden_win_testing_inspec
 
