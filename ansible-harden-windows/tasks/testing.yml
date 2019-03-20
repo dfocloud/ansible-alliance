@@ -1,8 +1,11 @@
 ---
 
-# Taken from windows.yml
+# Taken from windows.yml and modified because WTF!?
 - name: Chocolatey installation
-  win_chocolatey: name=chocolatey state=present upgrade=no
+  win_chocolatey:
+    name: chocolatey
+    state: present
+    #upgrade: no
 
 - name: Install packages
   win_chocolatey:
@@ -13,17 +16,18 @@
   tags:
     - packages
 
+- name: testing | Ensure inspec is present
+  block:
+    win_chocolatey:
+      name: inspec
+      state: present
+  rescue:
+    debug:
+      msg: Couldn't ensure inspec package installation
+  when: harden_win_testing_inspec
+
 - name: Test inspec if applicable
   block:
-    - name: testing | Ensure inspec is present
-      block:
-        win_chocolatey:
-          name: inspec
-          state: present
-      rescue:
-        debug:
-          msg: Couldn't ensure inspec package installation
-
     - name: Restrict permissions for inspec directories
       win_acl:
         path: "{{ item.p }}"
