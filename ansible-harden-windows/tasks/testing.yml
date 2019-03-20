@@ -77,24 +77,23 @@
 #      select Thumbprint, FriendlyName, Subject | ConvertTo-Html |
 #      Set-Content c:\users\public\desktop\certificates.html
 
-# Commented for testing (next 17 lines)
-# - include: testing-defender.yml
-#   when: harden_win_testing_defender
+- include: testing-defender.yml
+  when: harden_win_testing_defender
 
-# - include: testing-uac.yml
-#   when: harden_win_testing_uac
+- include: testing-uac.yml
+  when: harden_win_testing_uac
 
-# - include: testing-opf.yml
-#   when: harden_win_testing_opf
+- include: testing-opf.yml
+  when: harden_win_testing_opf
 
-# - include: testing-speculative.yml
-#   when: harden_win_testing_speculative
+- include: testing-speculative.yml
+  when: harden_win_testing_speculative
 
-# - include: testing-intelme.yml
-#   when: harden_win_testing_intelme
+- include: testing-intelme.yml
+  when: harden_win_testing_intelme
 
-# - include: testing-iad.yml
-#   when: harden_win_testing_iad
+- include: testing-iad.yml
+  when: harden_win_testing_iad
 
 # keep last. if defender catches it, may need to restart to complete cleaning/have ansible working again
 - include: testing-mimikatz.yml
