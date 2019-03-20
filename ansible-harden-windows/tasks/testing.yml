@@ -18,12 +18,12 @@
 
 - name: testing | Ensure inspec is present
   block:
-    win_chocolatey:
-      name: inspec
-      state: present
+    - win_chocolatey:
+        name: inspec
+        state: present
   rescue:
-    debug:
-      msg: Couldn't ensure inspec package installation
+    - debug:
+        msg: Couldn't ensure inspec package installation
   when: harden_win_testing_inspec
 
 - name: Test inspec if applicable
