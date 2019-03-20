@@ -16,9 +16,13 @@
 - name: Test inspec if applicable
   block:
     - name: testing | Ensure inspec is present
-      win_chocolatey:
-        name: inspec
-        state: present
+      block:
+        win_chocolatey:
+          name: inspec
+          state: present
+      rescue:
+        debug:
+          msg: Couldn't ensure inspec package installation
 
     - name: Restrict permissions for inspec directories
       win_acl:
