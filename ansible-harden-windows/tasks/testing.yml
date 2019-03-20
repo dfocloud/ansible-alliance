@@ -17,6 +17,8 @@
     - packages
 
 - name: testing | Ensure inspec is present
+  vars:
+    has_inspec: true
   block:
     - win_chocolatey:
         name: inspec
@@ -24,6 +26,7 @@
   rescue:
     - debug:
         msg: Couldn't ensure inspec package installation
+        has_inspec: false
   when: harden_win_testing_inspec
 
 - name: Test inspec if applicable
@@ -63,7 +66,7 @@
       win_shell: "Get-Content -Path \"{{ harden_win_log_dir }}\\inspec.log\""
       changed_when: false
       ignore_errors: true
-  when: harden_win_testing_inspec
+  when: harden_win_testing_inspec and has_inspec
 
 # https://blog.malwarebytes.com/security-world/technology/2017/11/when-you-shouldnt-trust-a-trusted-root-certificate/
 # FIXME! FATAL ERROR DURING FILE TRANSFER: ...
