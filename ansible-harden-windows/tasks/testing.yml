@@ -1,10 +1,10 @@
 ---
 
-# Taken from window.yml
+# Taken from windows.yml
 - name: Chocolatey installation
   win_chocolatey: name=chocolatey state=present upgrade=no
 
-  - name: Install packages
+- name: Install packages
   win_chocolatey:
     name: "{{ item }}"
   with_items: "{{ harden_win_chocolateypkgs }}"
