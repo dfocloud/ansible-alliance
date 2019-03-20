@@ -13,7 +13,8 @@
   tags:
     - packages
 
-- block:
+- name: Test inspec if applicable
+  block:
     - name: testing | Ensure inspec is present
       win_chocolatey:
         name: inspec
