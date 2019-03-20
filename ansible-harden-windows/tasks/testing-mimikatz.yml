@@ -52,17 +52,29 @@
 
 # https://github.com/skelsec/pypykatz
 - name: testing | Ensure python is present
-  win_chocolatey:
-    name: python
-    state: present
+  vars:
+    python_present: true
+  block:
+    - win_chocolatey:
+        name: python
+        state: present
+  rescue:
+    - debug:
+        msg: Python installation check failed
+    - set_fact:
+        python_present: false
 
 # pip module under windows?
 - name: testing | install pypykatz
-  pip:
-    name: pypykatz
-    state: present
-  ignore_errors: true
+  block:
+    - pip:
+        name: pypykatz
+        state: present
+      ignore_errors: true
+  when: python_present
 
 - name: testing | run pypykatz
-  command: "pypykatz live lsa"
-  ignore_errors: true
+  block:
+    - command: "pypykatz live lsa"
+      ignore_errors: true
+  when: python_present
