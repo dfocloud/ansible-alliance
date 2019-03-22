@@ -134,11 +134,10 @@
 
 - name: check Exploit protection mitigation for powershell.exe
   win_shell: >
-    Get-ItemPropertyValue
-      -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\powershell.exe'
-      -Name MitigationOptions
+    Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\powershell.exe' -Name MitigationOptions
   ignore_errors: true
   changed_when: false
+  
 - name: Enable Exploit protection mitigation for powershell.exe
   win_regedit:
     key: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\powershell.exe

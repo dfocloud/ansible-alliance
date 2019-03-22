@@ -16,6 +16,7 @@
 #  win_url:
 #    src: https://github.com/iadgov/Secure-Host-Baseline/archive/master.zip
 #    dest: "{{ harden_win_temp_dir }}/Secure-Host-Baseline-master.zip"
+  ignore_errors: true # TESTING
 
 #- name: Unsure file is unblocked
 #  win_shell: "Unblock-File -Path '.\Secure-Host-Baseline-master.zip'"
