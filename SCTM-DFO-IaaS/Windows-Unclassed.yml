@@ -40,7 +40,7 @@
 
   tasks:
 
-  - include_playbook: IA-5_tasks.yml
+  - include_tasks: IA-5_tasks.yml
 
   - name: AC-3 A > Require authentication for RPC service access
     win_regedit:
