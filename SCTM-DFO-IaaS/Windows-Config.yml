@@ -14,7 +14,7 @@
 - hosts: all
   become_method: runas
   vars:
-    - SC-10: true
+    SC-10: true
   tasks:
   - name: SC-10 > Limit idle RDP sessions to 15 mins
     win_regedit:
