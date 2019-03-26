@@ -51,7 +51,7 @@
 
   - name: AU-3 > Ensure firewalls log dropped packets
     win_regedit:
-      path: "HKLM:\\Software\\Policies\\Microsoft\\WindowsFirewall\\{{ item.path }}\\Logging"
+      path: "HKLM:\\Software\\Policies\\Microsoft\\WindowsFirewall\\{{ item }}\\Logging"
       name: LogDroppedPackets
       data: 1
       type: dword
