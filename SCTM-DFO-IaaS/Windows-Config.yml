@@ -1,0 +1,25 @@
+---
+# STCM-DFO-IaaS compliant configuration for
+# a Windows virtual machine in Azure Cloud
+# Based on RFP 16-42051B
+#
+# A Windows VM in Azure Cloud with this
+# configuration may contain government of
+# Canada 'unclassed' information
+#
+# Author: Alex Imray Papineau (alex.imraypapineau@dfo-mpo.gc.ca)
+# Last edit: 26 Match 2019
+# Editor: Alex Imray Papineau (alex.imraypapineau@dfo-mpo.gc.ca)
+
+- hosts: all
+  become_method: runas
+  vars:
+    - SC-10: true
+  tasks:
+  - name: SC-10 > Limit idle RDP sessions to 15 mins
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+      name: MaxIdleTime
+      data: 300
+      type: dword
+    when: SC-10
