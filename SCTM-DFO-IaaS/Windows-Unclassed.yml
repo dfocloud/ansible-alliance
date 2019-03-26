@@ -14,17 +14,59 @@
 # Editor:
 #     Alex Imray Papineau
 
+## Task template
+  # - name: 
+  #   win_regedit:
+  #     path: 
+  #     name: 
+  #     data: 
+  #     type: 
+  #   when: 
+
 - hosts: all
   become_method: runas
   vars:
+    #SC_8: true
+    SC_5: true
+    SC_23: true
     AC_11: true
     SC_7: true
     SC_10: true
 
   tasks:
+  
+  - name: SC_5 A > Limit unacknowledged data retransmission (IPv6)
+    win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters
+      name: TcpMaxDataRetransmissions
+      data: 3
+      type: dword
+    when: SC_5
 
+  - name: SC_5 B > Limit unacknowledged data retransmission
+    win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
+      name: TcpMaxDataRetransmissions
+      data: 3
+      type: dword
+    when: SC_5
 
-  # If either DCSettingIndex or ACSettingIndex is available on all computers, the two AC-11 tasks can be combined
+  - name: SC-5 C > Set keep-alive packet send interval
+    win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
+      name: KeepAliveTime
+      data: 300000
+      type: dword
+    when: SC_5
+
+  - name: SC_5 D & SC-23 > Disable IRDP Default Gateway configuration
+    win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
+      name: PerformRouterDiscovery
+      data: 0
+      type: dword
+    when: SC_5 or SC_23
+
   - name: AC-11 (DC)
     block:
       - name: AC-11 > Require password when waking computer (DC)
@@ -63,6 +105,6 @@
     win_regedit:
       path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
       name: MaxIdleTime
-      data: 60000
+      data: 900000
       type: dword
     when: SC_10
