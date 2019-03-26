@@ -41,7 +41,7 @@
 
   - name: AC-3 A > Require authentication for RPC service access
     win_regedit:
-      path: MKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc
       name: EnableAuthEpResolution
       data: 1
       type: dword
