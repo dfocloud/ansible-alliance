@@ -26,8 +26,9 @@
 - hosts: all
   become_method: runas
   vars:
-    AC_3: true
-    AC_4: true
+    IA_5: true
+    AC_3: false
+    AC_4: false
     AU_9: false
     AU_3: false
     SC_8: false
@@ -38,6 +39,55 @@
     SC_10: false
 
   tasks:
+
+  - name: IA-5 A > Ensure installation of password handling extension
+    win_regedit:
+      path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\{D76B9641-3288-4f75-942D-087DE603E3EA}
+      name: DllName
+      data: C:\Program Files\LAPS\CSE\AdmPwd.dll
+      type: string
+    when: IA_5
+
+  # Debating combining IA-5 B-F into a single looping command
+  - name: IA-5 B > Restrict password expiration time
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft Services\AdmPwd
+      name: PwdExpirationProtectionEnabled
+      data: 1
+      type: dword
+    when: IA_5
+
+  - name: IA-5 C > Set local admin to manage password
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft Services\AdmPwd
+      name: AmdPwdEnabled
+      data: 1
+      type: dword
+    when: IA_5
+
+  - name: IA-5 D > Enforce password complexity
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft Services\AdmPwd
+      name: PasswordComplexity
+      data: 1
+      type: dword
+    when: IA_5
+
+  - name: IA-5 E > Set min password length to 15
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft Services\AdmPwd
+      name: PasswordLength
+      data: 15
+      type: dword
+    when: IA_5
+
+  - name: IA-5 F > Enforce changing passwords every 30 days minimum
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft Services\AdmPwd
+      name: PasswordAgeDays
+      data: 30
+      type: dword
+    when: IA_5
 
   - name: AC-3 A > Require authentication for RPC service access
     win_regedit:
