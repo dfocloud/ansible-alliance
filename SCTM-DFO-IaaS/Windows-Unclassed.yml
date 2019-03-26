@@ -26,16 +26,25 @@
 - hosts: all
   become_method: runas
   vars:
+    AC_4: true
     AU_9: true
     AU_3: true
-    SC_8: true
-    SC_5: true
-    SC_23: true
-    AC_11: true
-    SC_7: true
-    SC_10: true
+    # SC_8: true
+    # SC_5: true
+    # SC_23: true
+    # AC_11: true
+    # SC_7: true
+    # SC_10: true
 
   tasks:
+
+  - name: AC-4 
+    win_regedit:
+      path: HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy
+      name: fBlockNonDomain
+      data: 1
+      type: dword
+    when: AC_4
 
   - name: AU-9 > Ensure firewalls log to correct files
     win_regedit:
