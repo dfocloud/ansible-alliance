@@ -40,7 +40,7 @@
 
   tasks:
 
-  - name: IA-5 Compliance Tasks
+  - name: Get IA-5 Compliance Tasks
     include_tasks: IA-5_tasks.yml
     when: IA_5
 
