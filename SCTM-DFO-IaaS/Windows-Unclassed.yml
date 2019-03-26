@@ -26,6 +26,8 @@
 - hosts: all
   become_method: runas
   vars:
+    AU_9: true
+    AU_3: true
     SC_8: true
     SC_5: true
     SC_23: true
@@ -34,7 +36,31 @@
     SC_10: true
 
   tasks:
-  
+
+  - name: AU-9 > Ensure firewalls log to correct files
+    win_regedit:
+      path: "HKLM:\\Software\\Policies\\Microsoft\\WindowsFirewall\\{{ item.path }}\\Logging"
+      name: LogFilePath
+      data: "%SYSTEMROOT%\\System32\\logfiles\\firewall\\{{ item.file }}"
+      type: string
+    loop:
+      - { path: DomainProfile, file: domainfw.log }
+      - { path: PrivateProfile, file: privatefw.log }
+      - { path: PublicProfile, file: publicfw.log }
+    when: AU_9
+
+  - name: AU-3 > Ensure firewalls log dropped packets
+    win_regedit:
+      path: "HKLM:\\Software\\Policies\\Microsoft\\WindowsFirewall\\{{ item.path }}\\Logging"
+      name: LogDroppedPackets
+      data: 1
+      type: dword
+    loop:
+      - DomainProfile
+      - PrivateProfile
+      - PublicProfile
+    when: AU_3
+
   - name: SC-8 A > Comply with CSE ITSP.40.062 (Ciphers)
     win_regedit:
       path: "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\{{ item }}"
