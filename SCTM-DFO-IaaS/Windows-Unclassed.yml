@@ -17,9 +17,36 @@
 - hosts: all
   become_method: runas
   vars:
+    AC_11: true
+    SC_7: true
     SC_10: true
 
   tasks:
+
+
+  - name: AC-11 > Require password when waking computer
+    block:
+      - win_regedit:
+          path: HKLM:Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
+          name: DCSettingIndex
+          data: 1
+          type: dword
+    rescue:
+      - win_regedit:
+          path: HKLM:Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
+          name: ACSettingIndex
+          data: 1
+          type: dword
+    when: AC_11
+
+  - name: SC-7 > Prevent bypassing SmartScreen prompts
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter
+      name: PreventOverride
+      data: 1
+      type: dword
+    when: SC-7
+
   - name: SC-10 > Limit idle RDP sessions to 15 mins
     win_regedit:
       path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
