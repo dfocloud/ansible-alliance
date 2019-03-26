@@ -4,12 +4,15 @@
 # Based on RFP 16-42051B
 #
 # A Windows VM in Azure Cloud with this
-# configuration may contain government of
+# configuration may contain Government of
 # Canada 'unclassed' information
 #
-# Author: Alex Imray Papineau (alex.imraypapineau@dfo-mpo.gc.ca)
-# Last edit: 26 Match 2019
-# Editor: Alex Imray Papineau (alex.imraypapineau@dfo-mpo.gc.ca)
+# Author:
+#     Alex Imray Papineau
+# Last edit:
+#     26 Match 2019
+# Editor:
+#     Alex Imray Papineau
 
 - hosts: all
   become_method: runas
