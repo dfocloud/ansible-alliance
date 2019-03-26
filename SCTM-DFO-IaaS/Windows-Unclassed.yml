@@ -24,21 +24,31 @@
   tasks:
 
 
-  - name: AC-11 conditional
+  # If either DCSettingIndex or ACSettingIndex is available on all computers, the two AC-11 tasks can be combined
+  - name: AC-11 (DC)
     block:
-      - name: AC-11 > Require password when waking computer
+      - name: AC-11 > Require password when waking computer (DC)
         win_regedit:
           path: HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
           name: DCSettingIndex
           data: 1
           type: dword
     rescue:
-      - name: AC-11 > Require password when waking computer
+      - debug:
+          msg: "Registry Entry 'DCSettingIndex' is not present for this computer"
+    when: AC_11
+
+  - name: AC-11 (AC)
+    block:
+      - name: AC-11 > Require password when waking computer (AC)
         win_regedit:
           path: HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
           name: ACSettingIndex
           data: 1
           type: dword
+    rescue:
+      - debug:
+          msg: "Registry Entry 'ACSettingIndex' is not present for this computer"
     when: AC_11
 
   - name: SC-7 > Prevent bypassing SmartScreen prompts
