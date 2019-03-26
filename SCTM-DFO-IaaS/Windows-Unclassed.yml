@@ -39,7 +39,15 @@
 
   tasks:
 
-  - name: AC-3 > 
+  - name: AC-3 A > Require authentication for RPC service access
+    win_regedit:
+      path: MKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc
+      name: EnableAuthEpResolution
+      data: 1
+      type: dword
+    when: AC_3
+
+  - name: AC-3 B > Require Domain Controller Authentication to unlock computer
     win_regedit:
       path: HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon
       name: ForceUnlockLogon
