@@ -28,14 +28,14 @@
   vars:
     AC_3: true
     AC_4: true
-    # AU_9: true
-    # AU_3: true
-    # SC_8: true
-    # SC_5: true
-    # SC_23: true
-    # AC_11: true
-    # SC_7: true
-    # SC_10: true
+    AU_9: false
+    AU_3: false
+    SC_8: false
+    SC_5: false
+    SC_23: false
+    AC_11: false
+    SC_7: false
+    SC_10: false
 
   tasks:
 
