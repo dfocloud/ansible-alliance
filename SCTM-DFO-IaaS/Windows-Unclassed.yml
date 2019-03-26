@@ -45,7 +45,7 @@
       name: PreventOverride
       data: 1
       type: dword
-    when: SC-7
+    when: SC_7
 
   - name: SC-10 > Limit idle RDP sessions to 15 mins
     win_regedit:
