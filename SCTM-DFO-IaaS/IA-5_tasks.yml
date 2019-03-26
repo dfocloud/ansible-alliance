@@ -3,14 +3,6 @@
 # Includes all the tasks that fall under
 # the IA-5 protocol requirements
 
-## Template
-# - name: 
-#   win_regedit:
-#     path: 
-#     name: 
-#     data: 
-#     type: 
-
 - name: IA-5 A > Allow domain members to change their account passwords
   win_regedit:
     path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
