@@ -24,15 +24,17 @@
   tasks:
 
 
-  - name: AC-11 > Require password when waking computer
+  - name: AC-11 conditional
     block:
-      - win_regedit:
+      - name: AC-11 > Require password when waking computer
+        win_regedit:
           path: HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
           name: DCSettingIndex
           data: 1
           type: dword
     rescue:
-      - win_regedit:
+      - name: AC-11 > Require password when waking computer
+        win_regedit:
           path: HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
           name: ACSettingIndex
           data: 1
