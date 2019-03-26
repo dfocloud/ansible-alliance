@@ -51,6 +51,6 @@
     win_regedit:
       path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
       name: MaxIdleTime
-      data: 900000
+      data: 60000
       type: dword
     when: SC_10
