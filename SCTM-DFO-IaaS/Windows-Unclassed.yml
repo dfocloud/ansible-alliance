@@ -26,7 +26,7 @@
 - hosts: all
   become_method: runas
   vars:
-    #SC_8: true
+    SC_8: true
     SC_5: true
     SC_23: true
     AC_11: true
@@ -35,7 +35,32 @@
 
   tasks:
   
-  - name: SC_5 A > Limit unacknowledged data retransmission (IPv6)
+  - name: SC-8 A > Comply with CSE ITSP.40.062 (Ciphers)
+    win_regedit:
+      path: "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\{{ item }}"
+      name: Enabled
+      data: 0
+      type: dword
+    loop:
+      - 'RC4 128/128'
+      - 'RC2 128/128'
+      - 'RC4 64/128'
+      - 'RC4 56/128'
+      - 'RC2 56/128'
+      - 'RC4 40/128'
+      - 'RC2 40/128'
+      - 'NULL'
+    when: SC_8
+
+  - name: SC-8 B > Comply with CSE ITSP.40.062 (Hashes)
+    win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5
+      name: Enabled
+      data: 0
+      type: dword
+    when: SC_8
+
+  - name: SC-5 A > Limit unacknowledged data retransmission (IPv6)
     win_regedit:
       path: HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters
       name: TcpMaxDataRetransmissions
@@ -43,7 +68,7 @@
       type: dword
     when: SC_5
 
-  - name: SC_5 B > Limit unacknowledged data retransmission
+  - name: SC-5 B > Limit unacknowledged data retransmission
     win_regedit:
       path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
       name: TcpMaxDataRetransmissions
@@ -59,7 +84,7 @@
       type: dword
     when: SC_5
 
-  - name: SC_5 D & SC-23 > Disable IRDP Default Gateway configuration
+  - name: SC-5 D & SC-23 > Disable IRDP Default Gateway configuration
     win_regedit:
       path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
       name: PerformRouterDiscovery
