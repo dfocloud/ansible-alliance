@@ -26,6 +26,7 @@
 - hosts: all
   become_method: runas
   vars:
+    SI_3: true
     IA_5: true
     AC_3: false
     AC_4: false
@@ -39,6 +40,14 @@
     SC_10: false
 
   tasks:
+
+  - name: SI-3 > Ensure antivirus programs check attachments
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments
+      name: ScanWithAntiVirus
+      data: 3
+      type: dword
+    when: SI_3
 
   - name: Get IA-5 Compliance Tasks
     include_tasks: IA-5_tasks.yml
@@ -149,7 +158,23 @@
       type: dword
     when: SC_5 or SC_23
 
-  - name: AC-11 (DC)
+  - name: AC-11 A > Password-protect screen saver
+    win_regedit:
+      path: HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop
+      name: ScreenSaverIsSecure
+      data: 1
+      type: string
+    when: AC_11
+
+  - name: AC-11 B > Screen saver activates after 5 mins of inactivity
+    win_regedit:
+      path: HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop
+      name: ScreenSaverTimeOut
+      data: 600
+      type: string
+    when: AC_11
+
+  - name: AC-11 C (DC)
     block:
       - name: AC-11 > Require password when waking computer (DC)
         win_regedit:
@@ -162,7 +187,7 @@
           msg: "Registry Entry 'DCSettingIndex' is not present for this computer"
     when: AC_11
 
-  - name: AC-11 (AC)
+  - name: AC-11 D (AC)
     block:
       - name: AC-11 > Require password when waking computer (AC)
         win_regedit:
