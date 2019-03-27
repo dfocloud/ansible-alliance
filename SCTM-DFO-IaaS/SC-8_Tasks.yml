@@ -26,7 +26,7 @@
   win_regedit:
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\kerberos\parameters
     name: SupportedEncryptionTypes
-    data: 7FFFFFF8
+    data: 0x7ffffff8
     type: dword
   when: CM_3 or SC_8 or SC_13
 
