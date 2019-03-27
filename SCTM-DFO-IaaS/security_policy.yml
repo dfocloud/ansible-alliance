@@ -1,61 +1,13 @@
 ---
-  vars:
-    win_security_policy_template_location: 'C:\Windows\security\templates'
-    win_security_policy_database_location: 'C:\Windows\security\logs'
-    #AC 7 > Set "Account lockout threshold" to "5 invalid logon attempt(s)"
-    win_security_LockoutBadCount: 5
-    #AC-7 > Set "Account lockout duration"  to 60 minutes
-    win_security_LockoutDuration: 60
-    #AC-7 > Set "Reset account lockout counter after" to "60 minute(s)"
-    win_security_ResetLockoutCount: 60
-    #AC 3 > Set "Act as part of the operating system" to "No One"
-    win_security_SeTcbPrivilege: '*S-1-0-0'
-    #CM-6 SC-5 > Set "Adjust memory quotas for a process" to "Administrators, Local Service, Network Service"
-    win_security_SeIncreaseQuotaPrivilege: '*S-1-5-20,*S-1-5-19,*S-1-5-32-544'
-    #AC-3 > Set "Allow log on locally" to "Administrators"
-    win_security_SeInteractiveLogonRight: '*S-1-5-32-544'
-    #AC-3 SC-15 > Set "Allow log on through Remote Desktop Services" to "Administrators, Remote Desktop Users"
-    win_security_SeRemoteInteractiveLogonRight: '*S-1-5-32-555,*S-1-5-32-544'
-    #AC-3 > Set "Change the system time" to "LOCAL SERVICE, Administrators"
-    win_security_SeSystemtimePrivilege: '*S-1-5-19,*S-1-5-32-544'
-    #AC-3 > Set "Create a pagefile" to "Administrators"
-    win_security_SeCreatePagefilePrivilege: '*S-1-5-32-544'
-    #AC-3 > Set "Create global objects" to "Administrators, SERVICE, LOCAL SERVICE, NETWORK SERVICE"
-    win_security_SeCreateGlobalPrivilege: '*S-1-5-6,*S-1-5-20,*S-1-5-19,*S-1-5-32-544'
-    #CM-6 SC-5 > Set "Create symbolic links" to "Administrators"
-    win_security_SeCreateSymbolicLinkPrivilege: '*S-1-5-32-544'
-    #AC-3 > Set "Deny access to this computer from the network" to "Guests, Local Account"
-    win_security_SeDenyNetworkLogonRight: '*S-1-5-32-546'
-    #AC-3 > Set "Deny log on locally" to "Guests"
-    win_security_SeDenyInteractiveLogonRight: '*S-1-5-32-546'
-    #AC-3 SC-5 > Set "Force shutdown from a remote system" to "Administrators"
-    win_security_SeRemoteShutdownPrivilege: '*S-1-5-32-544'
-    #AC-3 > (L1) Ensure 'Generate security audits' is set to 'LOCAL SERVICE, NETWORK SERVICE'
-    win_security_SeAuditPrivilege: '*S-1-5-20,*S-1-5-19'
-    #AC-3 > Set "Impersonate a client after authentication" to "Administrators, SERVICE, Local Service, Network Service"
-    win_security_SeImpersonatePrivilege: '*S-1-5-6,*S-1-5-20,*S-1-5-19,*S-1-5-32-544'
-    #AC-3 > Set "Increase scheduling priority" to "Administrators"
-    win_security_SeIncreaseBasePriorityPrivilege: '*S-1-5-32-544'
-    #AC-3 > Set "Load and unload device drivers" to "Administrators"
-    win_security_SeLoadDriverPrivilege: '*S-1-5-32-544'
-    #AU-9 > (L1) Configure 'Manage auditing and security log'
-    win_security_SeSecurityPrivilege: '*S-1-5-32-544'
-    #AC-3 > Set "Modify an object label" to "No One"
-    win_security_SeRelabelPrivilege: '*S-1-0-0'
-    #CM-6 SC-5 > Set "Modify firmware environment values" to "Administrators"
-    win_security_SeSystemEnvironmentPrivilege: '*S-1-5-32-544'
-    #CM-6 SC-5 > Set "Perform volume maintenance tasks" to "Administrators"
-    win_security_SeManageVolumePrivilege: '*S-1-5-32-544'
-    #AC-3 > Set "Profile system performance" to "Administrators,NT SERVICE\WdiServiceHost"
-    win_security_SeSystemProfilePrivilege: '*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420,*S-1-5-32-544'
-    #CM-6 SC-5 > Set "Restore files and directories" to "Administrators"
-    win_security_SeRestorePrivilege: '*S-1-5-32-544'
-    #AC-3 SC-5 > Set "Shut down the system" to "Administrators"
-    win_security_SeShutdownPrivilege: '*S-1-5-32-544'
-    #AC-3 > "Ensure 'Deny log on through Remote Desktop Services' to include 'Guests, Local account,Domain Admins'
-    #Note: I'm only denying Guests
-    win_security_SeDenyRemoteInteractiveLogonRight: '*S-1-5-32-546'
-    
+# Called from Windows-Unclassed.yml
+# Includes all the tasks that use secedit template (templates/security_policy.inf.jinja).
+#
+#- name: Get security template tasks
+#  include_tasks: security_policy.yml
+#  vars:
+#    win_security_policy_template_location: 'C:\Windows\security\templates'
+#    win_security_policy_database_location: 'C:\Windows\security\logs'
+
 - name: create security policy directories
   win_file:
     path: "{{item}}"
@@ -66,10 +18,10 @@
 
 - name: create security policy on host
   win_template:
-    src: security_policy.inf.yml
+    src: templates/security_policy.inf.jinja
     dest: "{{win_security_policy_template_location}}\\ansible_windows_hardening_security_policy.inf"
   register: security_policy
 
-- name: load gpo configuration locally
+- name: load configuration locally
   raw: "secedit /configure /cfg {{win_security_policy_template_location}}\\ansible_windows_hardening_security_policy.inf /db {{ win_security_policy_database_location }}\\ansible_windows_hardening.db /quiet"
   when: security_policy.changed
