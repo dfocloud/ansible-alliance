@@ -26,22 +26,42 @@
 - hosts: all
   become_method: runas
   vars:
-    CM_3: true
-    SI_2: true
-    SI_3: true
-    IA_5: true
     AC_3: false
     AC_4: false
+    AC_11: false
+
     AU_9: false
     AU_3: false
+
+    CM_3: true
+    
+    IA_5: true
+    
+    SC_2: true
     SC_8: true
     SC_5: false
-    SC_23: false
-    AC_11: false
     SC_7: false
+    SC_13: false
     SC_10: false
+    SC_23: false
+    SC_28: false
+
+    SI_2: true
+    SI_3: true
 
   tasks:
+
+  # - name: Get AC-3 Compliance Tasks
+  #   include_tasks: AC-3_Tasks.yml
+  #   when: AC_3
+
+  - name: Get SC-8 Compliance Tasks
+    include_tasks: SC-8_Tasks.yml
+    when: CM_3 or SC_2 or SC_8 or SC_23 or SC_28
+
+  - name: Get IA-5 Compliance Tasks
+    include_tasks: IA-5_Tasks.yml
+    when: IA_5
 
   - name: SI-2 & SC-5 > Set computer to restart for updates even if user(s) logged in
     win_regedit:
@@ -58,10 +78,6 @@
       data: 3
       type: dword
     when: SI_3
-
-  - name: Get IA-5 Compliance Tasks
-    include_tasks: IA-5_tasks.yml
-    when: IA_5
 
   - name: AC-3 A > Require authentication for RPC service access
     win_regedit:
@@ -110,47 +126,6 @@
       - PrivateProfile
       - PublicProfile
     when: AU_3
-
-  - name: SC-8 D > Prevent unencrypted client traffic
-    win_regedit:
-      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client
-      name: AllowUnencryptedTraffic
-      data: 0
-      type: dword
-    when: SC_8
-
-  - name: SC-8 E > Prevent unencrypted service traffic
-    win_regedit:
-      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service
-      name: AllowUnencryptedTraffic
-      data: 0
-      type: dword
-    when: SC_8
-  
-  - name: SC-8 F > Comply with CSE ITSP.40.062 (Ciphers)
-    win_regedit:
-      path: "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\{{ item }}"
-      name: Enabled
-      data: 0
-      type: dword
-    loop:
-      - 'RC4 128/128'
-      - 'RC2 128/128'
-      - 'RC4 64/128'
-      - 'RC4 56/128'
-      - 'RC2 56/128'
-      - 'RC4 40/128'
-      - 'RC2 40/128'
-      - 'NULL'
-    when: SC_8
-
-  - name: SC-8 G > Comply with CSE ITSP.40.062 (Hashes)
-    win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5
-      name: Enabled
-      data: 0
-      type: dword
-    when: SC_8
 
   - name: SC-5 A > Limit unacknowledged data retransmission (IPv6)
     win_regedit:

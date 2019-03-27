@@ -1,0 +1,91 @@
+---
+# Called from Windows-Unclassed.yml
+# Includes all the tasks that fall under
+# the SC-8 protocol requirements
+# 
+# Also includes tasks from 4 other protocols:
+# CM-3, SC-2, SC-23, SC-28
+
+- name: SC-8 A > Enforce strong domain session keys
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
+    name: RequireStrongKey
+    data: 1
+    type: dword
+  when: SC_2 or SC_8
+
+- name: SC-8 B > Enforce LDAP server signing
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters
+    name: LDAPServerIntegrity
+    data: 2
+    type: dword
+  when: SC_8
+
+- name: SC-8 C > Ensure kerberos encryption is supported
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\kerberos\parameters
+    name: SupportedEncryptionTypes
+    data: 7FFFFFF8
+    type: dword
+  when: CM_3 or SC_8 or SC_13
+
+- name: SC-8 D > Ensure UNC paths are hardened
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths
+    name: "{{ item }}"
+    data: 'RequireMutualAuthentication=1, RequireIntegrity=1'
+    type: string
+  loop:
+    - \\*\NETLOGON
+    - \\*\SYSVOL
+  when: SC_8 or SC_23
+
+- name: SC-8 E > Prevent indexing of encrypted files
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+    name: AllowIndexingEncryptedStoresOrItems
+    data: 0
+    type: dword
+  when: SC_8 or SC_28
+
+- name: SC-8 F > Prevent unencrypted client traffic
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client
+    name: AllowUnencryptedTraffic
+    data: 0
+    type: dword
+  when: SC_8 or CM_3
+
+- name: SC-8 G > Prevent unencrypted service traffic
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service
+    name: AllowUnencryptedTraffic
+    data: 0
+    type: dword
+  when: SC_8 or CM_3
+  
+- name: SC-8 H > Comply with CSE ITSP.40.062 (Ciphers)
+  win_regedit:
+    path: "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\{{ item }}"
+    name: Enabled
+    data: 0
+    type: dword
+  loop:
+    - 'RC4 128/128'
+    - 'RC2 128/128'
+    - 'RC4 64/128'
+    - 'RC4 56/128'
+    - 'RC2 56/128'
+    - 'RC4 40/128'
+    - 'RC2 40/128'
+    - 'NULL'
+  when: SC_8
+
+- name: SC-8 I > Comply with CSE ITSP.40.062 (Hashes)
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5
+    name: Enabled
+    data: 0
+    type: dword
+  when: SC_8
