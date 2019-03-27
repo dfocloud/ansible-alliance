@@ -51,9 +51,9 @@
 
   tasks:
 
-  # - name: Get AC-3 Compliance Tasks
-  #   include_tasks: AC-3_Tasks.yml
-  #   when: AC_3
+  - name: Get AC-3 Compliance Tasks
+    include_tasks: AC-3_Tasks.yml
+    when: AC_3
 
   - name: Get SC-8 Compliance Tasks
     include_tasks: SC-8_Tasks.yml
@@ -78,22 +78,6 @@
       data: 3
       type: dword
     when: SI_3
-
-  - name: AC-3 A > Require authentication for RPC service access
-    win_regedit:
-      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc
-      name: EnableAuthEpResolution
-      data: 1
-      type: dword
-    when: AC_3
-
-  - name: AC-3 B > Require Domain Controller Authentication to unlock computer
-    win_regedit:
-      path: HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon
-      name: ForceUnlockLogon
-      data: 1
-      type: dword
-    when: AC_3
 
   - name: AC-4 > Prohibit connection between secure and insecure networks
     win_regedit:
