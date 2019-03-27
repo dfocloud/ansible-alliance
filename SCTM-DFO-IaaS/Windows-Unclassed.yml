@@ -26,13 +26,15 @@
 - hosts: all
   become_method: runas
   vars:
+    CM_3: true
+    SI_2: true
     SI_3: true
     IA_5: true
     AC_3: false
     AC_4: false
     AU_9: false
     AU_3: false
-    SC_8: false
+    SC_8: true
     SC_5: false
     SC_23: false
     AC_11: false
@@ -40,6 +42,14 @@
     SC_10: false
 
   tasks:
+
+  - name: SI-2 & SC-5 > Set computer to restart for updates even if user(s) logged in
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU
+      name: NoAutoRebootWithLoggedOnUsers
+      data: 0
+      type: dword
+    when: SI_2 or SC_5
 
   - name: SI-3 > Ensure antivirus programs check attachments
     win_regedit:
@@ -101,7 +111,23 @@
       - PublicProfile
     when: AU_3
 
-  - name: SC-8 A > Comply with CSE ITSP.40.062 (Ciphers)
+  - name: SC-8 D > Prevent unencrypted client traffic
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client
+      name: AllowUnencryptedTraffic
+      data: 0
+      type: dword
+    when: SC_8
+
+  - name: SC-8 E > Prevent unencrypted service traffic
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service
+      name: AllowUnencryptedTraffic
+      data: 0
+      type: dword
+    when: SC_8
+  
+  - name: SC-8 F > Comply with CSE ITSP.40.062 (Ciphers)
     win_regedit:
       path: "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\{{ item }}"
       name: Enabled
@@ -118,7 +144,7 @@
       - 'NULL'
     when: SC_8
 
-  - name: SC-8 B > Comply with CSE ITSP.40.062 (Hashes)
+  - name: SC-8 G > Comply with CSE ITSP.40.062 (Hashes)
     win_regedit:
       path: HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5
       name: Enabled
