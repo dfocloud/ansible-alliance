@@ -29,7 +29,7 @@
 - hosts: all
   become_method: runas
   vars:
-    AC_3: true
+    AC_3: false
     AC_4: false
     AC_7: true
     AC_11: false
@@ -37,18 +37,18 @@
     AU_3: false
     AU_9: false
 
-    CM_3: true
-    CM_6: true
+    CM_3: false
+    CM_6: false
     
-    IA_5: true
+    IA_5: false
     
-    SC_2: true
-    SC_8: true
+    SC_2: false
+    SC_8: false
     SC_5: false
     SC_7: false
     SC_13: false
     SC_10: false
-    SC_15: true
+    SC_15: fa
     SC_23: false
     SC_28: false
 
@@ -81,6 +81,19 @@
       data: 1
       type: dword
     when: AC_4
+
+# AC-7
+  - name: AC-7 A > 
+    win_command: "net accounts /lockoutthreshold:5"
+    when: AC_7
+
+  - name: AC-7 B > 
+    win_command: "net accounts /lockoutduration:60"
+    when: AC_7
+
+  - name: AC-7 C > 
+    win_command: "net accounts /lockoutwindow:60"
+    when: AC_7
 
 # AC-11
   - name: AC-11 A > Password-protect screen saver
