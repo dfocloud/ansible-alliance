@@ -1,5 +1,5 @@
 ---
-- hosts: windows
+- hosts: all
   vars:
     win_security_policy_template_location: 'C:\Windows\security\templates'
     win_security_policy_database_location: 'C:\Windows\security\logs'
