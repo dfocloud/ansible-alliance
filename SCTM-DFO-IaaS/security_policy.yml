@@ -25,16 +25,6 @@
       src: templates/security_policy.inf.jinja
       dest: "{{win_security_policy_template_location}}\\ansible_windows_hardening_security_policy.inf"
     register: security_policy
-    
-  # CM-6 SC-5 > Set "Adjust memory quotas for a process" to "Administrators, Local Service, Network Service" 
- # - name: Adjust memory quotas for a process to Administrators, Local Service, Network Service
- #   win_user_right:
- #     name: SeIncreaseQuotaPrivilege
-#      users:
-#      - Administrators
-#      - NETWORK SERVICE
-#      - LOCAL SERVICE
-#      action: set
 
   - name: AC 7, AC 3, AU-9, CM-6, SC-5, SC-15 > Load security policy configuration
     raw: "secedit /configure /cfg {{win_security_policy_template_location}}\\ansible_windows_hardening_security_policy.inf /db {{ win_security_policy_database_location }}\\ansible_windows_hardening.db /quiet"
