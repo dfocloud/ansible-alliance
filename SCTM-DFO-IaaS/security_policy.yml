@@ -1,5 +1,8 @@
 ---
 - hosts: windows
+  vars:
+    win_security_policy_template_location: 'C:\Windows\security\templates'
+    win_security_policy_database_location: 'C:\Windows\security\logs'
 # Called from Windows-Unclassed.yml
 # Includes all the tasks that use secedit template (templates/security_policy.inf.jinja).
 #
