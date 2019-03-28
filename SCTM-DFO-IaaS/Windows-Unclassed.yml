@@ -59,7 +59,8 @@
     when: AC_3
 
   - name: Get Security Policy Tasks
-    import_playbook: security_policy.yml
+    block:
+      - import_playbook: security_policy.yml
     when: AC_3 or AC_7 or AU_9 or CM_6 or SC_5 or SC_15
 
   - name: Get IA-5 Compliance Tasks
