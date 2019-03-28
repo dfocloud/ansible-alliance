@@ -3,14 +3,6 @@
 # Includes all the tasks that fall under
 # the AC-3 protocol requirements
 
-## Task template
-# - name: AC-3 >
-#   win_regedit:
-#     path: 
-#     name: 
-#     data: 
-#     type: 
-
 - name: AC-3 A > Restrict use of blank passwords
   win_regedit:
     path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa

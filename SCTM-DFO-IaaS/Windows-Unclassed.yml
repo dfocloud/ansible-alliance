@@ -48,12 +48,12 @@
     SC_7: false
     SC_13: false
     SC_10: false
-    SC_15: fa
+    SC_15: false
     SC_23: false
     SC_28: false
 
-    SI_2: true
-    SI_3: true
+    SI_2: false
+    SI_3: false
 
   tasks:
 
