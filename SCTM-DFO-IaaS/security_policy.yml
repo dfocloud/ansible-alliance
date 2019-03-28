@@ -1,27 +1,28 @@
 ---
+- hosts: windows
 # Called from Windows-Unclassed.yml
 # Includes all the tasks that use secedit template (templates/security_policy.inf.jinja).
 #
-#- name: Get security template tasks
+#- name: AC 7, AC 3, AU-9, CM-6, SC-5, SC-15 > Get security policy tasks
 #  include_tasks: security_policy.yml
 #  vars:
 #    win_security_policy_template_location: 'C:\Windows\security\templates'
 #    win_security_policy_database_location: 'C:\Windows\security\logs'
+  tasks:
+  - name: create security policy directories
+    win_file:
+      path: "{{item}}"
+      state: directory
+    with_items:
+      - "{{win_security_policy_template_location}}"
+      - "{{win_security_policy_database_location}}"
 
-- name: create security policy directories
-  win_file:
-    path: "{{item}}"
-    state: directory
-  with_items:
-    - "{{win_security_policy_template_location}}"
-    - "{{win_security_policy_database_location}}"
+  - name: create security policy on host
+    win_template:
+      src: templates/security_policy.inf.jinja
+      dest: "{{win_security_policy_template_location}}\\ansible_windows_hardening_security_policy.inf"
+    register: security_policy
 
-- name: create security policy on host
-  win_template:
-    src: templates/security_policy.inf.jinja
-    dest: "{{win_security_policy_template_location}}\\ansible_windows_hardening_security_policy.inf"
-  register: security_policy
-
-- name: load configuration locally
-  raw: "secedit /configure /cfg {{win_security_policy_template_location}}\\ansible_windows_hardening_security_policy.inf /db {{ win_security_policy_database_location }}\\ansible_windows_hardening.db /quiet"
-  when: security_policy.changed
+  - name: AC 7, AC 3, AU-9, CM-6, SC-5, SC-15 > Load security policy configuration
+    raw: "secedit /configure /cfg {{win_security_policy_template_location}}\\ansible_windows_hardening_security_policy.inf /db {{ win_security_policy_database_location }}\\ansible_windows_hardening.db /quiet"
+    when: security_policy.changed
