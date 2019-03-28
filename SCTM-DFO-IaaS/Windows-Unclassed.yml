@@ -23,6 +23,9 @@
   #     type: 
   #   when: 
 
+- name: Get Security Policy Tasks
+  import_playbook: security_policy.yml
+
 - hosts: all
   become_method: runas
   vars:
@@ -57,11 +60,6 @@
   - name: Get AC-3 Compliance Tasks
     include_tasks: AC-3_Tasks.yml
     when: AC_3
-
-  - name: Get Security Policy Tasks
-    block:
-      - import_playbook: security_policy.yml
-    when: AC_3 or AC_7 or AU_9 or CM_6 or SC_5 or SC_15
 
   - name: Get IA-5 Compliance Tasks
     include_tasks: IA-5_Tasks.yml
