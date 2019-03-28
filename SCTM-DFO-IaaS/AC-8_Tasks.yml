@@ -1,0 +1,45 @@
+---
+# Called from Windows-Unclassed.yml
+# Includes all the tasks that fall under
+# the AC-8 protocol requirements
+
+## Task template
+# - name: AC-8 >
+#   win_regedit:
+#     path: 
+#     name: 
+#     data: 
+#     type: 
+#   when: AC_8
+
+# - name: AC-8 >
+#   win_regedit:
+#     path: 
+#     name: 
+#     data: 
+#     type: 
+#   when: AC_8
+
+# - name: AC-8 >
+#   win_regedit:
+#     path: 
+#     name: 
+#     data: 
+#     type: 
+#   when: AC_8
+
+# - name: AC-8 >
+#   win_regedit:
+#     path: 
+#     name: 
+#     data: 
+#     type: 
+#   when: AC_8
+
+# - name: AC-8 >
+#   win_regedit:
+#     path: 
+#     name: 
+#     data: 
+#     type: 
+#   when: AC_8
