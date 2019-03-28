@@ -28,12 +28,14 @@
   vars:
     AC_3: false
     AC_4: false
+    AC_7: true
     AC_11: false
 
-    AU_9: false
     AU_3: false
+    AU_9: false
 
     CM_3: true
+    CM_6: true
     
     IA_5: true
     
@@ -43,6 +45,7 @@
     SC_7: false
     SC_13: false
     SC_10: false
+    SC_15: true
     SC_23: false
     SC_28: false
 
@@ -55,13 +58,21 @@
     include_tasks: AC-3_Tasks.yml
     when: AC_3
 
-  - name: Get SC-8 Compliance Tasks
-    include_tasks: SC-8_Tasks.yml
-    when: CM_3 or SC_2 or SC_8 or SC_23 or SC_28
+  - name: Get Security Policy Tasks
+    include_playbook: security_policy.yml
+    when: AC_3 or AC_7 or AU_9 or CM_6 or SC_5 or SC_15
 
   - name: Get IA-5 Compliance Tasks
     include_tasks: IA-5_Tasks.yml
     when: IA_5
+
+  - name: Get SC-8 Compliance Tasks
+    include_tasks: SC-8_Tasks.yml
+    when: CM_3 or SC_2 or SC_8 or SC_23 or SC_28
+
+  - name: Get SI-3 Compliance Tasks
+    include_tasks: SI-3_Tasks.yml
+    when: SI_3
 
   - name: SI-2 & SC-5 > Set computer to restart for updates even if user(s) logged in
     win_regedit:
@@ -70,14 +81,6 @@
       data: 0
       type: dword
     when: SI_2 or SC_5
-
-  - name: SI-3 > Ensure antivirus programs check attachments
-    win_regedit:
-      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments
-      name: ScanWithAntiVirus
-      data: 3
-      type: dword
-    when: SI_3
 
   - name: AC-4 > Prohibit connection between secure and insecure networks
     win_regedit:
