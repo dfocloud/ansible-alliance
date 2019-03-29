@@ -53,7 +53,7 @@
 
 - name: AC-8 E > Enforce digitally signing network server communications
   win_regedit:
-    path: HKLN:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
     name: requiresecuritysignature
     data: 1
     type: dword
