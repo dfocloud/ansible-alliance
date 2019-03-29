@@ -14,15 +14,6 @@
 # Editor:
 #     Alex Imray Papineau
 
-## Task template
-  # - name: 
-  #   win_regedit:
-  #     path: 
-  #     name: 
-  #     data: 
-  #     type: 
-  #   when: 
-
 - name: Get Security Policy Tasks
   import_playbook: security_policy.yml
 
@@ -266,11 +257,3 @@
       data: 3
       type: dword
     when: SI_3
-
-  # - name: 
-  #   win_regedit:
-  #     path: 
-  #     name: 
-  #     data: 
-  #     type: 
-  #   when: 
