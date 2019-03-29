@@ -30,9 +30,9 @@
   become_method: runas
   vars:
     AC_3: false
-    AC_4: false
+    AC_4: true
     AC_7: false
-    AC_8: true
+    AC_8: false
     AC_11: false
 
     AU_3: false
@@ -41,6 +41,7 @@
     CM_3: false
     CM_6: false
     
+    IA_2: true
     IA_5: false
     
     SC_2: false
@@ -53,8 +54,8 @@
     SC_23: false
     SC_28: false
 
-    SI_2: false
-    SI_3: false
+    SI_2: true
+    SI_3: true
 
   tasks:
 
@@ -83,6 +84,30 @@
     when: SI_3
 
 # AC-4
+  - name: AC-4 A > Prevent storing LAN Manager hash value
+    win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+      name: NoLmHash
+      data: 1
+      type: dword
+    when: AC_4
+
+  - name: AC-4 B > Set LAN Manager authentication
+    win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+      name: lmcompatibilitylevel
+      data: 5
+      type: dword
+    when: AC_4
+
+  - name: AC-4 C > Set minimum server network traffic security
+    win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
+      name: NtkmMinServerSec
+      data: 20000000
+      type: dword
+    when: AC_4 or CM_3
+
   - name: AC-4 > Prohibit connection between secure and insecure networks
     win_regedit:
       path: HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy
@@ -173,46 +198,39 @@
       - { path: PublicProfile, file: publicfw.log }
     when: AU_9
 
-# SC-5
-  - name: SC-5 A > Set computer to restart for updates even if user(s) logged in
+# IA-2
+  - name: IA-2 A > Prevent NULL session fallback
     win_regedit:
-      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU
-      name: NoAutoRebootWithLoggedOnUsers
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
+      name: allownullsessionfallback
       data: 0
       type: dword
-    when: SC_5 or SI_2
+    when: IA_2
 
-  - name: SC-5 B > Limit unacknowledged data retransmission (IPv6)
+  - name: IA-2 B > Prevent online identity use for PKU2U authentication requests
     win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters
-      name: TcpMaxDataRetransmissions
-      data: 3
-      type: dword
-    when: SC_5
-
-  - name: SC-5 C > Limit unacknowledged data retransmission
-    win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
-      name: TcpMaxDataRetransmissions
-      data: 3
-      type: dword
-    when: SC_5
-
-  - name: SC-5 D > Set keep-alive packet send interval
-    win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
-      name: KeepAliveTime
-      data: 300000
-      type: dword
-    when: SC_5
-
-  - name: SC-5 E > Disable IRDP Default Gateway configuration
-    win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
-      name: PerformRouterDiscovery
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\pku2u
+      name: allowonlineid # OwO
       data: 0
       type: dword
-    when: SC_5 or SC_23
+    when: IA_2
+
+  - name: IA-2 C > Enforce password prompt for RDP
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+      name: fPromptForPassword
+      data: 1
+      type: dword
+    when: IA_2
+
+# SC-2
+  - name: SC-2 > Prohibit IP source routing
+    win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters
+      name: DisableIPSourceRouting
+      data: 2
+      type: dword
+    when: SC_2
 
 # SC-7
   - name: SC-7 > Prevent bypassing SmartScreen prompts
@@ -231,3 +249,28 @@
       data: 900000
       type: dword
     when: SC_10
+
+# SI-3
+  - name: SI-3 A > Prevent attachment downloads through RSS
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds
+      name: DisableEnclosureDownload
+      data: 1
+      type: dword
+    when: SI_3
+
+  - name: SI-3 B >
+    win_regedit:
+      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments
+      name: ScanWithAntiVirus
+      data: 3
+      type: dword
+    when: SI_3
+
+  # - name: 
+  #   win_regedit:
+  #     path: 
+  #     name: 
+  #     data: 
+  #     type: 
+  #   when: 
