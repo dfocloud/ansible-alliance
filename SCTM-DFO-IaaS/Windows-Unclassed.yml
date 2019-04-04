@@ -50,27 +50,27 @@
 
   tasks:
 
-  - name: Get AC-3 Compliance Tasks
+  - name: Get AC-3 Compliance Tasks A-Z
     include_tasks: AC-3_Tasks.yml
     when: AC_3
 
-  - name: Get AC-8 Compliance Tasks
+  - name: Get AC-8 Compliance Tasks A-E
     include_tasks: AC-8_Tasks.yml
     when: AC_8
 
-  - name: Get IA-5 Compliance Tasks
+  - name: Get IA-5 Compliance Tasks A-L
     include_tasks: IA-5_Tasks.yml
     when: IA_5
 
-  - name: Get SC-5 Compliance Tasks
+  - name: Get SC-5 Compliance Tasks A-E
     include_tasks: SC-5_Tasks.yml
     when: SC_5 or SI_2 or SC_23
 
-  - name: Get SC-8 Compliance Tasks
+  - name: Get SC-8 Compliance Tasks A-I
     include_tasks: SC-8_Tasks.yml
     when: CM_3 or SC_2 or SC_8 or SC_23 or SC_28
 
-  - name: Get SI-3 Compliance Tasks
+  - name: Get SI-3 Compliance Tasks A-E
     include_tasks: SI-3_Tasks.yml
     when: SI_3
 
