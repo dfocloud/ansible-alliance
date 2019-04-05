@@ -23,7 +23,7 @@
     AC_3: true
     AC_4: true
     AC_7: true
-    AC_8: false
+    AC_8: true
     AC_11: false
 
     AU_3: false
