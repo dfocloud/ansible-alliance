@@ -37,10 +37,10 @@
     
     SC_2: true
     SC_5: true #Import
-    SC_7: false
+    SC_7: true
     SC_8: true #Import
-    SC_13: false
-    SC_10: false
+    SC_10: true
+    SC_13: true
     SC_15: false
     SC_23: false
     SC_28: false
