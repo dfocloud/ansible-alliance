@@ -32,10 +32,10 @@
     CM_3: true
     CM_6: true
     
-    IA_2: false
+    IA_2: true
     IA_5: true #Import
     
-    SC_2: false
+    SC_2: true
     SC_5: true #Import
     SC_7: false
     SC_8: true #Import
