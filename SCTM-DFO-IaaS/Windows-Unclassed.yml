@@ -22,7 +22,7 @@
   vars:
     AC_3: true
     AC_4: true
-    AC_7: false
+    AC_7: true
     AC_8: false
     AC_11: false
 
