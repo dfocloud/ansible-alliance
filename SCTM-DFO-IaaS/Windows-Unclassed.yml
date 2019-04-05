@@ -41,9 +41,9 @@
     SC_8: true #Import
     SC_10: true
     SC_13: true
-    SC_15: false
-    SC_23: false
-    SC_28: false
+    SC_15: true
+    SC_23: true
+    SC_28: true
 
     SI_2: true
     SI_3: true #Import
