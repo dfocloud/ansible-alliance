@@ -29,8 +29,8 @@
     AU_3: true
     AU_9: true
 
-    CM_3: false
-    CM_6: false
+    CM_3: true
+    CM_6: true
     
     IA_2: false
     IA_5: true #Import
@@ -45,7 +45,7 @@
     SC_23: false
     SC_28: false
 
-    SI_2: false
+    SI_2: true
     SI_3: true #Import
 
   tasks:
@@ -241,19 +241,19 @@
       type: dword
     when: SC_10
 
-# SI-3
-  - name: SI-3 A > Prevent attachment downloads through RSS
+# SI-2
+  - name: SI-2 A > Prevent attachment downloads through RSS
     win_regedit:
       path: HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds
       name: DisableEnclosureDownload
       data: 1
       type: dword
-    when: SI_3
+    when: SI_2
 
-  - name: SI-3 B >
+  - name: SI-2 B > Ensure attachments are scanned with antivirus
     win_regedit:
       path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments
       name: ScanWithAntiVirus
       data: 3
       type: dword
-    when: SI_3
+    when: SI_2
