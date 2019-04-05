@@ -21,7 +21,7 @@
   become_method: runas
   vars:
     AC_3: true
-    AC_4: false
+    AC_4: true
     AC_7: false
     AC_8: false
     AC_11: false
