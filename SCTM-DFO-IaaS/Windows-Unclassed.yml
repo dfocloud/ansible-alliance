@@ -20,33 +20,33 @@
 - hosts: all
   become_method: runas
   vars:
-    AC_3: true
-    AC_4: true
-    AC_7: true
-    AC_8: true
-    AC_11: true
+    AC_3: false
+    AC_4: false
+    AC_7: false
+    AC_8: false
+    AC_11: false
 
-    AU_3: true
-    AU_9: true
+    AU_3: false
+    AU_9: false
 
-    CM_3: true
-    CM_6: true
+    CM_3: false
+    CM_6: false
     
-    IA_2: true
-    IA_5: true
+    IA_2: false
+    IA_5: false
     
-    SC_2: true
-    SC_8: true
-    SC_5: true
-    SC_7: true
-    SC_13: true
-    SC_10: true
-    SC_15: true
-    SC_23: true
-    SC_28: true
+    SC_2: false
+    SC_8: false
+    SC_5: false
+    SC_7: false
+    SC_13: false
+    SC_10: false
+    SC_15: false
+    SC_23: false
+    SC_28: false
 
-    SI_2: true
-    SI_3: true
+    SI_2: false
+    SI_3: false
 
   tasks:
 
