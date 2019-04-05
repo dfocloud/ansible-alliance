@@ -46,7 +46,7 @@
     SC_28: false
 
     SI_2: false
-    SI_3: false #Import
+    SI_3: true #Import
 
   tasks:
 
