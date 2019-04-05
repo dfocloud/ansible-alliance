@@ -20,10 +20,10 @@
 - hosts: all
   become_method: runas
   vars:
-    AC_3: true
+    AC_3: true #Import
     AC_4: true
     AC_7: true
-    AC_8: true
+    AC_8: true #Import
     AC_11: true
 
     AU_3: true
@@ -33,12 +33,12 @@
     CM_6: false
     
     IA_2: false
-    IA_5: true
+    IA_5: true #Import
     
     SC_2: false
-    SC_8: false
-    SC_5: false
+    SC_5: false #Import
     SC_7: false
+    SC_8: false #Import
     SC_13: false
     SC_10: false
     SC_15: false
@@ -46,7 +46,7 @@
     SC_28: false
 
     SI_2: false
-    SI_3: false
+    SI_3: false #Import
 
   tasks:
 
