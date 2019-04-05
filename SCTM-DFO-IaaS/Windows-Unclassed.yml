@@ -20,7 +20,7 @@
 - hosts: all
   become_method: runas
   vars:
-    AC_3: false
+    AC_3: true
     AC_4: false
     AC_7: false
     AC_8: false
