@@ -10,12 +10,8 @@
 
   - name: WinRoll-! > Create reg key file in C
     win_file:
-      path: C:\AnsibleDefaultRegistry.JSON
+      path: C:\AnsibleDefaultRegistry.yml
       state: touch
-
-  - name: WinRoll-! > Create reg key dictionary
-    set_fact:
-      DefReg: { AC_8_D: 0, SI_3_B: 0 }
 
   - name: WinRoll-! > Collect default reg keys
     win_reg_stat:
@@ -31,25 +27,7 @@
       DefReg2: "{{ DefReg|default({}) | combine( {item.item.task: (item.value if item.exists == 'true' else 'absent')} ) }}"
     loop: "{{ RegVar.results }}"
 
-  - debug:
-      var: DefReg
-
-  - debug:
-      var: DefReg2
-
-  # - name: WinRoll-! > Parse results
-  #   set_fact:
-  #     existsDic: "{{ item.exists }}"
-  #   loop: "{{ RegVar.results }}"
-
-  # - name: WinRoll-! > Debug results
-  #   debug:
-  #     msg: "{{ item.item.task }} - {{ item.item.name }} / exists:{{ item.exists }} changed:{{ item.changed }} failed:{{ item.failed }}"
-  #   loop: "{{ RegVar.results }}"
-
-  # - name: WinRoll-! > Debug parsed results
-  #   debug:
-  #     msg: "{{ existsDic }}"
+  #- name: Write reg key dictionary to file
 
   # Preset key
   - name: AC-8 D > Set 14-day prompt for user to change password
