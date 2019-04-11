@@ -9,19 +9,22 @@
 
   - name: SI-3 ! > Create reg key file in C
     win_file:
-      path: C:\DefaultReg.JSON
+      path: C:\AnsibleDefaultRegistry.JSON
       state: touch
     register: RegFile
 
   - name: SI-3 ! > Collect default reg keys
     win_reg_stat:
-      path: HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch
-      name: DriverLoadPolicy
+      path: {{ item.path }}
+      name: {{ item.name }}
+    loop:
+      - { path: HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch, name: DriverLoadPolicy }
+      - { path: HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds, name: DisableEnclosureDownload }
     register: RegVar
 
   - name: SI-3 ! > Debug results
     debug:
-      msg: "{{ RegFile }} + {{ RegVar }}"
+      msg: "{{ RegVar }}"
 
   - name: SI-3 A > Boot-Start Driver Initialization Policy is set to Enabled Good, unknown and bad but critical
     win_regedit:
