@@ -25,7 +25,7 @@
 
   - name: WinRoll-! > Parse results
     set_fact:
-      taskValDict: "{{ item.exists }} == 'true' | ternary('Exists','Absent')"
+      taskValDict: "{{ 'Exists' if {{ item.exists }} == 'true' else 'Absent' }}"
     loop: "{{ RegVar.results }}"
 
   - name: WinRoll-! > Debug results
