@@ -4,64 +4,43 @@
 - hosts: all
   become_method: runas
   vars:
+    AC_8: false
     SI_3: false
   tasks:
 
-  - name: SI-3 ! > Create reg key file in C
+  - name: WinRoll-! > Create reg key file in C
     win_file:
       path: C:\AnsibleDefaultRegistry.JSON
       state: touch
     register: RegFile
 
-  - name: SI-3 ! > Collect default reg keys
+  - name: WinRoll-! > Collect default reg keys
     win_reg_stat:
       path: "{{ item.path }}"
       name: "{{ item.name }}"
-    loop:
-      - { path: 'HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch', name: 'DriverLoadPolicy' }
-      - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
     register: RegVar
+    loop:
+      - { path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
+      - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
 
-  - name: SI-3 ! > Debug results
+  - name: WinRoll-! > Debug results
     debug:
       msg: "{{ RegVar }}"
 
-  - name: SI-3 A > Boot-Start Driver Initialization Policy is set to Enabled Good, unknown and bad but critical
+  # Preset key
+  - name: AC-8 D > Set 14-day prompt for user to change password
     win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch
-      name: DriverLoadPolicy
-      data: 3
+      path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+      name: PasswordExpiryWarning
+      data: 14
       type: dword
-    when: SI_3
+    when: AC_8
 
+  # Non-existent key
   - name: SI-3 B > Prevent downloading of enclosures is set to Enabled
     win_regedit:
       path: HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds
       name: DisableEnclosureDownload
       data: 1
-      type: dword
-    when: SI_3
-
-  - name: SI-3 C > Notify antivirus programs when opening attachments is set to Enabled
-    win_regedit:
-      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments
-      name: ScanWithAntiVirus
-      data: 3
-      type: dword
-    when: SI_3
-
-  - name: SI-3 D > Turn off Data Execution Prevention for Explorer is set to Disabled
-    win_regedit:
-      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer
-      name: NoDataExecutionPrevention
-      data: 0
-      type: dword
-    when: SI_3
-
-  - name: SI-3 E > Turn off heap termination on corruption is set to Disabled
-    win_regedit:
-      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer
-      name: NoHeapTerminationOnCorruption
-      data: 0
       type: dword
     when: SI_3
