@@ -20,13 +20,22 @@
       name: "{{ item.name }}"
     register: RegVar
     loop:
-      - { path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
-      - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
+      - { task: 'AC-8 D', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
+      - { task: 'SI-3 B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
+
+  - name: WinRoll-! > Parse results
+    set-fact:
+      taskValDict: "{{ item.exists }} == 'true' | ternary('Exists','Absent')"
+    loop: "{{ RegVar.results }}"
 
   - name: WinRoll-! > Debug results
     debug:
-      msg: "{{ item.item.name }} - exists:{{ item.exists }} changed:{{ item.changed }} failed:{{ item.failed }}"
+      msg: "{{ item.item.task }} - {{ item.item.name }} / exists:{{ item.exists }} changed:{{ item.changed }} failed:{{ item.failed }}"
     loop: "{{ RegVar.results }}"
+
+  - name: WinRoll-! > Debug parsed results
+    debug:
+      msg: "{{ taskValDict }}"
 
   # Preset key
   - name: AC-8 D > Set 14-day prompt for user to change password
