@@ -24,7 +24,7 @@
       - { task: 'SI-3 B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
 
   - name: WinRoll-! > Parse results
-    set-fact:
+    set_fact:
       taskValDict: "{{ item.exists }} == 'true' | ternary('Exists','Absent')"
     loop: "{{ RegVar.results }}"
 
