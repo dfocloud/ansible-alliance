@@ -25,7 +25,8 @@
 
   - name: WinRoll-! > Debug results
     debug:
-      msg: "{{ RegVar }}"
+      msg: "{{ item.item.name }} - exists:{{ item.exists }} changed:{{ item.changed }} failed:{{ item.failed }}"
+    loop: "{{ RegVar.results }}"
 
   # Preset key
   - name: AC-8 D > Set 14-day prompt for user to change password
