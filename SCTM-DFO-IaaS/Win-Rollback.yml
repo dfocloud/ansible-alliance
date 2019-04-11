@@ -7,58 +7,58 @@
     SI_3: false
   tasks:
 
-- name: SI-3 ! > Create reg key file in C
-  win_file:
-    path: C:\DefaultReg.JSON
-    state: touch
-  register: RegFile
-
-- name: SI-3 ! > Collect default reg keys
-  win_reg_stat:
-    path: HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch
-    name: DriverLoadPolicy
-  register: RegVar
-
-- name: SI-3 ! > Debug results
-  debug:
-    msg: RegFile + RegVar
-
-- name: SI-3 A > Boot-Start Driver Initialization Policy is set to Enabled Good, unknown and bad but critical
-  win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch
-    name: DriverLoadPolicy
-    data: 3
-    type: dword
-  when: SI_3
-
-- name: SI-3 B > Prevent downloading of enclosures is set to Enabled
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds
-    name: DisableEnclosureDownload
-    data: 1
-    type: dword
-  when: SI_3
-
-- name: SI-3 C > Notify antivirus programs when opening attachments is set to Enabled
-  win_regedit:
-    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments
-    name: ScanWithAntiVirus
-    data: 3
-    type: dword
-  when: SI_3
-
-- name: SI-3 D > Turn off Data Execution Prevention for Explorer is set to Disabled
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer
-    name: NoDataExecutionPrevention
-    data: 0
-    type: dword
-  when: SI_3
-
-- name: SI-3 E > Turn off heap termination on corruption is set to Disabled
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer
-    name: NoHeapTerminationOnCorruption
-    data: 0
-    type: dword
-  when: SI_3
+  - name: SI-3 ! > Create reg key file in C
+    win_file:
+      path: C:\DefaultReg.JSON
+      state: touch
+    register: RegFile
+  
+  - name: SI-3 ! > Collect default reg keys
+    win_reg_stat:
+      path: HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch
+      name: DriverLoadPolicy
+    register: RegVar
+  
+  - name: SI-3 ! > Debug results
+    debug:
+      msg: RegFile + RegVar
+  
+  - name: SI-3 A > Boot-Start Driver Initialization Policy is set to Enabled Good, unknown and bad but critical
+    win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch
+      name: DriverLoadPolicy
+      data: 3
+      type: dword
+    when: SI_3
+  
+  - name: SI-3 B > Prevent downloading of enclosures is set to Enabled
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds
+      name: DisableEnclosureDownload
+      data: 1
+      type: dword
+    when: SI_3
+  
+  - name: SI-3 C > Notify antivirus programs when opening attachments is set to Enabled
+    win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments
+      name: ScanWithAntiVirus
+      data: 3
+      type: dword
+    when: SI_3
+  
+  - name: SI-3 D > Turn off Data Execution Prevention for Explorer is set to Disabled
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer
+      name: NoDataExecutionPrevention
+      data: 0
+      type: dword
+    when: SI_3
+  
+  - name: SI-3 E > Turn off heap termination on corruption is set to Disabled
+    win_regedit:
+      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer
+      name: NoHeapTerminationOnCorruption
+      data: 0
+      type: dword
+    when: SI_3
