@@ -18,8 +18,8 @@
       path: {{ item.path }}
       name: {{ item.name }}
     loop:
-      - { path: HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch, name: DriverLoadPolicy }
-      - { path: HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds, name: DisableEnclosureDownload }
+      - { path: 'HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch', name: 'DriverLoadPolicy' }
+      - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
     register: RegVar
 
   - name: SI-3 ! > Debug results
