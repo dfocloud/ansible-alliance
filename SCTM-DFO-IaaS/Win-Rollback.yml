@@ -12,17 +12,10 @@
     win_file:
       path: C:\AnsibleDefaultRegistry.JSON
       state: touch
-    register: RegFile
-
-  - debug:
-      var: RegFile
 
   - name: WinRoll-! > Create reg key dictionary
     set_fact:
-      DefReg: { AC_8_D: 'false', SI_3_B: 'false' }
-
-  - debug:
-      var: DefReg
+      DefReg: { AC_8_D: 0, SI_3_B: 0 }
 
   - name: WinRoll-! > Collect default reg keys
     win_reg_stat:
@@ -30,8 +23,19 @@
       name: "{{ item.name }}"
     register: RegVar
     loop:
-      - { task: 'AC-8 D', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
-      - { task: 'SI-3 B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
+      - { task: 'AC_8_D', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
+      - { task: 'SI_3_B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
+
+  - name: WinRoll-! > Populate reg key dictionary
+    set_fact:
+      DefReg2: "{{ DefReg|default({}) | combine( {item.item.task: (item.value if item.exists == 'true' else 'absent')} ) }}"
+    loop: "{{ RegVar.results }}"
+
+  - debug:
+      var: DefReg
+
+  - debug:
+      var: DefReg2
 
   # - name: WinRoll-! > Parse results
   #   set_fact:
