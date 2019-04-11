@@ -15,8 +15,8 @@
 
   - name: SI-3 ! > Collect default reg keys
     win_reg_stat:
-      path: {{ item.path }}
-      name: {{ item.name }}
+      path: "{{ item.path }}"
+      name: "{{ item.name }}"
     loop:
       - { path: 'HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch', name: 'DriverLoadPolicy' }
       - { path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
