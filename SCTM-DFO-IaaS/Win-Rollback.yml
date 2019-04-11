@@ -14,6 +14,16 @@
       state: touch
     register: RegFile
 
+  - debug:
+      var: RegFile
+
+  - name: WinRoll-! > Create reg key dictionary
+    set_fact:
+      DefReg: { AC_8_D: 'false', SI_3_B: 'false' }
+
+  - debug:
+      var: DefReg
+
   - name: WinRoll-! > Collect default reg keys
     win_reg_stat:
       path: "{{ item.path }}"
@@ -23,19 +33,19 @@
       - { task: 'AC-8 D', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
       - { task: 'SI-3 B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
 
-  - name: WinRoll-! > Parse results
-    set_fact:
-      taskValDict: "{{ 'Exists' if {{ item.exists }} == 'true' else 'Absent' }}"
-    loop: "{{ RegVar.results }}"
+  # - name: WinRoll-! > Parse results
+  #   set_fact:
+  #     existsDic: "{{ item.exists }}"
+  #   loop: "{{ RegVar.results }}"
 
-  - name: WinRoll-! > Debug results
-    debug:
-      msg: "{{ item.item.task }} - {{ item.item.name }} / exists:{{ item.exists }} changed:{{ item.changed }} failed:{{ item.failed }}"
-    loop: "{{ RegVar.results }}"
+  # - name: WinRoll-! > Debug results
+  #   debug:
+  #     msg: "{{ item.item.task }} - {{ item.item.name }} / exists:{{ item.exists }} changed:{{ item.changed }} failed:{{ item.failed }}"
+  #   loop: "{{ RegVar.results }}"
 
-  - name: WinRoll-! > Debug parsed results
-    debug:
-      msg: "{{ taskValDict }}"
+  # - name: WinRoll-! > Debug parsed results
+  #   debug:
+  #     msg: "{{ existsDic }}"
 
   # Preset key
   - name: AC-8 D > Set 14-day prompt for user to change password
