@@ -53,6 +53,12 @@
   - debug:
       var: DefReg
 
+  - debug:
+      var: DefReg.AC_8_D
+
+  - debug:
+      var: DefReg.SI_3_B
+
   # Preset key
   - name: AC-8 D > Set 14-day prompt for user to change password
     win_regedit:
