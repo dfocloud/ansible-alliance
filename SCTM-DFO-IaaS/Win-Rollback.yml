@@ -20,7 +20,7 @@
   - name: WinRoll-B > Populate reg key dictionary from file
     debug:
       var: "{{ DefRegPath }}"
-    when: PathResult.Stat.Exists
+    when: PathResult.stat.exists
 
   - name: WinRoll-C > Collect default reg keys
     win_reg_stat:
