@@ -30,19 +30,19 @@
     loop:
       - { task: 'AC_8_D', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
       - { task: 'SI_3_B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
-    when: not PathResult.Stat.Exists
+    when: not PathResult.stat.exists
 
   - name: WinRoll-D > Populate reg key dictionary from results
     set_fact:
       DefReg: "{{ DefReg|default({}) | combine( {item.item.task: (item.value if item.exists else 'absent')} ) }}"
     loop: "{{ RegVar.results }}"
-    when: not PathResult.Stat.Exists
+    when: not PathResult.stat.exists
 
   - name: WinRoll-E > Write reg key dictionary to file
     win_copy: 
       dest: "{{ DefRegPath }}"
       content: "{{ DefReg }}"
-    when: not PathResult.Stat.Exists
+    when: not PathResult.stat.exists
 
   - debug:
       var: DefReg
