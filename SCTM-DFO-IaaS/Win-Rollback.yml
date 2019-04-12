@@ -5,6 +5,7 @@
   become_method: runas
   vars:
     DefRegPath: C:\AnsibleDefaultRegistry.yml
+    AC_3: false
     AC_8: false
     SI_3: false
   tasks:
@@ -34,6 +35,7 @@
       name: "{{ item.name }}"
     register: RegVar
     loop:
+      - { task: 'AC_3_I', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'ScreenSaverGracePeriod' }
       - { task: 'AC_8_D', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
       - { task: 'SI_3_B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
     when: not PathResult.stat.exists
@@ -51,15 +53,23 @@
     when: not PathResult.stat.exists
 
   - debug:
-      var: DefReg
+      var: "{{ item }}"
+    loop:
+      - DefReg
+      - DefReg.AC_3_I
+      - DefReg.AC_8_D
+      - DefReg.SI_3_B
 
-  - debug:
-      var: DefReg.AC_8_D
+  # Present string key
+  - name: AC-3 I > Set screen saver grace period to 4
+    win_regedit:
+      path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+      name: ScreenSaverGracePeriod
+      data: 4
+      type: string
+    when: AC_3
 
-  - debug:
-      var: DefReg.SI_3_B
-
-  # Preset key
+  # Present dword key
   - name: AC-8 D > Set 14-day prompt for user to change password
     win_regedit:
       path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
