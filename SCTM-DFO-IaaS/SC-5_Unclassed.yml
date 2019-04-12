@@ -16,7 +16,7 @@
   win_reg_stat:
     path: "{{ item.path }}"
     name: "{{ item.name }}"
-  register: SC5_Results
+  register: SC5_DefKeys
   loop:
     - { taskID: A, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU', name: NoAutoRebootWithLoggedOnUsers }
     - { taskID: B, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters', name: TcpMaxDataRetransmissions }
@@ -28,15 +28,15 @@
 - name: SC-5 ! > Add keys to a dictionary
   set_fact:
     SC_5_Def: "{{ SC_5_Def|default({}) | combine( {item.item.taskID: (item.value if item.exists else 'absent')} ) }}"
-  loop: "{{ SC5_Results.results }}"
+  loop: "{{ SC5_DefKeys.results }}"
   when: not HasSC5Def
 
 - name: SC-5 + > Add dictionary to RegistryDefault dictionary
   set_fact:
-    RegistryDefaults: "{{ RegistryDefaults | combine({'SC_5': SC_5_Def }) }}"
+    RegistryDefaults: "{{ RegistryDefaults | combine({SC_5: SC_5_Def }) }}"
   when: not HasSC5Def
 
-- name: SC_5 IO ? Write dictionary
+- name: SC-5 IO ? Write dictionary
   win_copy:
     dest: "{{ RegDefaultsPath }}"
     content: "{{ DefReg }}"
