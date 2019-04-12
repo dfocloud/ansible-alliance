@@ -33,7 +33,7 @@
 
   - name: Write reg key dictionary to file
     win_copy: 
-      dest: DefRegPath
+      dest: "{{ DefRegPath }}"
       content: DefReg
 
   # Preset key
