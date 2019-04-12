@@ -11,7 +11,7 @@
 
   - name: WinRoll-! > Create reg key file in C
     win_file:
-      path: DefRegPath
+      path: "{{ DegRefPath }}"
       state: touch
 
   - name: WinRoll-! > Collect default reg keys
@@ -25,7 +25,7 @@
 
   - name: WinRoll-! > Populate reg key dictionary
     set_fact:
-      DefReg: "{{ DefReg|default({}) | combine( {item.item.task: (item.value if item.exists == true else 'absent')} ) }}"
+      DefReg: "{{ DefReg|default({}) | combine( {item.item.task: (item.value if item.exists else 'absent')} ) }}"
     loop: "{{ RegVar.results }}"
 
   - debug:
@@ -33,7 +33,7 @@
 
   - name: Write reg key dictionary to file
     win_copy: 
-      dest: DefRegPath
+      dest: "{{ DefRegPath }}"
       content: "{{ DefReg }}"
 
   # Preset key
