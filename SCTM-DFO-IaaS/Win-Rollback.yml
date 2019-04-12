@@ -14,6 +14,9 @@
       path: "{{ DefRegPath }}"
     register: PathResult
 
+  - debug:
+      var: PathResult
+
   - name: WinRoll-B > Populate reg key dictionary from file
     debug:
       var: "{{ DefRegPath }}"
