@@ -28,7 +28,7 @@
 - name: SC-5 ! > Add keys to a dictionary
   set_fact:
     SC_5_Def: "{{ SC_5_Def|default({}) | combine( {item.item.taskID: (item.value if item.exists else 'absent')} ) }}"
-  loop: "{{ SC5_Results }}"
+  loop: "{{ SC5_Results.results }}"
   when: not HasSC5Def
 
 - name: SC-5 + > Add dictionary to RegistryDefault dictionary
