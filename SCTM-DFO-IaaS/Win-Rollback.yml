@@ -9,12 +9,17 @@
     SI_3: false
   tasks:
 
-  # - name: WinRoll-! > Create reg key file in C
-  #   win_file:
-  #     path: DegRefPath
-  #     state: touch
+  - name: WinRoll-A > Search for defaults file
+    win_stat:
+      path: "{{ DefRegPath }}"
+    register: PathResult
 
-  - name: WinRoll-! > Collect default reg keys
+  - name: WinRoll-B > Populate reg key dictionary from file
+    debug:
+      var: "{{ DefRegPath }}"
+    when: PathResult.Stat.Exists
+
+  - name: WinRoll-C > Collect default reg keys
     win_reg_stat:
       path: "{{ item.path }}"
       name: "{{ item.name }}"
@@ -22,19 +27,22 @@
     loop:
       - { task: 'AC_8_D', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
       - { task: 'SI_3_B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
+    when: not PathResult.Stat.Exists
 
-  - name: WinRoll-! > Populate reg key dictionary
+  - name: WinRoll-D > Populate reg key dictionary from results
     set_fact:
       DefReg: "{{ DefReg|default({}) | combine( {item.item.task: (item.value if item.exists else 'absent')} ) }}"
     loop: "{{ RegVar.results }}"
+    when: not PathResult.Stat.Exists
 
-  - debug:
-      var: DefReg
-
-  - name: Write reg key dictionary to file
+  - name: WinRoll-E > Write reg key dictionary to file
     win_copy: 
       dest: "{{ DefRegPath }}"
       content: "{{ DefReg }}"
+    when: not PathResult.Stat.Exists
+
+  - debug:
+      var: DefReg
 
   # Preset key
   - name: AC-8 D > Set 14-day prompt for user to change password
