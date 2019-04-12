@@ -9,10 +9,10 @@
     SI_3: false
   tasks:
 
-  - name: WinRoll-! > Create reg key file in C
-    win_file:
-      path: DegRefPath
-      state: touch
+  # - name: WinRoll-! > Create reg key file in C
+  #   win_file:
+  #     path: DegRefPath
+  #     state: touch
 
   - name: WinRoll-! > Collect default reg keys
     win_reg_stat:
@@ -34,7 +34,7 @@
   - name: Write reg key dictionary to file
     win_copy: 
       dest: "{{ DefRegPath }}"
-      content: DefReg
+      content: "{{ DefReg }}"
 
   # Preset key
   - name: AC-8 D > Set 14-day prompt for user to change password
