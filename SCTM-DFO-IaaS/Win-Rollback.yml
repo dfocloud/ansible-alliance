@@ -20,10 +20,15 @@
   - name: WinRoll-B > Populate reg key dictionary from file
     slurp: 
       src: "{{ DefRegPath }}"
-    register: DefReg
+    register: DefRegFile
     when: PathResult.stat.exists
 
-  - name: WinRoll-C > Collect default reg keys
+  - name: WinRoll-C > Decode file contents into reg key dictionary
+    set_fact:
+      DefReg: "{{ DefRegFile['content'] | b64decode }}" 
+    when: PathResult.stat.exists
+
+  - name: WinRoll-D > Collect default reg keys
     win_reg_stat:
       path: "{{ item.path }}"
       name: "{{ item.name }}"
@@ -33,13 +38,13 @@
       - { task: 'SI_3_B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
     when: not PathResult.stat.exists
 
-  - name: WinRoll-D > Populate reg key dictionary from results
+  - name: WinRoll-E > Populate reg key dictionary from results
     set_fact:
       DefReg: "{{ DefReg|default({}) | combine( {item.item.task: (item.value if item.exists else 'absent')} ) }}"
     loop: "{{ RegVar.results }}"
     when: not PathResult.stat.exists
 
-  - name: WinRoll-E > Write reg key dictionary to file
+  - name: WinRoll-F > Write reg key dictionary to file
     win_copy: 
       dest: "{{ DefRegPath }}"
       content: "{{ DefReg }}"
