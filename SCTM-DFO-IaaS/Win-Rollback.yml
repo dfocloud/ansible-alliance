@@ -18,8 +18,8 @@
       var: PathResult
 
   - name: WinRoll-B > Populate reg key dictionary from file
-    debug:
-      var: "{{ DefRegPath }}"
+    slurp: "{{ DefRegPath }}"
+    register: DefReg
     when: PathResult.stat.exists
 
   - name: WinRoll-C > Collect default reg keys
