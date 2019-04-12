@@ -35,14 +35,14 @@
       name: "{{ item.name }}"
     register: RegVar
     loop:
-      - { task: 'AC_3_I', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'ScreenSaverGracePeriod' }
-      - { task: 'AC_8_D', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
-      - { task: 'SI_3_B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
+      - { taskID: 'AC_3_I', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'ScreenSaverGracePeriod' }
+      - { taskID: 'AC_8_D', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
+      - { taskID: 'SI_3_B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
     when: not PathResult.stat.exists
 
   - name: WinRoll-E > Populate reg key dictionary from results
     set_fact:
-      DefReg: "{{ DefReg|default({}) | combine( {item.item.task: (item.value if item.exists else 'absent')} ) }}"
+      DefReg: "{{ DefReg|default({}) | combine( {item.item.taskID: (item.value if item.exists else 'absent')} ) }}"
     loop: "{{ RegVar.results }}"
     when: not PathResult.stat.exists
 
