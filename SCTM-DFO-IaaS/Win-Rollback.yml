@@ -35,7 +35,8 @@
       name: "{{ item.name }}"
     register: RegVar
     loop:
-      - { taskID: 'AC_3_I', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'ScreenSaverGracePeriod' }
+      - { taskID: 'AC_3_V', path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', name: 'NullSessionPipes' }
+      - { taskID: 'AC_8_C', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'CachedLogonsCount' }
       - { taskID: 'AC_8_D', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
       - { taskID: 'SI_3_B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
     when: not PathResult.stat.exists
@@ -56,18 +57,28 @@
       var: "{{ item }}"
     loop:
       - DefReg
-      - DefReg.AC_3_I
+      - DefReg.AC_3_V
+      - DefReg.AC_8_C
       - DefReg.AC_8_D
       - DefReg.SI_3_B
 
+  # Present multi-string key
+  - name: AC-3 V > Prohibit anonymous access to names pipes
+    win_regedit:
+      path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
+      name: NullSessionPipes
+      data: ""
+      type: multistring
+    when: AC_3
+
   # Present string key
-  - name: AC-3 I > Set screen saver grace period to 4
+  - name: AC-8 C > Restrict domain-cached logon information to 2 users
     win_regedit:
       path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
-      name: ScreenSaverGracePeriod
-      data: 4
+      name: CachedLogonsCount
+      data: 2
       type: string
-    when: AC_3
+    when: AC_8
 
   # Present dword key
   - name: AC-8 D > Set 14-day prompt for user to change password
