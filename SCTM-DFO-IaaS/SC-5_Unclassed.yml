@@ -33,13 +33,13 @@
 
 - name: SC-5 + > Add dictionary to RegistryDefault dictionary
   set_fact:
-    RegistryDefaults: "{{ RegistryDefaults | combine({SC_5: SC_5_Def }) }}"
+    RegistryDefaults: "{{ RegistryDefaults | combine( {'SC_5': SC_5_Def }) }}"
   when: not HasSC5Def
 
 - name: SC-5 IO ? Write dictionary
   win_copy:
     dest: "{{ RegDefaultsPath }}"
-    content: "{{ DefReg }}"
+    content: "{{ RegistryDefaults }}"
   when: not HasSC5Def
 
 - name: SC-5 @ > Debug dictionary
