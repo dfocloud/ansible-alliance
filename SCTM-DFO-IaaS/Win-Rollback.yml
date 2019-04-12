@@ -11,7 +11,7 @@
 
   - name: WinRoll-! > Create reg key file in C
     win_file:
-      path: "{{ DegRefPath }}"
+      path: DegRefPath
       state: touch
 
   - name: WinRoll-! > Collect default reg keys
@@ -33,8 +33,8 @@
 
   - name: Write reg key dictionary to file
     win_copy: 
-      dest: "{{ DefRegPath }}"
-      content: "{{ DefReg }}"
+      dest: DefRegPath
+      content: DefReg
 
   # Preset key
   - name: AC-8 D > Set 14-day prompt for user to change password
