@@ -4,13 +4,14 @@
 - hosts: all
   become_method: runas
   vars:
+    DefRegPath: C:\AnsibleDefaultRegistry.yml
     AC_8: false
     SI_3: false
   tasks:
 
   - name: WinRoll-! > Create reg key file in C
     win_file:
-      path: C:\AnsibleDefaultRegistry.yml
+      path: DefRegPath
       state: touch
 
   - name: WinRoll-! > Collect default reg keys
@@ -24,10 +25,16 @@
 
   - name: WinRoll-! > Populate reg key dictionary
     set_fact:
-      DefReg2: "{{ DefReg|default({}) | combine( {item.item.task: (item.value if item.exists == 'true' else 'absent')} ) }}"
+      DefReg: "{{ DefReg|default({}) | combine( {item.item.task: (item.value if item.exists == true else 'absent')} ) }}"
     loop: "{{ RegVar.results }}"
 
-  #- name: Write reg key dictionary to file
+  - debug:
+      var: DefReg
+
+  - name: Write reg key dictionary to file
+    win_copy: 
+      dest: DefRegPath
+      content: "{{ DefReg }}"
 
   # Preset key
   - name: AC-8 D > Set 14-day prompt for user to change password
