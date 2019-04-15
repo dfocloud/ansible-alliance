@@ -53,4 +53,5 @@
 #     name: KeyName
 #     data: "{{ SCTMData if undo_SecCat_TaskCat is not defined else RegistryDefaults.SecCat_TaskCat.ID }}"
 #     type: DataType
+#     state: "{{ absent if undo_SecCat_TaskCat is defined and RegistryDefaults.SecCat_TaskCat.ID == -1 else present }}"
 #   when: not skip_SecCat_TaskCat_ID
