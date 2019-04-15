@@ -9,6 +9,10 @@
   set_fact:
     HasUNAC8Def: "{{ 'UN_AC_8' in RegistryDefaults }}"
 
+- name: UN_AC_8 > Set a fact
+  set_fact:
+    present: "present" # if this works, this is asinine
+
 - name: UN_AC_8 = > Get keys if UN_AC_8 is not present
   win_reg_stat:
     path: "{{ item.path }}"
@@ -76,7 +80,7 @@
       d’infraction.'
       if undo_UN_AC_8 is not defined else RegistryDefaults.UN_AC_8.B }}"
     type: string
-    state: "{{ absent if (undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.B == -1) else present }}"
+    state: "{{absent if (undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.B == -1) else present}}"
   when: skip_UN_AC_8_B is not defined
 
 - name: UN_AC_8 C > Restrict domain-cached logon information to 2 users
