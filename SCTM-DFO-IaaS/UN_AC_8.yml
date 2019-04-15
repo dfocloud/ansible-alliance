@@ -53,26 +53,26 @@
   win_regedit:
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
     name: legalnoticetext
-    data: "{{\
-    I acknowledge that both the Treasury Board Secretariat Policy and the \
-    DFO Addendum on Acceptable Use of Electronic Networks apply to me as an \
-    authorized user of DFO electronic networks, including the Internet. I \
-    understand that I am obligated to access all DFO networks in a responsible \
-    and informed way., I am aware that DFO monitors electronic networks as \
-    indicated in the TBS Policy. As using these networks is a privilege, not a \
-    right, I recognize that access may be revoked or a range of other disciplinary \
-    or legal actions may be taken for conduct that does not conform to the above \
-    policies. ----- Je reconnais que, en tant qu’utilisateur autorisé des réseaux \
-    électroniques du MPO, y compris Internet, je dois respecter la politique du \
-    Secrétariat du Conseil du Trésor (SCT) sur l’utilisation acceptable des réseaux \
-    électroniques ainsi que le supplément du MPO. Je comprends que je dois agir \
-    de manière responsable et réfléchie lorsque j’utilise les réseaux électroniques \
-    du MPO., Je sais que le MPO surveille l’usage des réseaux électroniques \
-    conformément à la politique du SCT. Comme il s’agit d’un privilège, et non d’un \
-    droit, je reconnais que l’accès aux réseaux peut m’être refusé et que le \
-    Ministère peut prendre des mesures disciplinaires ou judiciaires en cas \
-    d’infraction. \
-    if undo_UN_AC_8 is not defined else RegistryDefaults.UN_AC_8.B }}"
+    data: >
+      "{{ I acknowledge that both the Treasury Board Secretariat Policy and the 
+      DFO Addendum on Acceptable Use of Electronic Networks apply to me as an 
+      authorized user of DFO electronic networks, including the Internet. I 
+      understand that I am obligated to access all DFO networks in a responsible 
+      and informed way., I am aware that DFO monitors electronic networks as 
+      indicated in the TBS Policy. As using these networks is a privilege, not a 
+      right, I recognize that access may be revoked or a range of other disciplinary 
+      or legal actions may be taken for conduct that does not conform to the above 
+      policies. ----- Je reconnais que, en tant qu’utilisateur autorisé des réseaux 
+      électroniques du MPO, y compris Internet, je dois respecter la politique du 
+      Secrétariat du Conseil du Trésor (SCT) sur l’utilisation acceptable des réseaux 
+      électroniques ainsi que le supplément du MPO. Je comprends que je dois agir 
+      de manière responsable et réfléchie lorsque j’utilise les réseaux électroniques 
+      du MPO., Je sais que le MPO surveille l’usage des réseaux électroniques 
+      conformément à la politique du SCT. Comme il s’agit d’un privilège, et non 
+      d’un droit, je reconnais que l’accès aux réseaux peut m’être refusé et que le 
+      Ministère peut prendre des mesures disciplinaires ou judiciaires en cas 
+      d’infraction. 
+      if undo_UN_AC_8 is not defined else RegistryDefaults.UN_AC_8.B }}"
     type: string
   when: skip_UN_AC_8_B is not defined
 
