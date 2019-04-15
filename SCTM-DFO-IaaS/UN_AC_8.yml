@@ -48,7 +48,7 @@
       Politique d’utilisation acceptable des réseaux électroniques du MPO (PUR MPO)'
       if undo_UN_AC_8 is not defined else RegistryDefaults.UN_AC_8.A }}"
     type: string
-    state: "{{ absent if undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.A == -1 else present }}"
+    state: "{{ 'absent' if undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.A == -1 else 'present' }}"
   when: skip_UN_AC_8_A is not defined
 
 - name: UN_AC_8 B > Set legal warning text for logon and use of computer
