@@ -5,7 +5,6 @@
   become_method: runas
   vars:
     RegDefaultsPath: C:\AnsibleDefaultRegistry.yml
-    skip_SC_5: false
   tasks:
 
   # Retrieve the registry defaults file, or create if non-existent
@@ -37,9 +36,18 @@
     when: not PathResult.stat.exists
 
   # Include task categories
-  - name: Get SC-5 unclassed tasks
-    include_tasks: SC-5_Unclassed.yml
-    when: not skip_SC_5
+  - name: Get Unclassed SC-5 tasks
+    include_tasks: UN_SC-5.yml
+    when: skip_UN_SC_5 is not defined
+
+# # Task template
+# - name: SecCat_TaskCat ID > Description
+#   win_regedit:
+#     path: RegistryPath
+#     name: KeyName
+#     data: "{{ SCTMData if undo_SecCat_TaskCat is not defined else RegistryDefaults.SecCat_TaskCat.ID }}"
+#     type: DataType
+#   when: not skip_SecCat_TaskCat_ID
 
   # - name: WinRoll-D > Collect default reg keys
   #   win_reg_stat:
