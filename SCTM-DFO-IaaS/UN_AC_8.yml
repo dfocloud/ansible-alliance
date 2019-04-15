@@ -44,8 +44,8 @@
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
     name: legalnoticecaption
     data: >
-      "{{ Acceptable Use of Electronic Networks Policy DFO (DFO AUP)/
-      Politique d’utilisation acceptable des réseaux électroniques du MPO (PUR MPO)
+      "{{ 'Acceptable Use of Electronic Networks Policy DFO (DFO AUP)/ 
+      Politique d’utilisation acceptable des réseaux électroniques du MPO (PUR MPO)'
       if undo_UN_AC_8 is not defined else RegistryDefaults.UN_AC_8.A }}"
     type: string
   when: skip_UN_AC_8_A is not defined
