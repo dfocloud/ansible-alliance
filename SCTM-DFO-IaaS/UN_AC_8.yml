@@ -54,7 +54,7 @@
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
     name: legalnoticetext
     data: >
-      "{{ I acknowledge that both the Treasury Board Secretariat Policy and the 
+      "{{ (I acknowledge that both the Treasury Board Secretariat Policy and the 
       DFO Addendum on Acceptable Use of Electronic Networks apply to me as an 
       authorized user of DFO electronic networks, including the Internet. I 
       understand that I am obligated to access all DFO networks in a responsible 
@@ -71,7 +71,7 @@
       conformément à la politique du SCT. Comme il s’agit d’un privilège, et non 
       d’un droit, je reconnais que l’accès aux réseaux peut m’être refusé et que le 
       Ministère peut prendre des mesures disciplinaires ou judiciaires en cas 
-      d’infraction. 
+      d’infraction.)
       if undo_UN_AC_8 is not defined else RegistryDefaults.UN_AC_8.B }}"
     type: string
   when: skip_UN_AC_8_B is not defined
