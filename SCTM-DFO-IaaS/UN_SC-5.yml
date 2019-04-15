@@ -31,11 +31,12 @@
   loop: "{{ UN_SC5_DefKeys.results }}"
   when: not HasUNSC5Def
 
-- name: UN_SC-5 + > Add dictionary to RegistryDefault dictionary
+- debug:
+    var: UN_SC_5_Def
+
+- name: UN_SC-5 + > Add dictionary to RegistryDefaults dictionary
   set_fact:
-    RegistryDefaults: "{{ RegistryDefaults | combine({ item.key: item.value}) }}"
-  loop:
-    - { key: UN_SC_5, value: UN_SC_5_Def }
+    RegistryDefaults: "{{ RegistryDefaults | combine({'UN_SC_5':UN_SC_5_Def}) }}"
   when: not HasUNSC5Def
 
 - name: UN_SC-5 IO ? Write dictionary

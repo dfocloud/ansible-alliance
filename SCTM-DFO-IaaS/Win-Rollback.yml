@@ -32,7 +32,7 @@
 
   - name: WinRoll-E > Create RegistryDefaults dictionary
     set_fact:
-      RegistryDefaults: {}
+      RegistryDefaults: { 'Registry': 'Defaults' }
     when: not PathResult.stat.exists
 
   # Include task categories
