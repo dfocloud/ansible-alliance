@@ -24,7 +24,7 @@
 
 - name: UN_SC_5 + > Add keys to a dictionary
   set_fact:
-    UN_SC_5_Def: "{{ UN_SC_5_Def|default({}) | combine( {item.item.taskID: (item.value if item.exists else 'absent')} ) }}"
+    UN_SC_5_Def: "{{ UN_SC_5_Def|default({}) | combine( {item.item.taskID: (item.value if item.exists else 0)} ) }}"
   loop: "{{ UN_SC5_DefKeys.results }}"
   when: not HasUNSC5Def
 
