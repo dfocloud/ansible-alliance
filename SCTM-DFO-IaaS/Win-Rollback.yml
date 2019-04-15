@@ -38,8 +38,12 @@
     when: not PathResult.stat.exists
 
   # Include task categories
+  - name: Get Unclassed AC-8 tasks
+    include_tasks: UN_AC_8.yml
+    when: skip_UN_AC_8 is not defined
+
   - name: Get Unclassed SC-5 tasks
-    include_tasks: UN_SC-5.yml
+    include_tasks: UN_SC_5.yml
     when: skip_UN_SC_5 is not defined
 
 # # Task template
@@ -50,36 +54,3 @@
 #     data: "{{ SCTMData if undo_SecCat_TaskCat is not defined else RegistryDefaults.SecCat_TaskCat.ID }}"
 #     type: DataType
 #   when: not skip_SecCat_TaskCat_ID
-
-  # - name: WinRoll-D > Collect default reg keys
-  #   win_reg_stat:
-  #     path: "{{ item.path }}"
-  #     name: "{{ item.name }}"
-  #   register: RegVar
-  #   loop:
-  #     - { taskID: 'AC_3_V', path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', name: 'NullSessionPipes' }
-  #     - { taskID: 'AC_8_C', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'CachedLogonsCount' }
-  #     - { taskID: 'AC_8_D', path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: 'PasswordExpiryWarning' }
-  #     - { taskID: 'SI_3_B', path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds', name: 'DisableEnclosureDownload' }
-  #   when: not PathResult.stat.exists
-
-  # - name: WinRoll-E > Populate reg key dictionary from results
-  #   set_fact:
-  #     DefReg: "{{ DefReg|default({}) | combine( {item.item.taskID: (item.value if item.exists else 'absent')} ) }}"
-  #   loop: "{{ RegVar.results }}"
-  #   when: not PathResult.stat.exists
-
-  # - name: WinRoll-F > Write reg key dictionary to file
-  #   win_copy: 
-  #     dest: "{{ RegDefaultsPath }}"
-  #     content: "{{ DefReg }}"
-  #   when: not PathResult.stat.exists
-
-  # - debug:
-  #     var: "{{ item }}"
-  #   loop:
-  #     - DefReg
-  #     - DefReg.AC_3_V
-  #     - DefReg.AC_8_C
-  #     - DefReg.AC_8_D
-  #     - DefReg.SI_3_B
