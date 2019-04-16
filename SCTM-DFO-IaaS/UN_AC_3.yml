@@ -62,6 +62,8 @@
     content: "{{ RegistryDefaults }}"
   when: not HasUNAC3Def
 
+#- name: UN_AC_3 Var > Set 'present' fact because YAML is really stupid
+
 #Tasks
 - name: UN_AC_3 A > Restrict use of blank passwords
   win_regedit:
@@ -69,7 +71,7 @@
     name: LimitBlankPasswordUse
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.A }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.A == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.A == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_A is not defined
 
 - name: UN_AC_3 B > Prevent printer driver installation for non-admins
