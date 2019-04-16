@@ -1,0 +1,48 @@
+---
+# Called from Windows-Rollback.yml
+# Includes all the tasks that fall under
+# the Unclassed UN_AC_7 protocol requirements
+
+# Imported vars: RegDefaultsPath RegistryDefaults
+
+- name: UN_AC_7 ? > Check for UN_AC_7 defaults entry
+  set_fact:
+    HasUNAC7Def: "{{ 'UN_AC_7' in RegistryDefaults }}"
+
+- name: UN_AC_7 = > Get keys in UN_AC_7 is not 'present'
+  win_command: "net accounts"
+  register: UN_AC7_NetAccounts
+  when: not HasUNAC7Def
+
+- debug:
+    var: UN_AC7_NetAccounts
+
+# - name: UN_AC_7 + > Add keys to a dictionary
+#   set_fact:
+#     UN_AC_7_Def: "{{ UN_AC_7_Def|default({}) | combine( {item.item.ID: (item.value if item.exists else 4294967295)} ) }}"
+#   loop: "{{ UN_AC7_NetAccounts.results }}"
+#   when: not HasUNAC7Def
+
+# - name: UN_AC_7 ++ > Add dictionary to RegistryDefaults dictionary
+#   set_fact:
+#     RegistryDefaults: "{{ RegistryDefaults | combine({'UN_AC_7':UN_AC_7_Def}) }}"
+#   when: not HasUNAC7Def
+
+# - name: UN_AC_7 IO > Write dictionary
+#   win_copy:
+#     dest: "{{ RegDefaultsPath }}"
+#     content: "{{ RegistryDefaults }}"
+#   when: not HasUNAC7Def
+
+# # Tasks
+# - name: AC-7 A > Set password attempts before lockout 5
+#   win_command: "net accounts /lockoutthreshold:5"
+#   when: skip_UN_AC_7_A is not defined
+
+# - name: AC-7 B > Set lockout duration to 60 minutes
+#   win_command: "net accounts /lockoutduration:60"
+#   when: skip_UN_AC_7_B is not defined
+
+# - name: AC-7 C > Set time before password attempts resets to 60 minutes
+#   win_command: "net accounts /lockoutwindow:60"
+#   when: skip_UN_AC_7_C is not defined
