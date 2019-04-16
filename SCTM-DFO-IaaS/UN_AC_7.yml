@@ -15,11 +15,11 @@
   when: not HasUNAC7Def
 
 - debug:
-    var: UN_AC7_NetAccounts.stdout[5]
+    var: UN_AC7_NetAccounts.stdout_lines[5]
 
 - name: UN_AC_7 %+ > Parse ouput and add keys to dictionary
   set_fact:
-    UN_AC_7_Def: "{{ UN_AC_7_Def|default({}) | combine( {item.name: (UN_AC7_NetAccounts.stdout[item.index].strip(item.strip).strip() | int)} ) }}"
+    UN_AC_7_Def: "{{ UN_AC_7_Def|default({}) | combine( {item.name: (UN_AC7_NetAccounts.stdout_lines[item.index].strip(item.strip).strip() | int)} ) }}"
   loop:
     - { name: lockoutthreshold, index: 5, strip: "Lockout threshold:" }
     - { name: lockoutduration, index: 6, strip: "Lockout duration (minutes):" }
