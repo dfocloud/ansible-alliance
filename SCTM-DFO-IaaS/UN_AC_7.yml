@@ -17,6 +17,18 @@
 - debug:
     var: UN_AC7_NetAccounts
 
+- name: UN_AC_7 %+ > Parse ouput and add keys to dictionary
+  set_fact:
+    UN_AC_7_Def: "{{ UN_AC_7_Def|default({}) | combine( {item.name: int(UN_AC7_NetAccounts.stdout.[item.index].strip(item.strip).strip())} ) }}"
+  loop:
+    - { name: lockoutthreshold, index: 5, strip: "Lockout threshold:" }
+    - { name: lockoutduration, index: 6, strip: "Lockout duration (minutes):" }
+    - { name: lockoutwindow, index: 7, strip: "Lockout observation window (minutes):" }
+  when: not HasUNAC7Def
+
+- debug:
+    var: UN_AC_7_Def
+
 # - name: UN_AC_7 + > Add keys to a dictionary
 #   set_fact:
 #     UN_AC_7_Def: "{{ UN_AC_7_Def|default({}) | combine( {item.item.ID: (item.value if item.exists else 4294967295)} ) }}"
