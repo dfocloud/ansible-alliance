@@ -42,6 +42,12 @@
     include_tasks: UN_AC_3.yml
     when: skip_UN_AC_3 is not defined
 
+  - name: Get Unclassed AC-4 tasks
+    include_tasks: UN_AC_4.yml
+    when: skip_UN_AC_4 is not defined
+
+
+
   - name: Get Unclassed AC-8 tasks
     include_tasks: UN_AC_8.yml
     when: skip_UN_AC_8 is not defined
@@ -57,5 +63,5 @@
 #     name: KeyName
 #     data: "{{ SCTMData if undo_SecCat_TaskCat is not defined else RegistryDefaults.SecCat_TaskCat.ID }}"
 #     type: DataType
-#     state: "{{ absent if (undo_SecCat_TaskCat is defined and RegistryDefaults.SecCat_TaskCat.ID == 4294967295) else present }}"
+#     state: "{{'absent' if (undo_SecCat_TaskCat is defined and RegistryDefaults.SecCat_TaskCat.ID == 4294967295) else 'present'}}"
 #   when: skip_SecCat_TaskCat_ID is not defined

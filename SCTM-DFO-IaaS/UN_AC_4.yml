@@ -1,0 +1,76 @@
+---
+# Called from Windows-Rollback.yml
+# Includes all the tasks that fall under
+# the Unclassed UN_AC_4 protocol requirements
+
+# Imported vars: RegDefaultsPath RegistryDefaults
+
+- name: UN_AC_4 ? > Check for UN_AC_4 defaults entry
+  set_fact:
+    HasUNAC4Def: "{{ 'UN_AC_4' in RegistryDefaults }}"
+
+- name: UN_AC_4 = > Get keys in UN_AC_4 is not 'present'
+  win_reg_stat:
+    path: "{{ item.path }}"
+    name: "{{ item.name }}"
+  register: UN_AC4_DefKeys
+  loop:
+    - { ID: A, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', name: NoLmHash }
+    - { ID: B, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', name: lmcompatibilitylevel }
+    - { ID: C, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0', name: NtkmMinServerSec }
+    - { ID: D, path: 'HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy', name: fBlockNonDomain }
+  when: not HasUNAC4Def
+
+- name: UN_AC_4 + > Add keys to a dictionary
+  set_fact:
+    UN_AC_4_Def: "{{ UN_AC_4_Def|default({}) | combine( {item.item.ID: (item.value if item.exists else 4294967295)} ) }}"
+  loop: "{{ UN_AC4_DefKeys.results }}"
+  when: not HasUNAC4Def
+
+- name: UN_AC_4 ++ > Add dictionary to RegistryDefaults dictionary
+  set_fact:
+    RegistryDefaults: "{{ RegistryDefaults | combine({'UN_AC_4':UN_AC_4_Def}) }}"
+  when: not HasUNAC4Def
+
+- name: UN_AC_4 IO > Write dictionary
+  win_copy:
+    dest: "{{ RegDefaultsPath }}"
+    content: "{{ RegistryDefaults }}"
+  when: not HasUNAC4Def
+
+# Tasks
+- name: UN_AC_4 A > Prevent storing LAN Manager hash value
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+    name: NoLmHash
+    data: 1
+    type: dword
+    state: "{{'absent' if (undo_UN_AC_4 is defined and RegistryDefaults.UN_AC_4.A == 4294967295) else 'present'}}"
+  when: skip_UN_AC_4_A is not defined
+
+- name: UN_AC_4 B > Set LAN Manager authentication
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+    name: lmcompatibilitylevel
+    data: 5
+    type: dword
+    state: "{{'absent' if (undo_UN_AC_4 is defined and RegistryDefaults.UN_AC_4.B == 4294967295) else 'present'}}"
+  when: skip_UN_AC_4_B is not defined
+
+- name: UN_AC_4 C > Set minimum server network traffic security
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
+    name: NtkmMinServerSec
+    data: 20000000
+    type: dword
+    state: "{{'absent' if (undo_UN_AC_4 is defined and RegistryDefaults.UN_AC_4.C == 4294967295) else 'present'}}"
+  when: skip_UN_AC_4_C is not defined or CM_3
+
+- name: UN_AC_4 > Prohibit connection between secure and insecure networks
+  win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy
+    name: fBlockNonDomain
+    data: 1
+    type: dword
+    state: "{{'absent' if (undo_UN_AC_4 is defined and RegistryDefaults.UN_AC_4.D == 4294967295) else 'present'}}"
+  when: skip_UN_AC_4_D is not defined
