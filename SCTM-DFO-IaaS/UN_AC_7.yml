@@ -14,9 +14,6 @@
   register: UN_AC7_NetAccounts
   when: not HasUNAC7Def
 
-- debug:
-    var: UN_AC7_NetAccounts.stdout_lines[5]
-
 - name: UN_AC_7 %+ > Parse ouput and add keys to dictionary
   set_fact:
     UN_AC_7_Def: "{{ UN_AC_7_Def|default({}) | combine( {item.name: (UN_AC7_NetAccounts.stdout_lines[item.index].strip(item.strip).strip() | int)} ) }}"
@@ -26,25 +23,16 @@
     - { name: lockoutwindow, index: 7, strip: "Lockout observation window (minutes):" }
   when: not HasUNAC7Def
 
-- debug:
-    var: UN_AC_7_Def
+- name: UN_AC_7 ++ > Add dictionary to RegistryDefaults dictionary
+  set_fact:
+    RegistryDefaults: "{{ RegistryDefaults | combine({'UN_AC_7':UN_AC_7_Def}) }}"
+  when: not HasUNAC7Def
 
-# - name: UN_AC_7 + > Add keys to a dictionary
-#   set_fact:
-#     UN_AC_7_Def: "{{ UN_AC_7_Def|default({}) | combine( {item.item.ID: (item.value if item.exists else 4294967295)} ) }}"
-#   loop: "{{ UN_AC7_NetAccounts.results }}"
-#   when: not HasUNAC7Def
-
-# - name: UN_AC_7 ++ > Add dictionary to RegistryDefaults dictionary
-#   set_fact:
-#     RegistryDefaults: "{{ RegistryDefaults | combine({'UN_AC_7':UN_AC_7_Def}) }}"
-#   when: not HasUNAC7Def
-
-# - name: UN_AC_7 IO > Write dictionary
-#   win_copy:
-#     dest: "{{ RegDefaultsPath }}"
-#     content: "{{ RegistryDefaults }}"
-#   when: not HasUNAC7Def
+- name: UN_AC_7 IO > Write dictionary
+  win_copy:
+    dest: "{{ RegDefaultsPath }}"
+    content: "{{ RegistryDefaults }}"
+  when: not HasUNAC7Def
 
 # # Tasks
 # - name: AC-7 A > Set password attempts before lockout 5
