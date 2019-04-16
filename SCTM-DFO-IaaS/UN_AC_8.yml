@@ -28,7 +28,7 @@
 
 - name: UN_AC_8 + > Add keys to a dictionary
   set_fact:
-    UN_AC_8_Def: "{{ UN_AC_8_Def|default({}) | combine( {item.item.taskID: (item.value if item.exists else 18446744073709551615)} ) }}"
+    UN_AC_8_Def: "{{ UN_AC_8_Def|default({}) | combine( {item.item.taskID: (item.value if item.exists else 4294967295)} ) }}"
   loop: "{{ UN_AC8_DefKeys.results }}"
   when: not HasUNAC8Def
 
@@ -52,7 +52,7 @@
       Politique d’utilisation acceptable des réseaux électroniques du MPO (PUR MPO)'
       if undo_UN_AC_8 is not defined else RegistryDefaults.UN_AC_8.A }}"
     type: string
-    state: "{{absent if undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.A == 18446744073709551615 else present}}"
+    state: "{{absent if undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.A == 4294967295 else present}}"
   when: skip_UN_AC_8_A is not defined
 
 - name: UN_AC_8 B > Set legal warning text for logon and use of computer
@@ -80,7 +80,7 @@
       d’infraction.'
       if undo_UN_AC_8 is not defined else RegistryDefaults.UN_AC_8.B }}"
     type: string
-    state: "{{absent if (undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.B == 18446744073709551615) else present}}"
+    state: "{{absent if (undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.B == 4294967295) else present}}"
   when: skip_UN_AC_8_B is not defined
 
 - name: UN_AC_8 C > Restrict domain-cached logon information to 2 users
@@ -89,7 +89,7 @@
     name: CachedLogonsCount
     data: "{{ 2 if undo_UN_AC_8 is not defined else RegistryDefaults.UN_AC_8.C }}"
     type: string
-    state: "{{absent if (undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.C == 18446744073709551615) else present}}"
+    state: "{{absent if (undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.C == 4294967295) else present}}"
   when: skip_UN_AC_8_C is not defined
 
 - name: UN_AC_8 D > Set 14-day prompt for user to change password
@@ -98,7 +98,7 @@
     name: PasswordExpiryWarning
     data: "{{ 14 if undo_UN_AC_8 is not defined else RegistryDefaults.UN_AC_8.D }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.D == 18446744073709551615) else present}}"
+    state: "{{absent if (undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.D == 4294967295) else present}}"
   when: skip_UN_AC_8_D is not defined
 
 - name: UN_AC_8 E > Enforce digitally signing network server communications
@@ -107,5 +107,5 @@
     name: requiresecuritysignature
     data: "{{ 1 if undo_UN_AC_8 is not defined else RegistryDefaults.UN_AC_8.E }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.E == 18446744073709551615) else present}}"
+    state: "{{absent if (undo_UN_AC_8 is defined and RegistryDefaults.UN_AC_8.E == 4294967295) else present}}"
   when: skip_UN_AC_8_E is not defined
