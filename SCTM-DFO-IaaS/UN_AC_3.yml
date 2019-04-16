@@ -9,7 +9,7 @@
   set_fact:
     HasUNAC3Def: "{{ 'UN_AC_3' in RegistryDefaults }}"
 
-- name: UN_AC_3 = > Get keys in UN_AC_3 is not present
+- name: UN_AC_3 = > Get keys in UN_AC_3 is not 'present'
   win_reg_stat:
     path: "{{ item.path }}"
     name: "{{ item.name }}"
@@ -62,8 +62,6 @@
     content: "{{ RegistryDefaults }}"
   when: not HasUNAC3Def
 
-#- name: UN_AC_3 Var > Set 'present' fact because YAML is really stupid
-
 #Tasks
 - name: UN_AC_3 A > Restrict use of blank passwords
   win_regedit:
@@ -80,7 +78,7 @@
     name: AddPrinterDrivers
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.B }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.B == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.B == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_B is not defined
 
 - name: UN_AC_3 C > Enforce encrypted or signed channel data
@@ -89,7 +87,7 @@
     name: RequireSignOrSeal
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.C }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.C == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.C == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_C is not defined
 
 - name: UN_AC_3 D > Enforce encrypted of signed channel data
@@ -98,7 +96,7 @@
     name: SignSecureChannel
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.D }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.D == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.D == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_D is not defined
 
 - name: UN_AC_3 E > Do not display last user name
@@ -107,7 +105,7 @@
     name: dontdisplaylastusername
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.E }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.E == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.E == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_E is not defined
 
 - name: UN_AC_3 F > Require CTRL + ALT + DEL to logon
@@ -116,7 +114,7 @@
     name: disabledcad
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.F }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.F == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.F == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_F is not defined
 
 - name: UN_AC_3 G > Enforce digital signing of communications (Workstation)
@@ -125,7 +123,7 @@
     name: EnableSecuritySignature
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.G }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.G == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.G == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_G is not defined
 
 - name: UN_AC_3 H > Enforce digital signing of communications (Server)
@@ -134,7 +132,7 @@
     name: enablesecuritysignature
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.H }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.H == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.H == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_H is not defined
 
 - name: UN_AC_3 I > Allow SafeDLL search mode
@@ -143,7 +141,7 @@
     name: SafeDllSearchMode
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.I }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.I == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.I == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_I is not defined
 
 - name: UN_AC_3 J > Set screen saver grace period to 4
@@ -152,7 +150,7 @@
     name: ScreenSaverGracePeriod
     data: "{{ 4 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.J }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.J == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.J == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_J is not defined
 
 - name: UN_AC_3 K > Prevent SAM account searching
@@ -161,7 +159,7 @@
     name: restrictanonymoussam
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.K }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.K == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.K == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_K is not defined
 
 - name: UN_AC_3 L > Restrict anonymous user permissions
@@ -170,7 +168,7 @@
     name: everyoneincludesanonymous
     data: "{{ 0 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.L }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.L == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.L == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_L is not defined
 
 - name: UN_AC_3 M > Restrict anonymous access to pipes
@@ -179,7 +177,7 @@
     name: restrictnullsessaccess
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.M }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.M == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.M == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_M is not defined
 
 - name: UN_AC_3 N > Enforce LDAP client signing
@@ -188,7 +186,7 @@
     name: ldapclientintegrity
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.N }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.N == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.N == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_N is not defined
 
 - name: UN_AC_3 O > Allow system shutdown without logon
@@ -197,7 +195,7 @@
     name: shutdownwithoutlogon
     data: "{{ 0 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.O }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.O == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.O == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_O is not defined
 
 - name: UN_AC_3 P > Prevent unsecure elevation prompts from applications
@@ -206,7 +204,7 @@
     name: EnableUIADesktopToggle
     data: "{{ 0 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.P }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.P == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.P == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_P is not defined
 
 - name: UN_AC_3 Q > Prevent application installation without prompt
@@ -215,7 +213,7 @@
     name: EnableInstallerDetection
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.Q }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.Q == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.Q == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_Q is not defined
 
 - name: UN_AC_3 R > Run admins in Admin Approval Mode
@@ -224,7 +222,7 @@
     name: EnableLUA
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.R }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.R == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.R == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_R is not defined
 
 - name: UN_AC_3 S > Enforce secure desktop for elevation prompts
@@ -233,7 +231,7 @@
     name: PromptOnSecureDesktop
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.P }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.P == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.P == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_P is not defined
 
 - name: UN_AC_3 T > Restrict legacy application registry write locations
@@ -242,7 +240,7 @@
     name: EnableVirtualization
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.T }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.T == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.T == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_T is not defined
 
 # The following tasks are by Kevin's security_policy.yml and
@@ -275,7 +273,7 @@
     name: noconnecteduser
     data: "{{ 3 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.OO }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.OO == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.OO == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_OO is not defined
 
 - name: UN_AC_3 PP >Prohibit server controllers from scheduling tasks
@@ -284,7 +282,7 @@
     name: submitcontrol
     data: "{{ 0 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.PP }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.PP == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.PP == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_PP is not defined
 
 - name: UN_AC_3 QQ > Prohibit anonymous access to names pipes
@@ -293,7 +291,7 @@
     name: NullSessionPipes
     data: "{{ '' if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.QQ }}"
     type: multistring
-    state: "{{absent if ( undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.QQ == 4294967295) else present}}"
+    state: "{{absent if ( undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.QQ == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_QQ is not defined
 
 - name: UN_AC_3 RR > Prohibit anonymous access to session shares
@@ -302,7 +300,7 @@
     name: NullSessionShares
     data: "{{ '' if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.RR }}"
     type: multistring
-    state: "{{absent if ( undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.RR == 4294967295) else present}}"
+    state: "{{absent if ( undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.RR == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_RR is not defined
 
 - name: UN_AC_3 SS > Prevent last user's credentials from being stored
@@ -311,7 +309,7 @@
     name: DisableAutomaticRestartSignOn
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.SS }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.SS == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.SS == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_SS is not defined
 
 - name: UN_AC_3 TT > Require authentication for RPC service access
@@ -320,7 +318,7 @@
     name: EnableAuthEpResolution
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.TT }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.TT == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.TT == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_TT is not defined
 
 - name: UN_AC_3 UU > Require Domain Controller Authentication to unlock computer
@@ -329,5 +327,5 @@
     name: ForceUnlockLogon
     data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.TT }}"
     type: dword
-    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.TT == 4294967295) else present}}"
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.TT == 4294967295) else 'present'}}"
   when: skip_UN_AC_3_TT is not defined
