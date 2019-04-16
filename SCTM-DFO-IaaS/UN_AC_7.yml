@@ -18,9 +18,9 @@
   set_fact:
     UN_AC_7_Def: "{{ UN_AC_7_Def|default({}) | combine( {item.name: (UN_AC7_NetAccounts.stdout_lines[item.index].strip(item.strip).strip() | int)} ) }}"
   loop:
-    - { name: lockoutthreshold, index: 5, strip: "Lockout threshold:" }
-    - { name: lockoutduration, index: 6, strip: "Lockout duration (minutes):" }
-    - { name: lockoutwindow, index: 7, strip: "Lockout observation window (minutes):" }
+    - { name: A, index: 5, strip: "Lockout threshold:" }
+    - { name: B, index: 6, strip: "Lockout duration (minutes):" }
+    - { name: C, index: 7, strip: "Lockout observation window (minutes):" }
   when: not HasUNAC7Def
 
 - name: UN_AC_7 ++ > Add dictionary to RegistryDefaults dictionary
