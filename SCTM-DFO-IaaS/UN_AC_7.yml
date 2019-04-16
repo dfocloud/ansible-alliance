@@ -9,7 +9,7 @@
   set_fact:
     HasUNAC7Def: "{{ 'UN_AC_7' in RegistryDefaults }}"
 
-- name: UN_AC_7 = > Get keys in UN_AC_7 is not 'present'
+- name: UN_AC_7 = > Get keys if UN_AC_7 is not an entry
   win_command: "net accounts"
   register: UN_AC7_NetAccounts
   when: not HasUNAC7Def
@@ -19,7 +19,7 @@
 
 - name: UN_AC_7 %+ > Parse ouput and add keys to dictionary
   set_fact:
-    UN_AC_7_Def: "{{ UN_AC_7_Def|default({}) | combine( {item.name: int(UN_AC7_NetAccounts.stdout[item.index].strip(item.strip).strip())} ) }}"
+    UN_AC_7_Def: "{{ UN_AC_7_Def|default({}) | combine( {item.name: (UN_AC7_NetAccounts.stdout[item.index].strip(item.strip).strip() | int)} ) }}"
   loop:
     - { name: lockoutthreshold, index: 5, strip: "Lockout threshold:" }
     - { name: lockoutduration, index: 6, strip: "Lockout duration (minutes):" }
