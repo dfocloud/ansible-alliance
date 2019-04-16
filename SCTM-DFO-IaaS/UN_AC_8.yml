@@ -43,6 +43,7 @@
     content: "{{ RegistryDefaults }}"
   when: not HasUNAC8Def
 
+# Tasks
 - name: UN_AC_8 A > Set legal warning caption for logon and use of computer
   win_regedit:
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System

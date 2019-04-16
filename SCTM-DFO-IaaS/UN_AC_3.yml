@@ -1,0 +1,331 @@
+---
+# Called from Windows-Rollback.yml
+# Includes all the tasks that fall under
+# the Unclassed UN_AC_3 protocol requirements
+
+# Imported vars: RegDefaultsPath RegistryDefaults
+
+- name: UN_AC_3 ? > Check for UN_AC_3 defaults entry
+  set_fact:
+    HasUNAC3Def: "{{ 'UN_AC_3' in RegistryDefaults }}"
+
+- name: UN_AC_3 = > Get keys in UN_AC_3 is not present
+  win_reg_stat:
+    path: "{{ item.path }}"
+    name: "{{ item.name }}"
+  register: UN_AC3_DefKeys
+  loop:
+    - { ID: A, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', name: LimitBlankPasswordUse }
+    - { ID: B, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', name: AddPrinterDrivers }
+    - { ID: C, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', name: RequireSignOrSeal }
+    - { ID: D, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', name: SignSecureChannel }
+    - { ID: E, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', name: dontdisplaylastusername }
+    - { ID: F, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', name: disabledcad }
+    - { ID: G, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters', name: EnableSecuritySignature }
+    - { ID: H, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', name: enablesecuritysignature }
+    - { ID: I, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager', name: SafeDllSearchMode }
+    - { ID: J, path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', name: ScreenSaverGracePeriod }
+    - { ID: K, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', name: restrictanonymoussam }
+    - { ID: L, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', name: everyoneincludesanonymous }
+    - { ID: M, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', name: restrictnullsessaccess }
+    - { ID: 'N', path: 'HKLM:\SYSTEM\CurrentControlSet\Services\ldap', name: ldapclientintegrity }
+    - { ID: O, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', name: shutdownwithoutlogon }
+    - { ID: P, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', name: EnableUIADesktopToggle }
+    - { ID: Q, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', name: EnableInstallerDetection }
+    - { ID: R, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', name: EnableLUA }
+    - { ID: S, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', name: PromptOnSecureDesktop }
+    - { ID: T, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', name: EnableVirtualization }
+    # 19 additional controls    
+    - { ID: OO, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', name: noconnecteduser }
+    - { ID: PP, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', name: submitcontrol }
+    - { ID: QQ, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', name: NullSessionPipes }
+    - { ID: RR, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', name: NullSessionShares }
+    - { ID: SS, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', name: DisableAutomaticRestartSignOn }
+    - { ID: TT, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc', name: EnableAuthEpResolution }
+    - { ID: UU, path: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon', name: ForceUnlockLogon }
+  when: not HasUNAC3Def
+
+- name: UN_AC_3 + > Add keys to a dictionary
+  set_fact:
+    UN_AC_3_Def: "{{ UN_AC_3_Def|default({}) | combine( {item.item.ID: (item.value if item.exists else 4294967295)} ) }}"
+  loop: "{{ UN_AC3_DefKeys.results }}"
+  when: not HasUNAC3Def
+
+- name: UN_AC_3 ++ > Add dictionary to RegistryDefaults dictionary
+  set_fact:
+    RegistryDefaults: "{{ RegistryDefaults | combine({'UN_AC_3':UN_AC_3_Def}) }}"
+  when: not HasUNAC3Def
+
+- name: UN_AC_3 IO > Write dictionary
+  win_copy:
+    dest: "{{ RegDefaultsPath }}"
+    content: "{{ RegistryDefaults }}"
+  when: not HasUNAC3Def
+
+#Tasks
+- name: UN_AC_3 A > Restrict use of blank passwords
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+    name: LimitBlankPasswordUse
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.A }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.A == 4294967295) else present}}"
+  when: skip_UN_AC_3_A is not defined
+
+- name: UN_AC_3 B > Prevent printer driver installation for non-admins
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers
+    name: AddPrinterDrivers
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.B }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.B == 4294967295) else present}}"
+  when: skip_UN_AC_3_B is not defined
+
+- name: UN_AC_3 C > Enforce encrypted or signed channel data
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
+    name: RequireSignOrSeal
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.C }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.C == 4294967295) else present}}"
+  when: skip_UN_AC_3_C is not defined
+
+- name: UN_AC_3 D > Enforce encrypted of signed channel data
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
+    name: SignSecureChannel
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.D }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.D == 4294967295) else present}}"
+  when: skip_UN_AC_3_D is not defined
+
+- name: UN_AC_3 E > Do not display last user name
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: dontdisplaylastusername
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.E }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.E == 4294967295) else present}}"
+  when: skip_UN_AC_3_E is not defined
+
+- name: UN_AC_3 F > Require CTRL + ALT + DEL to logon
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: disabledcad
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.F }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.F == 4294967295) else present}}"
+  when: skip_UN_AC_3_F is not defined
+
+- name: UN_AC_3 G > Enforce digital signing of communications (Workstation)
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters
+    name: EnableSecuritySignature
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.G }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.G == 4294967295) else present}}"
+  when: skip_UN_AC_3_G is not defined
+
+- name: UN_AC_3 H > Enforce digital signing of communications (Server)
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
+    name: enablesecuritysignature
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.H }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.H == 4294967295) else present}}"
+  when: skip_UN_AC_3_H is not defined
+
+- name: UN_AC_3 I > Allow SafeDLL search mode
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager
+    name: SafeDllSearchMode
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.I }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.I == 4294967295) else present}}"
+  when: skip_UN_AC_3_I is not defined
+
+- name: UN_AC_3 J > Set screen saver grace period to 4
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+    name: ScreenSaverGracePeriod
+    data: "{{ 4 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.J }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.J == 4294967295) else present}}"
+  when: skip_UN_AC_3_J is not defined
+
+- name: UN_AC_3 K > Prevent SAM account searching
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+    name: restrictanonymoussam
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.K }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.K == 4294967295) else present}}"
+  when: skip_UN_AC_3_K is not defined
+
+- name: UN_AC_3 L > Restrict anonymous user permissions
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+    name: everyoneincludesanonymous
+    data: "{{ 0 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.L }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.L == 4294967295) else present}}"
+  when: skip_UN_AC_3_L is not defined
+
+- name: UN_AC_3 M > Restrict anonymous access to pipes
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
+    name: restrictnullsessaccess
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.M }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.M == 4294967295) else present}}"
+  when: skip_UN_AC_3_M is not defined
+
+- name: UN_AC_3 N > Enforce LDAP client signing
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\ldap
+    name: ldapclientintegrity
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.N }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.N == 4294967295) else present}}"
+  when: skip_UN_AC_3_N is not defined
+
+- name: UN_AC_3 O > Allow system shutdown without logon
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: shutdownwithoutlogon
+    data: "{{ 0 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.O }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.O == 4294967295) else present}}"
+  when: skip_UN_AC_3_O is not defined
+
+- name: UN_AC_3 P > Prevent unsecure elevation prompts from applications
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: EnableUIADesktopToggle
+    data: "{{ 0 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.P }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.P == 4294967295) else present}}"
+  when: skip_UN_AC_3_P is not defined
+
+- name: UN_AC_3 Q > Prevent application installation without prompt
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: EnableInstallerDetection
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.Q }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.Q == 4294967295) else present}}"
+  when: skip_UN_AC_3_Q is not defined
+
+- name: UN_AC_3 R > Run admins in Admin Approval Mode
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: EnableLUA
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.R }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.R == 4294967295) else present}}"
+  when: skip_UN_AC_3_R is not defined
+
+- name: UN_AC_3 S > Enforce secure desktop for elevation prompts
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: PromptOnSecureDesktop
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.P }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.P == 4294967295) else present}}"
+  when: skip_UN_AC_3_P is not defined
+
+- name: UN_AC_3 T > Restrict legacy application registry write locations
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: EnableVirtualization
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.T }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.T == 4294967295) else present}}"
+  when: skip_UN_AC_3_T is not defined
+
+# The following tasks are by Kevin's security_policy.yml and
+# security_policy.inf.jinja scripts
+# UN_AC_3 U > Prohibit anything from acting as the Operating System
+# UN_AC_3 V > Allow local logon to Admins
+# UN_AC_3 W > Restrict system time changes to Admins and Local Service
+# UN_AC_3 X > Restrict creating pagefiles to Admins
+# UN_AC_3 Y > Restrict creating symbolic links to Admins
+# UN_AC_3 Z > Prohibit network access to computer for Guests and Local Account
+# UN_AC_3 AA > Prohibit local logon for Guests
+# UN_AC_3 BB > Restrict remote shutdown to Admins
+# UN_AC_3 CC > Restrict generating security audits to Local Service and Network Service
+# UN_AC_3 DD > Restrict client impersonation to 
+#     Administrators, SERVICE, Local Service, Network Service
+# UN_AC_3 EE > Restrict scheduling priority to Admins
+# UN_AC_3 FF > Restrict device driver loading to Admins
+# UN_AC_3 GG > Restrict managing audits and security logs to Admins
+# UN_AC_3 HH > Prohibit modifying object labels for everyone
+# UN_AC_3 II > Restrict modifying firmware environment to Admins
+# UN_AC_3 JJ > Restrict volume maintenance to Admins
+# UN_AC_3 KK > Restrict profiling performance to Admins, NT Service, and WdiServiceHost
+# UN_AC_3 LL > Restrict file and dir restoration to Admins
+# UN_AC_3 MM > Restrict shutdown to Admins
+# UN_AC_3 NN > Prohibit RDP logon for Guests
+
+- name: UN_AC_3 OO > Prevent Microsoft accounts from logging in
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: noconnecteduser
+    data: "{{ 3 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.OO }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.OO == 4294967295) else present}}"
+  when: skip_UN_AC_3_OO is not defined
+
+- name: UN_AC_3 PP >Prohibit server controllers from scheduling tasks
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+    name: submitcontrol
+    data: "{{ 0 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.PP }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.PP == 4294967295) else present}}"
+  when: skip_UN_AC_3_PP is not defined
+
+- name: UN_AC_3 QQ > Prohibit anonymous access to names pipes
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
+    name: NullSessionPipes
+    data: "{{ '' if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.QQ }}"
+    type: multistring
+    state: "{{absent if ( undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.QQ == 4294967295) else present}}"
+  when: skip_UN_AC_3_QQ is not defined
+
+- name: UN_AC_3 RR > Prohibit anonymous access to session shares
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
+    name: NullSessionShares
+    data: "{{ '' if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.RR }}"
+    type: multistring
+    state: "{{absent if ( undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.RR == 4294967295) else present}}"
+  when: skip_UN_AC_3_RR is not defined
+
+- name: UN_AC_3 SS > Prevent last user's credentials from being stored
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: DisableAutomaticRestartSignOn
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.SS }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.SS == 4294967295) else present}}"
+  when: skip_UN_AC_3_SS is not defined
+
+- name: UN_AC_3 TT > Require authentication for RPC service access
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc
+    name: EnableAuthEpResolution
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.TT }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.TT == 4294967295) else present}}"
+  when: skip_UN_AC_3_TT is not defined
+
+- name: UN_AC_3 UU > Require Domain Controller Authentication to unlock computer
+  win_regedit:
+    path: HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon
+    name: ForceUnlockLogon
+    data: "{{ 1 if undo_UN_AC_3 is not defined else RegistryDefaults.UN_AC_3.TT }}"
+    type: dword
+    state: "{{absent if (undo_UN_AC_3 is defined and RegistryDefaults.UN_AC_3.TT == 4294967295) else present}}"
+  when: skip_UN_AC_3_TT is not defined
