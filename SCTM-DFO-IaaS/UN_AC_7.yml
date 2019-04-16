@@ -34,18 +34,15 @@
     content: "{{ RegistryDefaults }}"
   when: not HasUNAC7Def
 
-- debug:
-    msg: "{{ 'net accounts /lockoutthreshold:'+(5 if undo_UN_AC_7 is not defined else RegistryDefaults.UN_AC_7.A) }}"
-
 # Tasks
 - name: UN_AC_7 A > Set password attempts before lockout to 5
-  win_command: "{{ 'net accounts /lockoutthreshold:'+(5 if undo_UN_AC_7 is not defined else RegistryDefaults.UN_AC_7.A) }}"
+  win_command: "{{ 'net accounts /lockoutthreshold:'+((5 if undo_UN_AC_7 is not defined else RegistryDefaults.UN_AC_7.A)|int) }}"
   when: skip_UN_AC_7_A is not defined
 
 - name: UN_AC_7 B > Set lockout duration to 60 minutes
-  win_command: "{{ 'net accounts /lockoutduration:'+(60 if undo_UN_AC_7 is not defined else RegistryDefaults.UN_AC_7.B) }}"
+  win_command: "{{ 'net accounts /lockoutduration:'+((60 if undo_UN_AC_7 is not defined else RegistryDefaults.UN_AC_7.B)|int) }}"
   when: skip_UN_AC_7_B is not defined
 
 - name: UN_AC_7 C > Set time before password attempts resets to 60 minutes
-  win_command: "{{ 'net accounts /lockoutwindow:'+(60 if undo_UN_AC_7 is not defined else RegistryDefaults.UN_AC_7.C) }}"
+  win_command: "{{ 'net accounts /lockoutwindow:'+((60 if undo_UN_AC_7 is not defined else RegistryDefaults.UN_AC_7.C)|int) }}"
   when: skip_UN_AC_7_C is not defined
