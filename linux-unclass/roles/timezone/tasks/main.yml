@@ -1,5 +1,0 @@
----
-- name: Changing timezone to America/Toronto
-  timezone:
-    name: America/Toronto
-  when: "'tdp' in inventory_hostname"

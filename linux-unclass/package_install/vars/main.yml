@@ -1,0 +1,14 @@
+add_el7_packages:
+  - ntp
+  - python
+  - tcp_wrappers
+  - ca-certificates
+
+add_deb_packages:
+  - aptitude
+  - ntp
+  - python
+  - tcpd
+  - aide
+  - aide-common
+  - ca-certificates

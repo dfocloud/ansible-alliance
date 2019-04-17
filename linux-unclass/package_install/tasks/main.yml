@@ -1,0 +1,14 @@
+---
+- name: Installing additional packages on CentOS/RHEL (TBS compliance)
+  yum:
+    name: "{{ add_el7_packages }}"
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+- name: Installing additional packages on Ubuntu (TBS compliance)
+  apt:
+    name: "{{ add_deb_packages }}"
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "Ubuntu"

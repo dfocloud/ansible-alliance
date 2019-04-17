@@ -1,0 +1,14 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: yes
+  name: Linux hardening - unclassified
+  roles:
+    - ./ansible-alliance/file_copy
+    - ./ansible-alliance/file_perms
+    - ./ansible-alliance/file_updates
+    - ./ansible-alliance/kernel_params
+    - ./ansible-alliance/package_install
+    - ./ansible-alliance/package_remove
+    - ./ansible-alliance/services
+    - ./ansible-alliance/ssh_updates 

@@ -1,0 +1,9 @@
+rm_el7_packages:
+  - rsync
+  - nis
+  - ldap-utils
+
+rm_deb_packages:
+  - rsync
+  - nis
+  - ldap-utils

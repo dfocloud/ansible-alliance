@@ -1,0 +1,62 @@
+---
+- name: Adding ssh session timeout value to /etc/profile (TBS compliance)
+  blockinfile:
+    path: /etc/profile
+    insertafter: EOF
+    backup: yes
+    state: present
+    block: |
+      export TMOUT=900
+
+- name: Adding minimum user password validity setting (TBS compliance)
+  lineinfile:
+    path: /etc/login.defs
+    regex: "PASS_MIN_DAYS"
+    line: "PASS_MIN_DAYS 7"
+    state: present
+
+- name: Adding maximum user password validity setting (TBS compliance)
+  lineinfile:
+    path: /etc/login.defs
+    regex: "PASS_MAX_DAYS"
+    line: "PASS_MAX_DAYS 90"
+    state: present
+
+- name: Adding warning days (TBS compliance)
+  lineinfile:
+    path: /etc/login.defs
+    regex: "PASS_WARN_AGE"
+    line: "PASS_WARN_AGE 14"
+    state: present
+
+- name: Setting the default password inactivity period for new users to 30 days (TBS compliance)
+  lineinfile:
+    path: /etc/default/useradd
+    regex: "INACTIVE"
+    line: "INACTIVE=30"
+    state: present
+
+- name: Adding hard core limit to /etc/security/limits.conf file (TBS compliance)
+  blockinfile:
+    path: /etc/security/limits.conf
+    insertafter: EOF
+    backup: yes
+    state: present
+    block: |
+      * hard core 0
+
+- name: Blocking all access to all services via TCP Wrappers (TBS compliance)
+  blockinfile:
+    path: /etc/hosts.deny
+    insertafter: EOF
+    state: present
+    block: |
+      ALL: ALL
+
+- name: Allowing ssh-only access to the VM via TCP Wrappers (TBS compliance)
+  blockinfile:
+    path: /etc/hosts.allow
+    insertafter: EOF
+    state: present
+    block: |
+      sshd: ALL

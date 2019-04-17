@@ -1,0 +1,28 @@
+---
+- name: Blocking access for users with no passwords (TBS compliance)
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regex: "PermitEmptyPasswords"
+    line: "PermitEmptyPasswords no"
+    state: present
+
+- name: Blocking direct root access (TBS compliance)
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regex: "PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+
+- name: Setting max ssh tries (TBS compliance)
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regex: "MaxAuthTries"
+    line: "MaxAuthTries 4"
+    state: present
+
+- name: Setting default banner file for users connecting over ssh (TBS compliance)
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regex: "Banner"
+    line: "Banner /etc/issue.net"
+    state: present
