@@ -39,6 +39,7 @@
     content: "{{ RegistryDefaults }}"
   when: not HasUNSC5Def
 
+# Tasks
 - name: UN_SC-5 A > Set computer to restart for updates even if user(s) logged in
   win_regedit:
     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU

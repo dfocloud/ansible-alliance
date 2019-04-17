@@ -1,0 +1,125 @@
+---
+# Called from Windows-Rollback.yml
+# Includes all the tasks that fall under
+# the Unclassed UN_SC_8 protocol requirements
+
+# Imported vars: RegDefaultsPath RegistryDefaults
+
+- name: UN_SC_8 ? > Check for UN_SC_8 defaults entry
+  set_fact:
+    HasUNSC8Def: "{{ 'UN_SC_8' in RegistryDefaults }}"
+
+- name: UN_SC_8 = > Get keys if UN_SC_8 is not 'present'
+  win_reg_stat:
+    path: "{{ item.path }}"
+    name: "{{ item.name }}"
+  register: UN_SC8_DefKeys
+  loop:
+    - { taskID: A, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU', name: NoAutoRebootWithLoggedOnUsers }
+    - { taskID: B, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters', name: TcpMaxDataRetransmissions }
+    - { taskID: C, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters', name: TcpMaxDataRetransmissions }
+    - { taskID: D, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters', name: KeepAliveTime }
+    - { taskID: E, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters', name: PerformRouterDiscovery }
+  when: not HasUNSC8Def
+
+- name: UN_SC_8 + > Add keys to a dictionary
+  set_fact:
+    UN_SC_8_Def: "{{ UN_SC_8_Def|default({}) | combine( {item.item.taskID: (item.value if item.exists else 4294967295)} ) }}"
+  loop: "{{ UN_SC8_DefKeys.results }}"
+  when: not HasUNSC8Def
+
+- name: UN_SC_8 ++ > Add dictionary to RegistryDefaults dictionary
+  set_fact:
+    RegistryDefaults: "{{ RegistryDefaults | combine({'UN_SC_8':UN_SC_8_Def}) }}"
+  when: not HasUNSC8Def
+
+- name: UN_SC_8 IO > Write dictionary
+  win_copy:
+    dest: "{{ RegDefaultsPath }}"
+    content: "{{ RegistryDefaults }}"
+  when: not HasUNSC8Def
+
+# Tasks
+- name: UN_SC_8 A > Enforce strong domain session keys
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
+    name: RequireStrongKey
+    data: 1
+    type: dword
+  when: skip_UN_SC_8_
+
+- name: UN_SC_8 B > Enforce LDAP server signing
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters
+    name: LDAPServerIntegrity
+    data: 2
+    type: dword
+  when: skip_UN_SC_8_
+
+- name: UN_SC_8 C > Ensure kerberos encryption is supported
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\kerberos\parameters
+    name: SupportedEncryptionTypes
+    data: 0x7ffffff8
+    type: dword
+  when: skip_UN_SC_8_
+
+- name: UN_SC_8 D > Ensure UNC paths are hardened
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths
+    name: "{{ item }}"
+    data: 'RequireMutualAuthentication=1, RequireIntegrity=1'
+    type: string
+  loop:
+    - \\*\NETLOGON
+    - \\*\SYSVOL
+  when: skip_UN_SC_8_
+
+- name: UN_SC_8 E > Prevent indexing of encrypted files
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search
+    name: AllowIndexingEncryptedStoresOrItems
+    data: 0
+    type: dword
+  when: skip_UN_SC_8_
+
+- name: UN_SC_8 F > Prevent unencrypted client traffic
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client
+    name: AllowUnencryptedTraffic
+    data: 0
+    type: dword
+  when: skip_UN_SC_8_
+
+- name: UN_SC_8 G > Prevent unencrypted service traffic
+  win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service
+    name: AllowUnencryptedTraffic
+    data: 0
+    type: dword
+  when: skip_UN_SC_8_
+  
+- name: UN_SC_8 H > Comply with CSE ITSP.40.062 (Ciphers)
+  win_regedit:
+    path: "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\{{ item }}"
+    name: Enabled
+    data: 0
+    type: dword
+  loop:
+    - 'RC4 128/128'
+    - 'RC2 128/128'
+    - 'RC4 64/128'
+    - 'RC4 56/128'
+    - 'RC2 56/128'
+    - 'RC4 40/128'
+    - 'RC2 40/128'
+    - 'NULL'
+  when: skip_UN_SC_8_
+
+- name: UN_SC_8 I > Comply with CSE ITSP.40.062 (Hashes)
+  win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5
+    name: Enabled
+    data: 0
+    type: dword
+  when: SC_8

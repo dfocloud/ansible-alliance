@@ -1,0 +1,6 @@
+---
+# Called from Windows-Rollback.yml
+# Includes all the tasks that fall under
+# the Unclassed SI-2 protocol requirements
+
+# Imported vars: RegDefaultsPath RegistryDefaults

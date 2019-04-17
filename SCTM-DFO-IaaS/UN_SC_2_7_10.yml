@@ -1,0 +1,6 @@
+---
+# Called from Windows-Rollback.yml
+# Includes all the tasks that fall under
+# the Unclassed SC-2, SC-7, and SC-10 protocol requirements
+
+# Imported vars: RegDefaultsPath RegistryDefaults
