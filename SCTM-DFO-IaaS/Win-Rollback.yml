@@ -38,7 +38,7 @@
     when: not PathResult.stat.exists
 
   # Supercategory skips for rapid test iteration
-  - name: Set AC supercategory skip (testing)
+  - name: WinRoll-F > Set AC supercategory skip (testing)
     set_fact:
       "skip_UN_AC_{{item}}": true
     loop:
@@ -48,6 +48,20 @@
       - 8
       - 11
     when: skip_UN_AC is defined
+
+  - name: WinRoll-G > Set SC supercategory skip (testing)
+    set_fact:
+      "skip_UN_SC_{{item}}": true
+    loop:
+      - 2
+      - 5
+      - 7
+      - 8
+      - 10
+      - 13
+      - 23
+      - 28
+    when: skip_UN_SC is defined
 
   # Include task categories
   - name: Get Unclassed AC-3 tasks

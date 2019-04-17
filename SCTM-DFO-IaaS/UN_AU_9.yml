@@ -42,7 +42,7 @@
   win_regedit:
     path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging
     name: LogFilePath
-    data: "{{ %SYSTEMROOT%\\System32\\logfiles\\firewall\\domainfw.log if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.A }}"
+    data: "{{ '%SYSTEMROOT%\\System32\\logfiles\\firewall\\domainfw.log' if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.A }}"
     type: string
     state: "{{'absent' if (undo_UN_AU_9 is defined and RegistryDefaults.UN_AU_9.A == 4294967295) else 'present'}}"
   when: skip_UN_AU_9_A is not defined
@@ -51,7 +51,7 @@
   win_regedit:
     path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging
     name: LogFilePath
-    data: "{{ %SYSTEMROOT%\\System32\\logfiles\\firewall\\privatefw.log if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.B }}"
+    data: "{{ '%SYSTEMROOT%\\System32\\logfiles\\firewall\\privatefw.log' if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.B }}"
     type: string
     state: "{{'absent' if (undo_UN_AU_9 is defined and RegistryDefaults.UN_AU_9.B == 4294967295) else 'present'}}"
   when: skip_UN_AU_9_B is not defined
@@ -60,7 +60,7 @@
   win_regedit:
     path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging
     name: LogFilePath
-    data: "{{ %SYSTEMROOT%\\System32\\logfiles\\firewall\\publicfw.log if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.C }}"
+    data: "{{ '%SYSTEMROOT%\\System32\\logfiles\\firewall\\publicfw.log' if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.C }}"
     type: string
     state: "{{'absent' if (undo_UN_AU_9 is defined and RegistryDefaults.UN_AU_9.C == 4294967295) else 'present'}}"
   when: skip_UN_AU_9_C is not defined
