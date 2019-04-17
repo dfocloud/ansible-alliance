@@ -44,7 +44,7 @@
     name: DisableIPSourceRouting
     data: "{{ 2 if undo_UN_SC_2 is not defined else RegistryDefaults.UN_SC_2710.2 }}"
     type: dword
-    state: "{{ 'absent' if undo_UN_SC_2 is defined and RegistryDefaults.UN_SC_2710.2 == 4294967295 else 'present' }}"
+    state: "{{'absent' if undo_UN_SC_2 is defined and RegistryDefaults.UN_SC_2710.2 == 4294967295 else 'present'}}"
   when: skip_UN_SC_2
 
 # UN_SC_7
@@ -54,7 +54,7 @@
     name: PreventOverride
     data: "{{ 1 if undo_UN_SC_7 is not defined else RegistryDefaults.UN_SC_2710.7 }}"
     type: dword
-    state: "{{ 'absent' if undo_UN_SC_7 is defined and RegistryDefaults.UN_SC_2710.7 == 4294967295 else 'present' }}"
+    state: "{{'absent' if undo_UN_SC_7 is defined and RegistryDefaults.UN_SC_2710.7 == 4294967295 else 'present'}}"
   when: skip_UN_SC_7
 
 # UN_SC_10
@@ -64,5 +64,5 @@
     name: MaxIdleTime
     data: "{{ 900000 if undo_UN_SC_10 is not defined else RegistryDefaults.UN_SC_2710.10 }}"
     type: dword
-    state: "{{ 'absent' if undo_UN_SC_10 is defined and RegistryDefaults.UN_SC_2710.10 == 4294967295 else 'present' }}"
+    state: "{{'absent' if undo_UN_SC_10 is defined and RegistryDefaults.UN_SC_2710.10 == 4294967295 else 'present'}}"
   when: skip_UN_SC_10

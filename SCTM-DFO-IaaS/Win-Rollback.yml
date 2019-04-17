@@ -53,14 +53,9 @@
     set_fact:
       "skip_UN_SC_{{item}}": true
     loop:
-      - 2
+      - 2_7_10
       - 5
-      - 7
       - 8
-      - 10
-      - 13
-      - 23
-      - 28
     when: skip_UN_SC is defined
 
   # Include task categories
@@ -100,9 +95,25 @@
     include_tasks: UN_IA_5.yml
     when: skip_UN_IA_5 is not defined
 
+  - name: Get Unclassed SC-2, SC-7, and SC-10 tasks
+    include_tasks: UN_SC_2_7_10.yml
+    when: skip_UN_SC_2_7_10 is not defined
+
   - name: Get Unclassed SC-5 tasks
     include_tasks: UN_SC_5.yml
     when: skip_UN_SC_5 is not defined
+
+  - name: Get Unclassed SC-8 tasks
+    include_tasks: UN_SC_8.yml
+    when: skip_UN_SC_8 is not defined
+
+  - name: Get Unclassed SI-2 tasks
+    include_tasks: UN_SI_2.yml
+    when: skip_UN_SI_2 is not defined
+
+  - name: Get Unclassed SI-3 tasks
+    include_tasks: UN_SI_3.yml
+    when: skip_UN_SI_3 is not defined
 
 # # Task template
 # - name: SecCat_TaskCat ID > Description
