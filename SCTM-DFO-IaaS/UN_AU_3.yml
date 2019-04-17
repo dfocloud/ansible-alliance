@@ -11,7 +11,7 @@
 
 - name: UN_AU_3 = > Get keys in UN_AU_3 is not 'present'
   win_reg_stat:
-    path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging'
+    path: "{{ item.path }}"
     name: LogDroppedPackets
   register: UN_AU3_DefKeys
   loop:
