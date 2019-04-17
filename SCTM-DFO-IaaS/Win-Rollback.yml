@@ -54,6 +54,10 @@
     include_tasks: UN_AC_8.yml
     when: skip_UN_AC_8 is not defined
 
+  - name: Get Unclassed AC-11 tasks
+    include_tasks: UN_AC_11.yml
+    when: skip_UN_AC_11 is not defined
+
   - name: Get Unclassed SC-5 tasks
     include_tasks: UN_SC_5.yml
     when: skip_UN_SC_5 is not defined
