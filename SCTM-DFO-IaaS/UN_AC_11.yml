@@ -46,7 +46,7 @@
     data: "{{ 1 if undo_UN_AC_11 is not defined else RegistryDefaults.UN_AC_11.A }}"
     type: string
     state: "{{'absent' if (undo_UN_AC_11 is defined and RegistryDefaults.UN_AC_11.A == 4294967295) else 'present'}}"
-  when: skip_UN_AC_11_A
+  when: skip_UN_AC_11_A is not defined
 
 - name: UN_AC_11 B > Screen saver activates after 5 mins of inactivity
   win_regedit:
@@ -55,7 +55,7 @@
     data: "{{ 600 if undo_UN_AC_11 is not defined else RegistryDefaults.UN_AC_11.B }}"
     type: string
     state: "{{'absent' if (undo_UN_AC_11 is defined and RegistryDefaults.UN_AC_11.B == 4294967295) else 'present'}}"
-  when: skip_UN_AC_11_B
+  when: skip_UN_AC_11_B is not defined
 
 - name: UN_AC_11 > Require password when waking computer (DC)
   win_regedit:
@@ -64,7 +64,7 @@
     data: "{{ 1 if undo_UN_AC_11 is not defined else RegistryDefaults.UN_AC_11.C }}"
     type: dword
     state: "{{'absent' if (undo_UN_AC_11 is defined and RegistryDefaults.UN_AC_11.C == 4294967295) else 'present'}}"
-  when: skip_UN_AC_11_C
+  when: skip_UN_AC_11_C is not defined
 
 - name: UN_AC_11 > Require password when waking computer (AC)
   win_regedit:
@@ -73,4 +73,4 @@
     data: "{{ 1 if undo_UN_AC_11 is not defined else RegistryDefaults.UN_AC_11.D }}"
     type: dword
     state: "{{'absent' if (undo_UN_AC_11 is defined and RegistryDefaults.UN_AC_11.D == 4294967295) else 'present'}}"
-  when: skip_UN_AC_11_D
+  when: skip_UN_AC_11_D is not defined
