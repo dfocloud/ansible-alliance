@@ -54,7 +54,7 @@
     data: "{{ 0 if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.A }}"
     type: dword
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.A == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_A if not defined
+  when: skip_UN_IA_5_A is not defined
 
 - name: UN_IA_5 B > Prevent plaintext storage of credentials
   win_regedit:
@@ -63,7 +63,7 @@
     data: "{{ 0 if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.B }}"
     type: dword
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.B == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_B if not defined
+  when: skip_UN_IA_5_B is not defined
 
 - name: UN_IA_5 C > Enforce better client authentication than 'Basic'
   win_regedit:
@@ -72,7 +72,7 @@
     data: "{{ 0 if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.C }}"
     type: dword
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.C == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_C if not defined
+  when: skip_UN_IA_5_C is not defined
 
 - name: UN_IA_5 D > Enforce better client authentication than 'Digest'
   win_regedit:
@@ -81,7 +81,7 @@
     data: "{{ 0 if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.D }}"
     type: dword
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.D == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_D if not defined
+  when: skip_UN_IA_5_D is not defined
 
 - name: UN_IA_5 E > Enforce better service authentication than 'Basic'
   win_regedit:
@@ -90,7 +90,7 @@
     data: "{{ 0 if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.E }}"
     type: dword
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.E == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_E if not defined
+  when: skip_UN_IA_5_E is not defined
 
 - name: UN_IA_5 F > Prevent storage of RunAs credentials
   win_regedit:
@@ -99,7 +99,7 @@
     data: "{{ 1 if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.F }}"
     type: dword
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.F == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_F if not defined
+  when: skip_UN_IA_5_F is not defined
 
 - name: UN_IA_5 G > Ensure installation of password handling extension
   win_regedit:
@@ -108,7 +108,7 @@
     data: "{{ 'C:\\Program Files\\LAPS\\CSE\\AdmPwd.dll' if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.G }}"
     type: string
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.G == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_G if not defined
+  when: skip_UN_IA_5_G is not defined
 
 - name: UN_IA_5 H > Restrict password expiration time
   win_regedit:
@@ -117,7 +117,7 @@
     data: "{{ 1 if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.H }}"
     type: dword
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.H == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_H if not defined
+  when: skip_UN_IA_5_H is not defined
 
 - name: UN_IA_5 I > Set local admin to manage password
   win_regedit:
@@ -126,7 +126,7 @@
     data: "{{ 1 if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.I }}"
     type: dword
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.I == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_I if not defined
+  when: skip_UN_IA_5_I is not defined
 
 - name: UN_IA_5 J > Enforce password complexity
   win_regedit:
@@ -135,7 +135,7 @@
     data: "{{ 1 if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.J }}"
     type: dword
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.J == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_J if not defined
+  when: skip_UN_IA_5_J is not defined
 
 - name: UN_IA_5 K > Set min password length to 15
   win_regedit:
@@ -144,7 +144,7 @@
     data: "{{ 15 if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.K }}"
     type: dword
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.K == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_K if not defined
+  when: skip_UN_IA_5_K is not defined
 
 - name: UN_IA_5 L > Enforce changing passwords every 30 days minimum
   win_regedit:
@@ -153,4 +153,4 @@
     data: "{{ 30 if undo_UN_IA_5 is not defined else RegistryDefaults.UN_IA_5.L }}"
     type: dword
     state: "{{'absent' if (undo_UN_IA_5 is defined and RegistryDefaults.UN_IA_5.L == 4294967295) else 'present'}}"
-  when: skip_UN_IA_5_L if not defined
+  when: skip_UN_IA_5_L is not defined
