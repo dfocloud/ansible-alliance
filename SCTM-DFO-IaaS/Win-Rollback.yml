@@ -92,6 +92,14 @@
     include_tasks: UN_AU_9.yml
     when: skip_UN_AU_9 is not defined
 
+  - name: Get Unclassed IA-2 tasks
+    include_tasks: UN_IA_2.yml
+    when: skip_UN_IA_2 is not defined
+
+  - name: Get Unclassed IA-5 tasks
+    include_tasks: UN_IA_5.yml
+    when: skip_UN_IA_5 is not defined
+
   - name: Get Unclassed SC-5 tasks
     include_tasks: UN_SC_5.yml
     when: skip_UN_SC_5 is not defined
