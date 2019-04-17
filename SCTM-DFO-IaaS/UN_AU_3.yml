@@ -4,3 +4,63 @@
 # the Unclassed UN_AU_3 protocol requirements
 
 # Imported vars: RegDefaultsPath RegistryDefaults
+
+- name: UN_AU_3 ? > Check for UN_AU_3 defaults entry
+  set_fact:
+    HasUNAU3Def: "{{ 'UN_AU_3' in RegistryDefaults }}"
+
+- name: UN_AU_3 = > Get keys in UN_AU_3 is not 'present'
+  win_reg_stat:
+    path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging'
+    name: LogDroppedPackets
+  register: UN_AU3_DefKeys
+  loop:
+    - { ID: A, path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging' }
+    - { ID: B, path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging' }
+    - { ID: C, path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging' }
+  when: not HasUNAU3Def
+
+- name: UN_AU_3 + > Add keys to a dictionary
+  set_fact:
+    UN_AU_3_Def: "{{ UN_AU_3_Def|default({}) | combine( {item.item.ID: (item.value if item.exists else 4294967295)} ) }}"
+  loop: "{{ UN_AU3_DefKeys.results }}"
+  when: not HasUNAU3Def
+
+- name: UN_AU_3 ++ > Add dictionary to RegistryDefaults dictionary
+  set_fact:
+    RegistryDefaults: "{{ RegistryDefaults | combine({'UN_AU_3':UN_AU_3_Def}) }}"
+  when: not HasUNAU3Def
+
+- name: UN_AU_3 IO > Write dictionary
+  win_copy:
+    dest: "{{ RegDefaultsPath }}"
+    content: "{{ RegistryDefaults }}"
+  when: not HasUNAU3Def
+
+# Tasks
+- name: UN_AU_3 A > Ensure firewalls log dropped packets
+  win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging
+    name: LogDroppedPackets
+    data: "{{ 1 if undo_UN_AU_3 is not defined else RegistryDefaults.UN_AU_3.A }}"
+    type: dword
+    state: "{{'absent' if (undo_UN_AU_3 is defined and RegistryDefaults.UN_AU_3.A == 4294967295) else 'present'}}"
+  when: skip_UN_AU_3_A is not defined
+
+- name: UN_AU_3 B > Ensure firewalls log dropped packets
+  win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging
+    name: LogDroppedPackets
+    data: "{{ 1 if undo_UN_AU_3 is not defined else RegistryDefaults.UN_AU_3.B }}"
+    type: dword
+    state: "{{'absent' if (undo_UN_AU_3 is defined and RegistryDefaults.UN_AU_3.B == 4294967295) else 'present'}}"
+  when: skip_UN_AU_3_B is not defined
+
+- name: UN_AU_3 C > Ensure firewalls log dropped packets
+  win_regedit:
+    path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging
+    name: LogDroppedPackets
+    data: "{{ 1 if undo_UN_AU_3 is not defined else RegistryDefaults.UN_AU_3.C }}"
+    type: dword
+    state: "{{'absent' if (undo_UN_AU_3 is defined and RegistryDefaults.UN_AU_3.C == 4294967295) else 'present'}}"
+  when: skip_UN_AU_3_C is not defined
