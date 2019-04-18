@@ -46,16 +46,16 @@
     name: NoAutoRebootWithLoggedOnUsers
     data: "{{ 0 if undo_UN_SC_5 is not defined else RegistryDefaults.UN_SC_5.A }}"
     type: dword
-    state: "{{ 'absent' if undo_UN_SC_5 is defined and RegistryDefaults.UN_SC_5.A == 4294967295 else 'present' }}"
+    state: "{{'absent' if (undo_UN_SC_5 is defined and RegistryDefaults.UN_SC_5.A == 4294967295) else 'present'}}"
   when: skip_UN_SC_5_A is not defined
 
 - name: UN_SC-5 B > Limit unacknowledged data retransmission (IPv6)
   win_regedit:
     path: HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters
     name: TcpMaxDataRetransmissions
-    data: "{{ 3 if not (undo_UN_SC_5 | default(false)) else RegistryDefaults.UN_SC_5.B }}"
+    data: "{{ 3 if undo_UN_SC_5 is not defined else RegistryDefaults.UN_SC_5.B }}"
     type: dword
-    state: "{{ 'absent' if undo_UN_SC_5 is defined and RegistryDefaults.UN_SC_5.B == 4294967295 else 'present' }}"
+    state: "{{'absent' if (undo_UN_SC_5 is defined and RegistryDefaults.UN_SC_5.B == 4294967295) else 'present'}}"
   when: skip_UN_SC_5_B is not defined
 
 - name: UN_SC-5 C > Limit unacknowledged data retransmission
@@ -64,7 +64,7 @@
     name: TcpMaxDataRetransmissions
     data: "{{ 3 if undo_UN_SC_5 is not defined else RegistryDefaults.UN_SC_5.C }}"
     type: dword
-    state: "{{ 'absent' if undo_UN_SC_5 is defined and RegistryDefaults.UN_SC_5.C == 4294967295 else 'present' }}"
+    state: "{{'absent' if (undo_UN_SC_5 is defined and RegistryDefaults.UN_SC_5.C == 4294967295) else 'present'}}"
   when: skip_UN_SC_5_B is not defined
 
 - name: UN_SC-5 D > Set keep-alive packet send interval
@@ -73,7 +73,7 @@
     name: KeepAliveTime
     data: "{{ 300000 if not (undo_UN_SC_5 | default(false)) else RegistryDefaults.UN_SC_5.D }}"
     type: dword
-    state: "{{ 'absent' if undo_UN_SC_5 is defined and RegistryDefaults.UN_SC_5.D == 4294967295 else 'present' }}"
+    state: "{{'absent' if (undo_UN_SC_5 is defined and RegistryDefaults.UN_SC_5.D == 4294967295) else 'present'}}"
   when: skip_UN_SC_5_D is not defined
 
 - name: UN_SC-5 E > Disable IRDP Default Gateway configuration
@@ -82,5 +82,5 @@
     name: PerformRouterDiscovery
     data: "{{ 0 if undo_UN_SC_5 is not defined else RegistryDefaults.UN_SC_5.E }}"
     type: dword
-    state: "{{ 'absent' if undo_UN_SC_5 is defined and RegistryDefaults.UN_SC_5.E == 4294967295 else 'present' }}"
+    state: "{{'absent' if (undo_UN_SC_5 is defined and RegistryDefaults.UN_SC_5.E == 4294967295) else 'present'}}"
   when: skip_UN_SC_5_E is not defined
