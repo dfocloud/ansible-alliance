@@ -74,7 +74,7 @@
   win_regedit:
     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\kerberos\parameters
     name: SupportedEncryptionTypes
-    data: "{{ 0x7ffffff8 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.C }}"
+    data: "{{ '0x7ffffff8' if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.C }}"
     type: dword
     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.C == 4294967295) else 'present'}}"
   when: skip_UN_SC_8_C is not defined
