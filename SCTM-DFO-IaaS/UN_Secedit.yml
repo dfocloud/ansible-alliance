@@ -14,9 +14,9 @@
     users:
       - SYSTEM
     action: add
-    register: ExistingUsers
-  register: UserDelta
-  when: skip_UN_AC_3_U is not defined
+#    register: ExistingUsers
+#  register: UserDelta
+#  when: skip_UN_AC_3_U is not defined
 
 - debug:
     var: ExistingUsers
