@@ -8,7 +8,7 @@
 
 - name: SetUserDict
   set_fact:
-    ManyUsers: { V: [Users,Backup Operators] }
+    ManyUsers: [Users,Backup Operators]
 
 # AC-3 Tasks
 # - name: UN_AC_3 U > Set no one to act as part of the operating system
@@ -25,8 +25,7 @@
 - name: UN_AC_3 V > Set no one to act as part of the operating system
   win_user_right:
     name: SeInteractiveLogonRight
-    users: '[Administrators]'
-    # users: "{{ [Administrators] if undo_UN_AC_3_V is not defined else ManyUsers.V}}"
+    users: "{{[Administrators, Users] if undo_UN_AC_3_V is not defined else ManyUsers}}"
     action: set
   register: UserDelta
   when: skip_UN_AC_3_V is not defined
