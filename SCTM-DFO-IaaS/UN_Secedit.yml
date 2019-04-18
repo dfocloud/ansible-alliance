@@ -18,8 +18,9 @@
   win_user_right:
     name: SeInteractiveLogonRight
     users:
-      - Users
-      - Backup Operators
+      - Administrators
+      # - Users
+      # - Backup Operators
     action: set
   register: UserDelta
   when: skip_UN_AC_3_V is not defined
