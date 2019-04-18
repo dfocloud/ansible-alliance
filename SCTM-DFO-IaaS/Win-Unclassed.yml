@@ -1,5 +1,18 @@
 ---
-# Test playbok for an Windows-Hardening rollback solution
+# STCM-DFO-IaaS compliant configuration for
+# a Windows virtual machine in Azure Cloud
+# Based on RFP 16-42051B
+#
+# A Windows VM in Azure Cloud with this
+# configuration may contain Government of
+# Canada 'Unclassed' information and data
+#
+# Author:
+#     Alex Imray Papineau
+# Last edit:
+#     18 April 2019
+# Editor:
+#     Alex Imray Papineau
 
 - hosts: all
   become_method: runas
@@ -8,29 +21,29 @@
   tasks:
 
   # Retrieve the registry defaults file, or create if non-existent
-  - name: WinRoll-A > Search for defaults file
+  - name: Win-UN A > Search for defaults file
     win_stat:
       path: "{{ RegDefaultsPath }}"
     register: PathResult
 
-  - name: WinRoll-B > Populate reg key dictionary from file
+  - name: Win-UN B > Populate reg key dictionary from file
     slurp: 
       src: "{{ RegDefaultsPath }}"
     register: DefaultsFile
     when: PathResult.stat.exists
 
-  - name: WinRoll-C > Decode file contents into reg key dictionary
+  - name: Win-UN C > Decode file contents into reg key dictionary
     set_fact:
       RegistryDefaults: "{{ DefaultsFile['content'] | b64decode }}" 
     when: PathResult.stat.exists
 
-  - name: WinRoll-D > Create defaults file
+  - name: Win-UN D > Create defaults file
     win_file:
       path: "{{ RegDefaultsPath }}"
       state: touch
     when: not PathResult.stat.exists
 
-  - name: WinRoll-E > Create RegistryDefaults dictionary
+  - name: Win-UN E > Create RegistryDefaults dictionary
     set_fact:
       RegistryDefaults: { 
         'Registry': 'Defaults' 
@@ -38,7 +51,7 @@
     when: not PathResult.stat.exists
 
   # Supercategory skips for rapid test iteration
-  - name: WinRoll-F > Set AC supercategory skip (testing)
+  - name: Win-UN F > Set AC supercategory skip (testing)
     set_fact:
       "skip_UN_AC_{{item}}": true
     loop:
@@ -49,7 +62,7 @@
       - 11
     when: skip_UN_AC is defined
 
-  - name: WinRoll-G > Set AU supercategory skip (testing)
+  - name: Win-UN G > Set AU supercategory skip (testing)
     set_fact:
       "skip_UN_AU_{{item}}": true
     loop:
@@ -57,7 +70,7 @@
       - 9
     when: skip_UN_AU is defined
 
-  - name: WinRoll-H > Set IA supercategory skip (testing)
+  - name: Win-UN H > Set IA supercategory skip (testing)
     set_fact:
       "skip_UN_IA_{{item}}": true
     loop:
@@ -65,7 +78,7 @@
       - 5
     when: skip_UN_IA is defined
 
-  - name: WinRoll-I > Set SC supercategory skip (testing)
+  - name: Win-UN I > Set SC supercategory skip (testing)
     set_fact:
       "skip_UN_SC_{{item}}": true
     loop:
@@ -74,13 +87,71 @@
       - 8
     when: skip_UN_SC is defined
 
-  - name: WinRoll-J > Set SI supercategory skip (testing)
+  - name: Win-UN J > Set SI supercategory skip (testing)
     set_fact:
       "skip_UN_SI_{{item}}": true
     loop:
       - 2
       - 3
     when: skip_UN_SI is defined
+
+  # Supercategory rollbacks
+  - name: Win-UN K > Set global undo
+    set_fact:
+      "undo_UN_{{item}}": true
+    loop:
+      - AC
+      - AU
+      - IA
+      - SC
+      - SI
+    when: undo_ALL is defined
+  
+  - name: Win-UN L > Set AC supercategory undo
+    set_fact:
+      "undo_UN_AC_{{item}}": true
+    loop:
+      - 3
+      - 4
+      - 7
+      - 8
+      - 11
+    when: undo_UN_AC is defined
+
+  - name: Win-UN M > Set AU supercategory undo
+    set_fact:
+      "undo_UN_AU_{{item}}": true
+    loop:
+      - 3
+      - 9
+    when: undo_UN_AU is defined
+
+  - name: Win-UN N > Set IA supercategory undo
+    set_fact:
+      "undo_UN_IA_{{item}}": true
+    loop:
+      - 2
+      - 5
+    when: undo_UN_IA is defined
+
+  - name: Win-UN O > Set SC supercategory undo
+    set_fact:
+      "undo_UN_SC_{{item}}": true
+    loop:
+      - 2
+      - 5
+      - 7
+      - 8
+      - 10
+    when: undo_UN_SC is defined
+
+  - name: Win-UN P > Set SI supercategory undo
+    set_fact:
+      "undo_UN_SI_{{item}}": true
+    loop:
+      - 2
+      - 3
+    when: undo_UN_SI is defined
 
   # Include task categories
   - name: Get Unclassed AC-3 tasks (A-UU)
