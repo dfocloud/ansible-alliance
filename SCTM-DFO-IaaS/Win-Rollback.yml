@@ -54,7 +54,7 @@
       "skip_UN_AU_{{item}}": true
     loop:
       - 3
-      - 6
+      - 9
     when: skip_UN_AU is defined
 
   - name: WinRoll-H > Set IA supercategory skip (testing)
