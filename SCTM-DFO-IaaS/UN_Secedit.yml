@@ -4,29 +4,28 @@
 
 # Imported vars: RegDefaultsPath RegistryDefaults
 
-- name: SetUserList
+# - name: Try setting up a dictionary
+
+- name: SetUserDict
   set_fact:
-    ManyUsers: [Users,Backup Operators]
+    ManyUsers: { V: [Users,Backup Operators] }
 
 # AC-3 Tasks
-- name: UN_AC_3 U > Set no one to act as part of the operating system
-  win_user_right:
-    name: SeTcbPrivilege
-    users:
-    action: set
-  register: UserDelta
-  when: skip_UN_AC_3_U is not defined
+# - name: UN_AC_3 U > Set no one to act as part of the operating system
+#   win_user_right:
+#     name: SeTcbPrivilege
+#     users:
+#     action: set
+#   register: UserDelta
+#   when: skip_UN_AC_3_U is not defined
 
-- debug:
-    var: UserDelta
+# - debug:
+#     var: UserDelta
 
 - name: UN_AC_3 V > Set no one to act as part of the operating system
   win_user_right:
     name: SeInteractiveLogonRight
-    users: "{{ ManyUsers }}"
-      # - Administrators
-      # - Users
-      # - Backup Operators
+    users: "{{ '[Administrators]' if undo_UN_AC_3_V is not defined else ManyUsers.V}}"
     action: set
   register: UserDelta
   when: skip_UN_AC_3_V is not defined
