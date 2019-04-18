@@ -95,7 +95,7 @@
       - 3
     when: skip_UN_SI is defined
 
-  # Supercategory rollbacks
+  # Supercategory rollbacks (undo)
   - name: Win-UN K > Set global undo
     set_fact:
       "undo_UN_{{item}}": true
@@ -105,7 +105,7 @@
       - IA
       - SC
       - SI
-    when: undo_ALL is defined
+    when: undo_UN_ALL is defined
   
   - name: Win-UN L > Set AC supercategory undo
     set_fact:
