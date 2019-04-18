@@ -47,7 +47,7 @@
     data: "{{ 3 if undo_UN_SI_3 is not defined else RegistryDefaults.UN_SI_3.A }}"
     type: dword
     state: "{{'absent' if undo_UN_SI_3 is defined and RegistryDefaults.UN_SI_3.A == 4294967295 else 'present'}}"
-  when: skip_UN_SI_3_A
+  when: skip_UN_SI_3_A is not defined
 
 - name: UN_SI_3 B > Prevent downloading of enclosures is set to Enabled
   win_regedit:
@@ -56,7 +56,7 @@
     data: "{{ 1 if undo_UN_SI_3 is not defined else RegistryDefaults.UN_SI_3.B }}"
     type: dword
     state: "{{'absent' if undo_UN_SI_3 is defined and RegistryDefaults.UN_SI_3.B == 4294967295 else 'present'}}"
-  when: skip_UN_SI_3_B
+  when: skip_UN_SI_3_B is not defined
 
 - name: UN_SI_3 C > Notify antivirus programs when opening attachments is set to Enabled
   win_regedit:
@@ -65,7 +65,7 @@
     data: "{{ 3 if undo_UN_SI_3 is not defined else RegistryDefaults.UN_SI_3.C }}"
     type: dword
     state: "{{'absent' if undo_UN_SI_3 is defined and RegistryDefaults.UN_SI_3.C == 4294967295 else 'present'}}"
-  when: skip_UN_SI_3_C
+  when: skip_UN_SI_3_C is not defined
 
 - name: UN_SI_3 D > Turn off Data Execution Prevention for Explorer is set to Disabled
   win_regedit:
@@ -74,7 +74,7 @@
     data: "{{ 0 if undo_UN_SI_3 is not defined else RegistryDefaults.UN_SI_3.D }}"
     type: dword
     state: "{{'absent' if undo_UN_SI_3 is defined and RegistryDefaults.UN_SI_3.D == 4294967295 else 'present'}}"
-  when: skip_UN_SI_3_D
+  when: skip_UN_SI_3_D is not defined
 
 - name: UN_SI_3 E > Turn off heap termination on corruption is set to Disabled
   win_regedit:
@@ -83,4 +83,4 @@
     data: "{{ 0 if undo_UN_SI_3 is not defined else RegistryDefaults.UN_SI_3.E }}"
     type: dword
     state: "{{'absent' if undo_UN_SI_3 is defined and RegistryDefaults.UN_SI_3.E == 4294967295 else 'present'}}"
-  when: skip_UN_SI_3_E
+  when: skip_UN_SI_3_E is not defined
