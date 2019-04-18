@@ -49,7 +49,23 @@
       - 11
     when: skip_UN_AC is defined
 
-  - name: WinRoll-G > Set SC supercategory skip (testing)
+  - name: WinRoll-G > Set AU supercategory skip (testing)
+    set_fact:
+      "skip_UN_AU_{{item}}": true
+    loop:
+      - 3
+      - 6
+    when: skip_UN_AU is defined
+
+  - name: WinRoll-H > Set IA supercategory skip (testing)
+    set_fact:
+      "skip_UN_IA_{{item}}": true
+    loop:
+      - 2
+      - 5
+    when: skip_UN_IA is defined
+
+  - name: WinRoll-I > Set SC supercategory skip (testing)
     set_fact:
       "skip_UN_SC_{{item}}": true
     loop:
@@ -57,6 +73,14 @@
       - 5
       - 8
     when: skip_UN_SC is defined
+
+  - name: WinRoll-J > Set SI supercategory skip (testing)
+    set_fact:
+      "skip_UN_SI_{{item}}": true
+    loop:
+      - 2
+      - 3
+    when: skip_UN_SI is defined
 
   # Include task categories
   - name: Get Unclassed AC-3 tasks
