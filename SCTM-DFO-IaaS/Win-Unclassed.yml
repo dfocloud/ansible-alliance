@@ -154,10 +154,6 @@
     when: undo_UN_SI is defined
 
   # Include task categories
-  - name: Get former Secedit tasks (U-NN)
-    include_tasks: UN_Secedit.yml
-    when: skip_UN_Secedit is not defined
-
   - name: Get Unclassed AC-3 tasks (A-UU)
     include_tasks: UN_AC_3.yml
     when: skip_UN_AC_3 is not defined
@@ -213,6 +209,10 @@
   - name: Get Unclassed SI-3 tasks (A-E)
     include_tasks: UN_SI_3.yml
     when: skip_UN_SI_3 is not defined
+
+  - name: Get former Secedit tasks (U-NN)
+    include_tasks: UN_Secedit.yml
+    when: skip_UN_Secedit is not defined
 
 # # Task template
 # - name: SecCat_TaskCat ID > Description
