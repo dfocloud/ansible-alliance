@@ -4,7 +4,9 @@
 
 # Imported vars: RegDefaultsPath RegistryDefaults
 
-
+- name: SetUserList
+  set_fact:
+    ManyUsers: [Users,Backup Operators]
 
 # AC-3 Tasks
 - name: UN_AC_3 U > Set no one to act as part of the operating system
@@ -21,8 +23,8 @@
 - name: UN_AC_3 V > Set no one to act as part of the operating system
   win_user_right:
     name: SeInteractiveLogonRight
-    users:
-      - Administrators
+    users: "{{ ManyUsers }}"
+      # - Administrators
       # - Users
       # - Backup Operators
     action: set
