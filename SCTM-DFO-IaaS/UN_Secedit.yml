@@ -7,12 +7,16 @@
 
 
 # AC-3 Tasks
-# - name: UN_AC_3 U > Set no one to act as part of the operating system
-#   win_user_right:
-#     name: SeTcbPrivilege
-#     users:
-#     action: set
-#   when: skip_UN_AC_3_U is not defined
+- name: UN_AC_3 U > Set no one to act as part of the operating system
+  win_user_right:
+    name: SeTcbPrivilege
+    users:
+    action: set
+  register: UserDelta
+  when: skip_UN_AC_3_U is not defined
+
+- debug:
+    var: UserDelta
 
 - name: UN_AC_3 V > Set no one to act as part of the operating system
   win_user_right:
@@ -28,7 +32,7 @@
 - debug:
     var: UserDelta
 
-# SC-5 Tasks
+# # SC-5 Tasks
 # - name: UN_SC_5 F > Set no one to act as part of the operating system
 #   win_user_right:
 #     name: SeIncreaseQuotaPrivilege
@@ -37,7 +41,11 @@
 #       - LOCAL SERVICE
 #       - NETWORK SERVICE
 #     action: set
+#   register: UserDelta
 #   when: skip_UN_SC_5_F is not defined
+
+# - debug:
+#     var: UserDelta
 
 # AU-9 Tasks
 
