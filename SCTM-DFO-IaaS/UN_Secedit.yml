@@ -13,7 +13,7 @@
     name: SeTcbPrivilege
     users:
       - SYSTEM
-    register: ExistingUsers
+  register: ExistingUsers
   when: skip_UN_AC_3_U is not defined
 
 - debug:
