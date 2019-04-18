@@ -8,7 +8,7 @@
 
 - name: SetUserDict
   set_fact:
-    ManyUsers: { V: [Users,Backup Operators]}
+    ManyUsers: { V: [Administrators,Users,Backup Operators]}
 
 # AC-3 Tasks
 # - name: UN_AC_3 U > Set no one to act as part of the operating system
