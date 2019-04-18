@@ -83,59 +83,59 @@
     when: skip_UN_SI is defined
 
   # Include task categories
-  - name: Get Unclassed AC-3 tasks
+  - name: Get Unclassed AC-3 tasks (A-UU)
     include_tasks: UN_AC_3.yml
     when: skip_UN_AC_3 is not defined
 
-  - name: Get Unclassed AC-4 tasks
+  - name: Get Unclassed AC-4 tasks (A-D)
     include_tasks: UN_AC_4.yml
     when: skip_UN_AC_4 is not defined
 
-  - name: Get Unclassed AC-7 tasks
+  - name: Get Unclassed AC-7 tasks (A-C)
     include_tasks: UN_AC_7.yml
     when: skip_UN_AC_7 is not defined
 
-  - name: Get Unclassed AC-8 tasks
+  - name: Get Unclassed AC-8 tasks (A-E)
     include_tasks: UN_AC_8.yml
     when: skip_UN_AC_8 is not defined
 
-  - name: Get Unclassed AC-11 tasks
+  - name: Get Unclassed AC-11 tasks (A-D)
     include_tasks: UN_AC_11.yml
     when: skip_UN_AC_11 is not defined
 
-  - name: Get Unclassed AU-3 tasks
+  - name: Get Unclassed AU-3 tasks (A-C)
     include_tasks: UN_AU_3.yml
     when: skip_UN_AU_3 is not defined
 
-  - name: Get Unclassed AU-9 tasks
+  - name: Get Unclassed AU-9 tasks (A-C)
     include_tasks: UN_AU_9.yml
     when: skip_UN_AU_9 is not defined
 
-  - name: Get Unclassed IA-2 tasks
+  - name: Get Unclassed IA-2 tasks (A-C)
     include_tasks: UN_IA_2.yml
     when: skip_UN_IA_2 is not defined
 
-  - name: Get Unclassed IA-5 tasks
+  - name: Get Unclassed IA-5 tasks (A-L)
     include_tasks: UN_IA_5.yml
     when: skip_UN_IA_5 is not defined
 
-  - name: Get Unclassed SC-2, SC-7, and SC-10 tasks
+  - name: Get Unclassed SC-2, SC-7, and SC-10 tasks (3)
     include_tasks: UN_SC_2_7_10.yml
     when: skip_UN_SC_2_7_10 is not defined
 
-  - name: Get Unclassed SC-5 tasks
+  - name: Get Unclassed SC-5 tasks (A-E)
     include_tasks: UN_SC_5.yml
     when: skip_UN_SC_5 is not defined
 
-  - name: Get Unclassed SC-8 tasks
+  - name: Get Unclassed SC-8 tasks (A-Q)
     include_tasks: UN_SC_8.yml
     when: skip_UN_SC_8 is not defined
 
-  - name: Get Unclassed SI-2 tasks
+  - name: Get Unclassed SI-2 tasks (A-B)
     include_tasks: UN_SI_2.yml
     when: skip_UN_SI_2 is not defined
 
-  - name: Get Unclassed SI-3 tasks
+  - name: Get Unclassed SI-3 tasks (A-E)
     include_tasks: UN_SI_3.yml
     when: skip_UN_SI_3 is not defined
 
