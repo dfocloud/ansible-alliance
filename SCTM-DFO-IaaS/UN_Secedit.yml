@@ -25,7 +25,7 @@
 - name: UN_AC_3 V > Set no one to act as part of the operating system
   win_user_right:
     name: SeInteractiveLogonRight
-    users: "{{['Administrators', 'Users'] if undo_UN_AC_3_V is not defined else ManyUsers}}"
+    users: "{{['Administrators'] if undo_UN_AC_3_V is not defined else ManyUsers}}"
     action: set
   register: UserDelta
   when: skip_UN_AC_3_V is not defined
