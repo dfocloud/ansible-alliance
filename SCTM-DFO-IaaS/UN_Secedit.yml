@@ -10,7 +10,7 @@
 
 - name: UN_AC_3 U > Set no one to act as part of the operating system
   win_user_right:
-    name: SeTcbPriviledge
+    name: SeTcbPrivilege
     users:
       - SYSTEM
     register: ExistingUsers

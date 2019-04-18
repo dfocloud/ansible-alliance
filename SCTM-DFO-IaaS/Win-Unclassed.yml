@@ -105,7 +105,7 @@
       - IA
       - SC
       - SI
-    when: undo_UN_ALL is defined
+    when: undo_UN_All is defined
   
   - name: Win-UN L > Set AC supercategory undo
     set_fact:
