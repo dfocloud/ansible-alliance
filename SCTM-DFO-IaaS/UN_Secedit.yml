@@ -1,0 +1,27 @@
+---
+# Called from Windows-Rollback.yml
+# Temp file with everything that security_policy.yml normally takes care of
+
+# Imported vars: RegDefaultsPath RegistryDefaults
+
+
+
+# AC-3 Tasks
+
+- name: UN_AC_3 U > Set no one to act as part of the operating system
+  win_user_right:
+    name: SeTcbPriviledge
+    users:
+      - SYSTEM
+    register: ExistingUsers
+  when: skip_UN_AC_3_U is not defined
+
+- debug:
+    var: ExistingUsers
+
+# SC-5 Tasks
+
+
+
+# AU-9 Tasks
+
