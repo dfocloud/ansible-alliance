@@ -82,7 +82,7 @@
     set_fact:
       "skip_UN_SC_{{item}}": true
     loop:
-      - 2_7_10
+      - '2_7_10'
       - 5
       - 8
     when: skip_UN_SC is defined
