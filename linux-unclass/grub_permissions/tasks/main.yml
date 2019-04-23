@@ -1,0 +1,8 @@
+---
+- name: Removing excessive permission bits from boot configuration file (TBS compliance)
+  file:
+    path: /boot/grub2/grub.cfg
+    owner: root
+    group: root
+    mode: 0600
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"

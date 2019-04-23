@@ -2,6 +2,7 @@ add_el7_packages:
   - ntp
   - python
   - tcp_wrappers
+  - audit
   - ca-certificates
 
 add_deb_packages:
@@ -9,6 +10,7 @@ add_deb_packages:
   - ntp
   - python
   - tcpd
+  - auditd
   - aide
   - aide-common
   - ca-certificates

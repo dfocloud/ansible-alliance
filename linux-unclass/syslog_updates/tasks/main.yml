@@ -1,0 +1,30 @@
+---
+- name: Adding FileCreateMode on /var/log directory (TBS compliance)
+  blockinfile:
+    path: /etc/rsyslog.conf
+    insertafter: EOF
+    state: present
+    block: |
+      $FileCreateMode 640
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+- name: Removing excessive permission bits from log files (TBS compliance)
+  file:
+    path: /var/log
+    mode: 0740
+    recurse: yes
+
+- name: Setting ownership and permission bits on syslog configuration file (TBS compliance)
+  file:
+    path: /etc/rsyslog.conf
+    mode: 0640
+    owner: root
+    group: root
+
+- name: Setting ownership and permission bits on syslog configuration directory (TBS compliance)
+  file:
+    path: /etc/rsyslog.d
+    mode: 0740
+    owner: root
+    group: root
+    recurse: yes

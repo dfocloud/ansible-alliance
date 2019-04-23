@@ -1,0 +1,40 @@
+---
+- name: Copying /etc/motd file (TBS compliance)
+  copy:
+    src: motd
+    dest: /etc/
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Copying /etc/issue file (TBS compliance)
+  copy:
+    src: issue
+    dest: /etc/
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Copying /etc/issue.net file (TBS compliance)
+  copy:
+    src: issue.net
+    dest: /etc/
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Removing execute permission bit from files that display messages at us
+er login (TBS compliance)
+  file:
+    path: /etc/update-motd.d
+    mode: 0644
+    recurse: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Adding execute permission bit to the directory that stores user login
+message files (TBS compliance)
+  file:
+    path: /etc/update-motd.d
+    mode: 0755
+    recurse: no
+  when: ansible_distribution == "Ubuntu"

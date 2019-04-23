@@ -1,0 +1,17 @@
+---
+- name: Adding ssh session timeout value to /etc/profile (TBS compliance)
+  blockinfile:
+    path: /etc/profile
+    insertafter: EOF
+    backup: yes
+    state: present
+    block: |
+      export TMOUT=900
+
+- name: Setting umask value to 0027 (TBS compliance)
+  blockinfile:
+    path: /etc/profile
+    regex: "^umask"
+    line: "umask 0077"
+    state: present
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"

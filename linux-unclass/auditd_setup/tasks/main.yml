@@ -1,0 +1,6 @@
+---
+- name: Enabling and restarting Auditd (TBS compliance)
+  systemd:
+    name: auditd
+    enabled: yes
+    state: restarted

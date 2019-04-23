@@ -1,0 +1,9 @@
+---
+- name: Adding hard core limit to /etc/security/limits.conf file (TBS compliance)
+  blockinfile:
+    path: /etc/security/limits.conf
+    insertafter: EOF
+    backup: yes
+    state: present
+    block: |
+      * hard core 0

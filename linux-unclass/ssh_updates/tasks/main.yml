@@ -26,3 +26,10 @@
     regex: "Banner"
     line: "Banner /etc/issue.net"
     state: present
+
+- name: Disabling X11Forwarding (TBS compliance)
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regex: "X11Forwarding"
+    line: "X11Forwarding no"
+    state: present
