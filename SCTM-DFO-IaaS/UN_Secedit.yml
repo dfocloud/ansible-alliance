@@ -43,8 +43,7 @@
 # UN_SC_5_Def: "{{ UN_SC_5_Def | combine( {item.item.taskID: (item.value if item.exists else 4294967295)} ) }}"
 
 - debug:
-    var: DefaultUsers
-
+    var: UsersToAdd
 
 # # SC-5 Tasks
 # - name: UN_SC_5 F > Set no one to act as part of the operating system
