@@ -36,14 +36,14 @@
 
 - name: UN_AC_3 Vd > Set previous task defaults
   set_fact:
-    UsersToAdd: "{{ ['Administrators'] | union(UserDelta.removed) | difference(UserDelta.added) }}"
-    # DefaultUsers: "{{ DefaultUsers | combine( {'V': {{ ((['Administrators'] | union(UserDelta.removed)) | difference(UserDelta.added)) }} } ) }}"
+    # UsersToAdd: "{{ ['Administrators'] | union(UserDelta.removed) | difference(UserDelta.added) }}"
+    DefaultUsers: "{{ DefaultUsers | combine( {'V': ['Administrators'] | union(UserDelta.removed) | difference(UserDelta.added) } ) }}"
 
 # "{{ (['Administrators'] | combine(UserDelta.removed)) | difference(UserDelta.added) }}"
 # UN_SC_5_Def: "{{ UN_SC_5_Def | combine( {item.item.taskID: (item.value if item.exists else 4294967295)} ) }}"
 
 - debug:
-    var: UsersToAdd
+    var: DefaultUsers
 
 # # SC-5 Tasks
 # - name: UN_SC_5 F > Set no one to act as part of the operating system
