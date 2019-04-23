@@ -1,0 +1,21 @@
+# Task Script
+# Contains Tasks for retrieving and populating the 
+# MachineDefaults dictionary with a host's default
+# registry keys. Called from List script
+
+# Expected var(s)/fact(s):
+# - MachineDefaults (empty or populated)
+# - SecCat
+# - TaskCat
+# - RegTask (one object)
+#   - ID
+#   - RegPath
+#   - RegName
+#   - RegType (unused)
+#   - Setting (unused)
+#   - Desc (unused)
+---
+- name: "Get {{SecCat}}_{{TaskCat}} defaults"
+  win_reg_stat:
+    path: "{{ item.}}"
+    name:

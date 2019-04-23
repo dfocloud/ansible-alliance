@@ -23,7 +23,7 @@
 # - debug:
 #     var: UserDelta
 
-- name: UN_AC_3 V > Set no one to act as part of the operating system
+- name: UN_AC_3 V > Set no one to actl as part of the operating system
   win_user_right:
     name: SeInteractiveLogonRight
     users: "{{['Administrators'] if (undo_UN_AC_3_V is not defined or DefaultUsers.V is not defined) else DefaultUsers.V}}"
