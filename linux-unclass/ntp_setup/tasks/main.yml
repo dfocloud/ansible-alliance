@@ -3,12 +3,12 @@
   systemd:
     name: ntpd
     enabled: yes
-    state: restarted
+    state: started
   when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
 
 - name: Configuring NTP on Ubuntu (TBS compliance)
   systemd:
     name: ntp
     enabled: yes
-    state: restarted
+    state: started
   when: ansible_distribution == "Ubuntu"

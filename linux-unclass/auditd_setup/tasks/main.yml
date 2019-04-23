@@ -3,4 +3,4 @@
   systemd:
     name: auditd
     enabled: yes
-    state: restarted
+    state: started
