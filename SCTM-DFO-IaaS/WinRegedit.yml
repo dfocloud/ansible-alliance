@@ -17,14 +17,9 @@
 #   - Desc
 ---
 - set_fact:
-    taskName: "{{ SecCat+'_'+TaskCat+' '+RegTask.ID+' > '+RegTask.Desc }}"
-    skipVar: "{{ SecCat+'_'+TaskCat+'_'+RegTask.ID }}"
+    skipVar: "{{SecCat+'_'+TaskCat+'_'+RegTask.ID}}"
 
-- name: "{{taskName+' '+RegTask.Desc}}"
-  debug:
-    msg: "{{taskName+' '+RegTask.Desc}}"
-
-- name: "{{taskName}}"
+- name: "{{SecCat+'_'+TaskCat+' '+RegTask.Desc}}"
   win_regedit:
     path: "{{RegTask.RegPath}}"
     name: "{{RegTask.RegName}}"
