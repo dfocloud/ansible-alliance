@@ -50,5 +50,5 @@
 
 - name: Write to MachineDefaults file
   win_copy:
-    dest: "{{ MachineDefaultsPath }}"
-    content: "{{ MachineDefaults }}"
+    dest: "{{MachineDefaultsPath}}"
+    content: "{{MachineDefaults}}"
