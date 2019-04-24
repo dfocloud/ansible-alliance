@@ -20,9 +20,9 @@
     taskName: "{{ SecCat+'_'+TaskCat+' '+RegTask.ID+' > '+RegTask.Desc }}"
     skipVar: "{{ SecCat+'_'+TaskCat+'_'+RegTask.ID }}"
 
-- name: "{{RegTask.Desc}}"
+- name: "{{taskName RegTask.Desc}}"
   debug:
-    msg: "{{RegTask.Desc}}"
+    msg: "{{taskName RegTask.Desc}}"
 
 - name: "{{taskName}}"
   win_regedit:
