@@ -1,0 +1,29 @@
+# Task Script
+# Contains Tasks for handling all windows registry
+# editing. Called from a List Script
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+# - Rollbacks []
+# - Skips []
+# - SecCat
+# - TaskCat
+# - RightsTask {} (many)
+#   - ID
+#   - Name
+#   - Users []
+#   - Desc
+---
+- set_fact:
+    skipVar: "{{SecCat+'_'+TaskCat+'_'+RightsTask.ID}}"
+
+- name: "{{SecCat+'_'+TaskCat+' '+RightsTask.ID+' > 'RightsTask.Desc}}"
+  win_user_right:
+    name: "{{RightsTask.Name}}"
+    users: "{{RightsTask.Users}}"
+    action: set
+  register: UserDelta
+  when: skipVar not in Skips
+
+- name: Set default users if need be
+  when: skipVar not in Skips and MachineDefaults

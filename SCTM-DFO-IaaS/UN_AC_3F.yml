@@ -17,7 +17,7 @@
   - name: Initialize MachineDefaults dictionary
     include_tasks: WinDefaultsFile.yml
 
-  - name: Set Regedit tasks dictionary
+  - name: Set AC_3F regedit tasks dictionary
     set_fact:
       AC_3F_RegTasks:
         - { ID: A, Value: 1, RegType: dword, RegName: LimitBlankPasswordUse, 
@@ -27,7 +27,9 @@
         RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', 
         Desc: 'Prevent printer driver installation for non-admins'}
 
-  - name: Get Regedit Defaults
+  - name: Set AC_3F user rights tasks dictionary
+
+  - name: Get regedit Defaults
     include_tasks: WinRegStat.yml
     vars:
       SecCat: UN
@@ -35,7 +37,7 @@
       RegTasks: "{{ AC_3F_RegTasks }}"
     when: "not \"UN_AC_3F\" in MachineDefaults"
 
-  - name: Run Regedit Tasks
+  - name: Run regedit Tasks
     include_tasks: WinRegedit.yml
     vars:
       SecCat: UN
@@ -43,3 +45,6 @@
     loop: "{{ AC_3F_RegTasks }}"
     loop_control:
       loop_var: RegTask
+
+  - name: Run user rights tasks
+    

@@ -5,11 +5,11 @@
 # the host. Called from a List script
 
 # Expected var(s)/fact(s):
-# - MachineDefaults (empty or populated)
+# - MachineDefaults {} (empty or populated)
 # - MachineDefaultsPath
 # - SecCat (Security Category, such as UN)
 # - TaskCat (Task Category, such as AC_3)
-# - RegTasks (one object)
+# - RegTasks [{}] (one object)
 #   - ID
 #   - RegPath
 #   - RegName

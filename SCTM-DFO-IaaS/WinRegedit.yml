@@ -3,12 +3,12 @@
 # editing. Called from a List Script
 
 # Expected vars/facts:
-# - MachineDefaults (populated)
-# - Rollbacks
-# - Skips
+# - MachineDefaults {} (populated)
+# - Rollbacks []
+# - Skips []
 # - SecCat
 # - TaskCat
-# - RegTask (many)
+# - RegTask {} (many)
 #   - ID
 #   - RegPath
 #   - RegName

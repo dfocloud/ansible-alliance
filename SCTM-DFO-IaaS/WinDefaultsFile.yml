@@ -4,7 +4,7 @@
 # the creation of its file on the host
 
 # Expected vars/facts:
-# - MachineDefaults (empty or populated)
+# - MachineDefaults {} (empty or populated)
 # - MachineDefaultsPath
 ---
 - name: Search for defaults file
