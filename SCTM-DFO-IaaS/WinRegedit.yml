@@ -22,7 +22,7 @@
     MachineDefaults.{{SecCat}}_{{TaskCat}}.{{RegTask.ID}} }}"
     type: "{{RegTask.RegType}}"
     state: "{{'absent' if 
-    (undo_{{SecCat}}_{{TaskCat}} is defined and 
-    MachineDefaults.{{SecCat}}_{{TaskCat}}.{{RegTask.ID}} == 4294967295)
+    undo_{{SecCat}}_{{TaskCat}} is defined and 
+    MachineDefaults.{{SecCat}}_{{TaskCat}}.{{RegTask.ID}} == 4294967295
     else 'present'}}"
   when: "skip_{{SecCat}}_{{TaskCat}}_{{RegTask.ID}} is not defined"
