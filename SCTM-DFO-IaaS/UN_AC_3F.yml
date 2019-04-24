@@ -4,20 +4,20 @@
 - hosts: all
   become_method: runas
   vars:
+    MachineDefaults: {}
     MachineDefaultsPath: C:\AnsibleMachineDefaults.yml
   tasks:
 
-  - name: Set defaults dictonary
-    set_fact:
-        MachineDefaults: {}
+  - name: Initialize MachineDefaults dictionary
+    include_tasks: WinDefaultsFile.yml
 
-  - name: Set tasks dictionary
+  - name: Set Regedit tasks dictionary
     set_fact:
       AC_3F_RegTasks:
-        - { ID: A, Setting: 1, RegType: dword, RegName: LimitBlankPasswordUse, 
+        - { ID: A, Value: 1, RegType: dword, RegName: LimitBlankPasswordUse, 
         RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
         Desc: 'Restrict use of blank passwords'}
-        - { ID: B, Setting: 1, RegType: dword, RegName: AddPrinterDrivers, 
+        - { ID: B, Value: 1, RegType: dword, RegName: AddPrinterDrivers, 
         RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', 
         Desc: 'Prevent printer driver installation for non-admins'}
 

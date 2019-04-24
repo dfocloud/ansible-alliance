@@ -14,7 +14,7 @@
 #   - RegPath
 #   - RegName
 #   - RegType (unused)
-#   - Setting (unused)
+#   - Value (unused)
 #   - Desc (unused)
 ---
 - name: Set process identifier name
@@ -33,7 +33,7 @@
 
 - name: Clear
   set_fact:
-      KeyDictionary: {}
+    KeyDictionary: {}
 
 - name: Add keys to a dictionary
   set_fact:
