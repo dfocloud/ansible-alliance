@@ -5,11 +5,6 @@
   set_fact:
       MachineDefaults: {}
 
-- name: Populate defaults dictonary
-  set_fact:
-      MachineDefaults: {}
-  when: 
-
 - name: Set tasks dictionary
   set_fact:
     AC_3F_RegTasks:
@@ -20,13 +15,22 @@
       RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', 
       Desc: 'Prevent printer driver installation for non-admins'}
 
+- debug:
+    var: AC_3F_RegTasks
 
-
-- name: Run Regedit Tasks
-  include_tasks: WinRegedit.yml
+- name: Get Regedit Defaults
+  include_tasks: WinRegStat.yml
   vars:
     SecCat: UN
     TaskCat: AC_3F
-  loop: "{{ AC_3F_RegTasks }}"
-  loop_control:
-    loop_var: regTask
+    RegTasks: "{{ AC_3F_RegTasks }}"
+  when: "not UN_AC_3F in MachineDefaults"
+
+# - name: Run Regedit Tasks
+#   include_tasks: WinRegedit.yml
+#   vars:
+#     SecCat: UN
+#     TaskCat: AC_3F
+#   loop: "{{ AC_3F_RegTasks }}"
+#   loop_control:
+#     loop_var: RegTask

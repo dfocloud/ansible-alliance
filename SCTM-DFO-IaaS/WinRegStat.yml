@@ -7,7 +7,7 @@
 # - MachineDefaults (empty or populated)
 # - SecCat
 # - TaskCat
-# - RegTask (one object)
+# - RegTasks (one object)
 #   - ID
 #   - RegPath
 #   - RegName
@@ -15,7 +15,23 @@
 #   - Setting (unused)
 #   - Desc (unused)
 ---
+- debug:
+    var: RegTasks
+
 - name: "Get {{SecCat}}_{{TaskCat}} defaults"
   win_reg_stat:
-    path: "{{ item.}}"
-    name:
+    path: "{{ item.RegPath }}"
+    name: "{{ item.RegName }}"
+  register: KeyResults
+  loop: "{{RegTasks}}"
+
+- debug:
+    var: KeyResults
+
+# - name: Clear
+#   set_fact:
+#       KeyDictionary: {}
+
+# - name: Add keys to dictionarys
+#   set_fact:
+#       KeyDictionary: "{{ KeyDictionary |combine( {item.item.} )}}"
