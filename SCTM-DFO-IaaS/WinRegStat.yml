@@ -5,6 +5,7 @@
 
 # Expected var(s)/fact(s):
 # - MachineDefaults (empty or populated)
+# - MachineDefaultsPath
 # - SecCat
 # - TaskCat
 # - RegTasks (one object)
@@ -28,10 +29,24 @@
 - debug:
     var: KeyResults
 
-# - name: Clear
-#   set_fact:
-#       KeyDictionary: {}
+- name: Clear
+  set_fact:
+      KeyDictionary: {}
 
-# - name: Add keys to dictionarys
-#   set_fact:
-#       KeyDictionary: "{{ KeyDictionary |combine( {item.item.} )}}"
+- name: Add keys to a dictionary
+  set_fact:
+    KeyDictionary: "{{KeyDictionary |combine( 
+      {item.item.ID: (item.value if item.exists else 4294967295) } 
+      )}}"
+  loop: "{{KeyResults}}"
+
+- name: Put category defaults in the MachineDefaults dictionary
+  set_fact:
+    MachineDefaults: "{{MachineDefaults |combine({
+      '{{SecCat}}_{{TaskCat}}':KeyDictionary
+    })}}"
+
+- name: Write to MachineDefaults file
+  win_copy:
+    dest: "{{ MachineDefaultsPath }}"
+    content: "{{ MachineDefaults }}"

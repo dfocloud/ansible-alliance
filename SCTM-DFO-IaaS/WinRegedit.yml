@@ -24,7 +24,7 @@
     data: "{{ RegTask.Setting if (undo_{{SecCat}}_{{TaskCat}} is defined and MachineDefaults.{{SecCat}}_{{TaskCat}}.{{RegTask.ID}} }}"
     type: "{{RegTask.RegType}}"
     state: "{{'absent' if (undo_{{SecCat}}_{{TaskCat}} is defined and MachineDefaults.{{SecCat}}_{{TaskCat}}.{{RegTask.ID}} == 4294967295) else 'present'}}"
-  when: "skip_{{SecCat}}_{{TaskCat}}_{{RegTask.ID}}"
+  when: "skip_{{SecCat}}_{{TaskCat}}_{{RegTask.ID}} is not defined"
 
 # # Tasks
 # - name: UN_SC-5 A > Set computer to restart for updates even if user(s) logged in
