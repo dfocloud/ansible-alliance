@@ -15,7 +15,7 @@
       Rollbacks: "{{ Rollbacks|default(['Metroid']) }}"
 
   - set_fact:
-      Customs: "{{ Customs|default({}}) }}"
+      Customs: "{{ Customs|default({}) }}"
 
   - debug:
       var: Skips
