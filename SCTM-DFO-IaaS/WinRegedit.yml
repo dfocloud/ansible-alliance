@@ -16,9 +16,8 @@
 #   - Value
 #   - Desc
 ---
-- name: "{{ SecCat+'_'+TaskCat+' '+RegTask.TaskID+' > '+RegTask.Desc }}"
-  debug:
-    msg: Title test
+- set_fact:
+    skipVar: "{{ SecCat+'_'+TaskCat+'_'+RegTask.ID }}"
 
 - name: "{{SecCat}}_{{TaskCat}} {{RegTask.TaskID}} > {{RegTask.Desc}}"
   win_regedit:
@@ -27,4 +26,4 @@
     data: "{{ RegTask.Value if SecCat+'_'+TaskCat not in Rollbacks else MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] }}"
     type: "{{RegTask.RegType}}"
     state: "{{ 'absent' if SecCat+'_'+TaskCat not in Rollbacks and MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] == 4294967295) else 'present' }}"
-  when: "{{ SecCat+'_'+TaskCat not in Skips }}"
+  when: skipVar not in Skips
