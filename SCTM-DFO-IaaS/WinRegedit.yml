@@ -16,7 +16,7 @@
 #   - Value
 #   - Desc
 ---
-- name: "{{ SecCat+'_'+TaskCat RegTask.TaskID > RegTask.Desc }}"
+- name: "{{SecCat}}_{{TaskCat}} {{RegTask.TaskID}} > {{RegTask.Desc}}"
   debug:
     msg: Title test
 
@@ -26,5 +26,5 @@
     name: "{{RegTask.RegName}}"
     data: "{{ RegTask.Value if SecCat+'_'+TaskCat not in Rollbacks else MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] }}"
     type: "{{RegTask.RegType}}"
-    state: "{{ absent if (undo_{{SecCat}}_{{TaskCat}} is defined and MachineDefaults.{{SecCat}}_{{TaskCat}}.{{RegTask.ID}} == 4294967295) else present }}"
+    state: "{{ 'absent' if SecCat+'_'+TaskCat not in Rollbacks and MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] == 4294967295) else 'present' }}"
   when: SecCat+'_'+TaskCat not in Skips
