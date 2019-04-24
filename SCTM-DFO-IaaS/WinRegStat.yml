@@ -16,18 +16,19 @@
 #   - Setting (unused)
 #   - Desc (unused)
 ---
-- debug:
-    var: RegTasks
+- name: Set process identifier name
+  set_fact:
+    ProcessID: "{{SecCat}}_{{TaskCat}}"
 
-- name: "Get {{SecCat}}_{{TaskCat}} defaults"
+- debug:
+    var: ProcessID
+
+- name: "Get {{ProcessID}} defaults"
   win_reg_stat:
     path: "{{ item.RegPath }}"
     name: "{{ item.RegName }}"
   register: MachineKeys
   loop: "{{RegTasks}}"
-
-- debug:
-    var: MachineKeys
 
 - name: Clear
   set_fact:
@@ -43,7 +44,7 @@
 - name: Put category defaults in the MachineDefaults dictionary
   set_fact:
     MachineDefaults: "{{MachineDefaults |combine({
-      '{{SecCat}}_{{TaskCat}}':KeyDictionary
+      ProcessID:KeyDictionary
     })}}"
 
 - name: Write to MachineDefaults file
