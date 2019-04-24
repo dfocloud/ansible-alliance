@@ -4,7 +4,7 @@
 - hosts: all
   become_method: runas
   vars:
-    Skips: "{{ Skips|default(['HeheXD']) }}"
+    #Skips: "{{ Skips|default(['HeheXD']) }}"
     Rollbacks: Rollbacks|default(['Metroid'])
     Customs: Customs|default({})
     MachineDefaults: {}
@@ -12,7 +12,7 @@
   tasks:
 
   - debug:
-      var: Skips
+      var: "{{ Skips|default(['HeheXD']) }}"
 
   - debug:
       var: Rollbacks
