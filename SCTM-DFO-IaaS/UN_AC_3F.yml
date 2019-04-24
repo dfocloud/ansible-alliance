@@ -35,9 +35,6 @@
       RegTasks: "{{ AC_3F_RegTasks }}"
     when: "not \"UN_AC_3F\" in MachineDefaults"
 
-  - debug:
-      var: Skips
-
   - name: Run Regedit Tasks
     include_tasks: WinRegedit.yml
     vars:
