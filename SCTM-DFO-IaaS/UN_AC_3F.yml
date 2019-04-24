@@ -8,23 +8,11 @@
     MachineDefaultsPath: C:\AnsibleMachineDefaults.yml
   tasks:
 
-  - set_fact:
+  - name: Initialize template facts
+    set_fact:
       Skips: "{{ Skips|default(['HeheXD']) }}"
-
-  - set_fact:
       Rollbacks: "{{ Rollbacks|default(['Metroid']) }}"
-
-  - set_fact:
       Customs: "{{ Customs|default({}) }}"
-
-  - debug:
-      var: Skips
-
-  - debug:
-      var: Rollbacks
-
-  - debug:
-      var: Customs
 
   - name: Initialize MachineDefaults dictionary
     include_tasks: WinDefaultsFile.yml
