@@ -23,11 +23,11 @@
   win_reg_stat:
     path: "{{ item.RegPath }}"
     name: "{{ item.RegName }}"
-  register: KeyResults
+  register: MachineKeys
   loop: "{{RegTasks}}"
 
 - debug:
-    var: KeyResults
+    var: MachineKeys
 
 - name: Clear
   set_fact:
@@ -38,7 +38,7 @@
     KeyDictionary: "{{KeyDictionary |combine( 
       {item.item.ID: (item.value if item.exists else 4294967295) } 
       )}}"
-  loop: "{{KeyResults}}"
+  loop: "{{MachineKeys.Results}}"
 
 - name: Put category defaults in the MachineDefaults dictionary
   set_fact:
