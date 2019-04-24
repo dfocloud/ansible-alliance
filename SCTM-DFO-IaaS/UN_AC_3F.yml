@@ -1,36 +1,42 @@
 # List Script 
 # Fake script to test the WinRegedit Task File
 ---
-- name: Set defaults dictonary
-  set_fact:
-      MachineDefaults: {}
-
-- name: Set tasks dictionary
-  set_fact:
-    AC_3F_RegTasks:
-      - { ID: A, Setting: 1, RegType: dword, RegName: LimitBlankPasswordUse, 
-      RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
-      Desc: 'Restrict use of blank passwords'}
-      - { ID: B, Setting: 1, RegType: dword, RegName: AddPrinterDrivers, 
-      RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', 
-      Desc: 'Prevent printer driver installation for non-admins'}
-
-- debug:
-    var: AC_3F_RegTasks
-
-- name: Get Regedit Defaults
-  include_tasks: WinRegStat.yml
+- hosts: all
+  become_method: runas
   vars:
-    SecCat: UN
-    TaskCat: AC_3F
-    RegTasks: "{{ AC_3F_RegTasks }}"
-  when: "not UN_AC_3F in MachineDefaults"
+    MachineDefaultsPath: C:\AnsibleMachineDefaults.yml
+  tasks:
 
-# - name: Run Regedit Tasks
-#   include_tasks: WinRegedit.yml
-#   vars:
-#     SecCat: UN
-#     TaskCat: AC_3F
-#   loop: "{{ AC_3F_RegTasks }}"
-#   loop_control:
-#     loop_var: RegTask
+  - name: Set defaults dictonary
+    set_fact:
+        MachineDefaults: {}
+
+  - name: Set tasks dictionary
+    set_fact:
+      AC_3F_RegTasks:
+        - { ID: A, Setting: 1, RegType: dword, RegName: LimitBlankPasswordUse, 
+        RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
+        Desc: 'Restrict use of blank passwords'}
+        - { ID: B, Setting: 1, RegType: dword, RegName: AddPrinterDrivers, 
+        RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', 
+        Desc: 'Prevent printer driver installation for non-admins'}
+
+  - debug:
+      var: AC_3F_RegTasks
+
+  - name: Get Regedit Defaults
+    include_tasks: WinRegStat.yml
+    vars:
+      SecCat: UN
+      TaskCat: AC_3F
+      RegTasks: "{{ AC_3F_RegTasks }}"
+    when: "not UN_AC_3F in MachineDefaults"
+
+  - name: Run Regedit Tasks
+    include_tasks: WinRegedit.yml
+    vars:
+      SecCat: UN
+      TaskCat: AC_3F
+    loop: "{{ AC_3F_RegTasks }}"
+    loop_control:
+      loop_var: RegTask
