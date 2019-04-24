@@ -38,7 +38,7 @@
     KeyDictionary: "{{KeyDictionary |combine( 
       {item.item.ID: (item.value if item.exists else 4294967295) } 
       )}}"
-  loop: "{{MachineKeys.Results}}"
+  loop: "{{MachineKeys.results}}"
 
 - name: Put category defaults in the MachineDefaults dictionary
   set_fact:
