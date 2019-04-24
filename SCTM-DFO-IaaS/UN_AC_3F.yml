@@ -4,6 +4,9 @@
 - hosts: all
   become_method: runas
   vars:
+    Skip: Skips|default([])
+    Rollback: Rollbacks|default([])
+    Custom: Customs|default({})
     MachineDefaults: {}
     MachineDefaultsPath: C:\AnsibleMachineDefaults.yml
   tasks:

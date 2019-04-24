@@ -4,6 +4,8 @@
 
 # Expected vars/facts:
 # - MachineDefaults (populated)
+# - Rollbacks
+# - Skips
 # - SecCat
 # - TaskCat
 # - RegTask (many)
@@ -14,11 +16,15 @@
 #   - Value
 #   - Desc
 ---
+- name: "{{ SecCat+'_'+TaskCat RegTask.TaskID > RegTask.Desc }}"
+  debug:
+    msg: Title test
+
 - name: "{{SecCat}}_{{TaskCat}} {{RegTask.TaskID}} > {{RegTask.Desc}}"
   win_regedit:
     path: "{{RegTask.RegPath}}"
     name: "{{RegTask.RegName}}"
-    data: "{{RegTask.Value}} if undo_{{SecCat}}_{{TaskCat}} is not defined else MachineDefaults.{{SecCat}}_{{TaskCat}}.{{RegTask.ID}}"
+    data: "{{ RegTask.Value if SecCat+'_'+TaskCat not in Rollbacks else MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] }}"
     type: "{{RegTask.RegType}}"
-    state: "{{absent if (undo_{{SecCat}}_{{TaskCat}} is defined and MachineDefaults.{{SecCat}}_{{TaskCat}}.{{RegTask.ID}} == 4294967295) else present}}"
-  # when: "skip_{{SecCat}}_{{TaskCat}}_{{RegTask.ID}} is not defined"
+    state: "{{ absent if (undo_{{SecCat}}_{{TaskCat}} is defined and MachineDefaults.{{SecCat}}_{{TaskCat}}.{{RegTask.ID}} == 4294967295) else present }}"
+  when: SecCat+'_'+TaskCat not in Skips
