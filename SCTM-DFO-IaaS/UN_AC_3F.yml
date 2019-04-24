@@ -4,19 +4,19 @@
 - hosts: all
   become_method: runas
   vars:
-    Skip: "{{ Skips|default(['HeheXD']) }}"
-    Rollback: Rollbacks|default(['Metroid'])
-    Custom: Customs|default({})
+    Skips: "{{ Skips|default(['HeheXD']) }}"
+    Rollbacks: Rollbacks|default(['Metroid'])
+    Customs: Customs|default({})
     MachineDefaults: {}
     MachineDefaultsPath: C:\AnsibleMachineDefaults.yml
   tasks:
 
   - debug:
       var: Skips
-  
+
   - debug:
       var: Rollbacks
-  
+
   - debug:
       var: Customs
 
