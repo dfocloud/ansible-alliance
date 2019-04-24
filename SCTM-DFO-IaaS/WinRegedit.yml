@@ -19,7 +19,7 @@
 - set_fact:
     skipVar: "{{ SecCat+'_'+TaskCat+'_'+RegTask.ID }}"
 
-- name: skipVar > RegTask.Desc
+- name: "{{skipVar}}"
   win_regedit:
     path: "{{RegTask.RegPath}}"
     name: "{{RegTask.RegName}}"

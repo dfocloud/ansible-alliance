@@ -21,9 +21,6 @@
   set_fact:
     ProcessID: "{{SecCat}}_{{TaskCat}}"
 
-- debug:
-    var: ProcessID
-
 - name: "Get {{ProcessID}} defaults"
   win_reg_stat:
     path: "{{ item.RegPath }}"
