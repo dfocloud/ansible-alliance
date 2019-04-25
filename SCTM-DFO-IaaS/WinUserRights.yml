@@ -48,8 +48,7 @@
 
 - name: Add default users dictionary to MachineDefaults
   set_fact:
-    MachineDefaults: "{{ MachineDefaults |combine({
-      defEntry: defaultUsers }) }}"
+    MachineDefaults: "{{ MachineDefaults |combine(defaultUsers) }}"
 
 - name: Write to MachineDefaults file
   win_copy:

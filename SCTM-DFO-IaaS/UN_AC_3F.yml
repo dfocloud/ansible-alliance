@@ -1,4 +1,4 @@
-# List Script 
+# List Script
 # Fake script to test the WinRegedit Task File
 ---
 - hosts: all
