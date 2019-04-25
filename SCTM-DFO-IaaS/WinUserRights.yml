@@ -3,7 +3,7 @@
 # editing. Called from a List Script
 
 # Expected vars/facts:
-# - MachineDefaults {} (populated)
+# - MachineDefaults {} (populated and with SecCat_TaskCat: {} entry)
 # - Rollbacks []
 # - Skips []
 # - SecCat
@@ -15,15 +15,20 @@
 #   - Desc
 ---
 - set_fact:
-    skipVar: "{{SecCat+'_'+TaskCat+'_'+RightsTask.ID}}"
+    skipVar: "{{ SecCat+'_'+TaskCat+'_'+RightsTask.ID }}"
 
-- name: "{{SecCat+'_'+TaskCat+' '+RightsTask.ID+' > 'RightsTask.Desc}}"
+- name: "{{ SecCat+'_'+TaskCat+' '+RightsTask.ID+' > 'RightsTask.Desc }}"
   win_user_right:
-    name: "{{RightsTask.Name}}"
-    users: "{{RightsTask.Users}}"
+    name: "{{ RightsTask.Name }}"
+    users: "{{ RightsTask.Users }}"
     action: set
   register: UserDelta
   when: skipVar not in Skips
 
-- name: Set default users if need be
-  when: skipVar not in Skips and MachineDefaults
+- name: Set default users if not set
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults[SecCat+'_'+TaskCat] | combine(
+    {RightsTask.ID: RightsTask.Users | union(UserDelta.removed)
+    | difference(UserDelta.added)} ) }}"
+  when: "{{ skipVar not in Skips and RightsTask.ID
+  not in MachineDefaults[SecCat+'_'+TaskCat] }}"
