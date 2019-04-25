@@ -26,6 +26,12 @@
   register: UserDelta
   when: skipVar not in Skips
 
+- default:
+    var: defEntry
+
+- default:
+    var: MachineDefaults[defEntry]
+
 - name: Set default users if not set
   set_fact:
     MachineDefaults: "{{ MachineDefaults[SecCat+'_'+TaskCat] |combine({

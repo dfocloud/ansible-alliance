@@ -42,8 +42,7 @@
 - name: Put category defaults in the MachineDefaults dictionary
   set_fact:
     MachineDefaults: "{{MachineDefaults |combine({
-      ProcessID:KeyDictionary
-    })}}"
+      ProcessID:KeyDictionary })}}"
 
 - name: Write to MachineDefaults file
   win_copy:
