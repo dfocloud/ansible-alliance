@@ -16,7 +16,7 @@
 ---
 - set_fact:
     skipVar: "{{ SecCat+'_'+TaskCat+'_'+RightsTask.ID }}"
-    defEntry: "{{ SecCat+'_'TaskCat }}"
+    defEntry: "{{ SecCat+'_'+TaskCat }}"
 
 - name: "{{SecCat+'_'+TaskCat+' '+RightsTask.ID+' > '+RightsTask.Desc}}"
   win_user_right:
