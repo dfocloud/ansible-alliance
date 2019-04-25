@@ -26,15 +26,15 @@
   register: UserDelta
   when: skipVar not in Skips
 
-- default:
+- debug:
     var: defEntry
 
-- default:
+- debug:
     var: MachineDefaults[defEntry]
 
 - name: Set default users if not set
   set_fact:
-    MachineDefaults: "{{ MachineDefaults[SecCat+'_'+TaskCat] |combine({
+    MachineDefaults: "{{ MachineDefaults[defEntry] |combine({
     RightsTask.ID: RightsTask.Users |union(UserDelta.removed)
     |difference(UserDelta.added)}) }}"
   when: skipVar not in Skips and RightsTask.ID not in MachineDefaults[defEntry]
