@@ -22,7 +22,9 @@
     MachineDefaults: "{{ MachineDefaults | combine(defEntry: {}) }}"
   when: "not defEntry in MachineDefaults"
 
-- name: "{{SecCat+'_'+TaskCat+' '+item.ID+' > '+item.Desc}}"
+# Get skips
+
+- name: "{{defEntry+' user rights tasks'}}"
   win_user_right:
     name: "{{item.Name}}"
     users: "{{item.Users}}"
@@ -36,6 +38,13 @@
       item.item.ID: item.item.Users |union(item.removed)
       |difference(item.added) }) }}"
   loop: "{{ UserDelta.results }}"
+# Apply skips
+
+- debug:
+    var: defaultUsers
+
+- debug:
+    var: MachineDefaults
 
 - name: Add default users dictionary to MachineDefaults
   set_fact:

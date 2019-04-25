@@ -24,9 +24,15 @@
         - { ID: A, Value: 1, RegType: dword, RegName: LimitBlankPasswordUse, 
         RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
         Desc: 'Restrict use of blank passwords'}
+        # Default 1
         - { ID: B, Value: 1, RegType: dword, RegName: AddPrinterDrivers, 
         RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', 
         Desc: 'Prevent printer driver installation for non-admins'}
+        # Default 1
+        - { ID: C, Value: 1, RegType: dword, RegName: ForceUnlockLogon, 
+        RegPath: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon', 
+        Desc: 'Require Domain Controller Authentication to unlock computer'}
+        # Default 0
 
   - name: Get regedit Defaults
     include_tasks: WinRegStat.yml
@@ -49,14 +55,14 @@
   - name: Set AC_3F user rights tasks dictionary
     set_fact:
       AC_3F_Rights:
-        - { ID: C, Name: SeTcbPrivilege, Users: [],
+        - { ID: AA, Name: SeTcbPrivilege, Users: [],
         Desc: Set no one to act as part of the operating system }
         # Default []
-        - { ID: D, Name: SeInteractiveLogonRight, Users: ['Administrators'],
+        - { ID: BB, Name: SeInteractiveLogonRight, Users: ['Administrators'],
         Desc: Only allow admins to log on locally }
         # Default ['Administrators','Users','Backup Operators']
 
-  - name: Run user rights tasks
+  - name: Run user rights Tasks # simultaneously saves defaults
     include_tasks: WinUserRights.yml
     vars:
       SecCat: UN
