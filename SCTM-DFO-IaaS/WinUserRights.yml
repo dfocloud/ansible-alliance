@@ -22,7 +22,11 @@
     MachineDefaults: "{{ MachineDefaults | combine(defEntry: {}) }}"
   when: "not defEntry in MachineDefaults"
 
-# Get skips
+- name: Load which tasks to skip
+  set_fact:
+    SkipIDs: "{{ SkipIDs|default([]) + [item.lstrip(defEntry+'_')]
+      if defEntry in item else SkipIDs|default([]) }}"
+  loop: "{{ Skips }}"
 
 - name: "{{defEntry+' user rights tasks'}}"
   win_user_right:
@@ -38,17 +42,7 @@
       item.item.ID: item.item.Users |union(item.removed)
       |difference(item.added) }) }}"
   loop: "{{ UserDelta.results }}"
-# Apply skips
-
-# - name: Put main dictionary defaults in temp one
-#   set_fact:
-#     defaultUsers: "{{ defaultUsers |combine(MachineDefaults[defEntry]) }}"
-
-- debug:
-    var: defaultUsers
-
-- debug:
-    var: MachineDefaults
+  when: not item.item.ID in SkipIDs
 
 - name: Add default users dictionary to MachineDefaults
   set_fact:
