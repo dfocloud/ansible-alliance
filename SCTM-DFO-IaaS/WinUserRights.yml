@@ -40,9 +40,9 @@
   loop: "{{ UserDelta.results }}"
 # Apply skips
 
-- name: Put main dictionary defaults in temp one
-  set_fact:
-    defaultUsers: "{{ defaultUsers |combine(MachineDefaults[defEntry]) }}"
+# - name: Put main dictionary defaults in temp one
+#   set_fact:
+#     defaultUsers: "{{ defaultUsers |combine(MachineDefaults[defEntry]) }}"
 
 - debug:
     var: defaultUsers
@@ -52,7 +52,8 @@
 
 - name: Add default users dictionary to MachineDefaults
   set_fact:
-    MachineDefaults: "{{ MachineDefaults |combine({defEntry:defaultUsers}) }}"
+    MachineDefaults: "{{ MachineDefaults |combine({ defEntry:
+      MachineDefaults[defEntry] |combine(defaultUsers) }) }}"
 
 - name: Write to MachineDefaults file
   win_copy:
