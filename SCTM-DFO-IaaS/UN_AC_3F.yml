@@ -49,28 +49,16 @@
   - name: Set AC_3F user rights tasks dictionary
     set_fact:
       AC_3F_Rights:
-        - { ID: C, Name: SeTcbPrivilege,
-        Users: [], # Default []
+        - { ID: C, Name: SeTcbPrivilege, Users: [],
         Desc: Set no one to act as part of the operating system }
+        # Default []
         - { ID: D, Name: SeInteractiveLogonRight, Users: ['Administrators'],
         Desc: Only allow admins to log on locally }
         # Default ['Administrators','Users','Backup Operators']
-
-  - name: Initialize dictionary user rights defaults
-    set_fact:
-      MachineDefaults: "{{ MachineDefaults | combine(\"UN_AC_3F\": {}) }}"
-    when: "not \"UN_AC_3F\" in MachineDefaults"
 
   - name: Run user rights tasks
     include_tasks: WinUserRights.yml
     vars:
       SecCat: UN
       TaskCat: AC_3F
-    loop: "{{ AC_3F_Rights }}"
-    loop_control:
-      loop_var: RightsTask
-
-  - name: Write to MachineDefaults file
-    win_copy:
-      dest: "{{ MachineDefaultsPath }}"
-      content: "{{ MachineDefaults }}"
+      RightsTasks: "{{ AC_3F_Rights }}"
