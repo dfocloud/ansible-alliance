@@ -22,10 +22,10 @@
     MachineDefaults: "{{ MachineDefaults | combine(defEntry: {}) }}"
   when: "not defEntry in MachineDefaults"
 
-- name: "{{SecCat+'_'+TaskCat+' '+RightsTask.ID+' > '+RightsTask.Desc}}"
+- name: "{{SecCat+'_'+TaskCat+' '+item.ID+' > '+item.Desc}}"
   win_user_right:
-    name: "{{RightsTask.Name}}"
-    users: "{{RightsTask.Users}}"
+    name: "{{item.Name}}"
+    users: "{{item.Users}}"
     action: set
   register: UserDelta
   loop: "{{ RightsTasks }}"
