@@ -32,13 +32,17 @@
   register: UserDelta
   loop: "{{ RightsTasks }}"
 
-- name: Add default users into a dictionary
+- name: Add default users into a temp dictionary
   set_fact:
     defaultUsers: "{{ defaultUsers|default({}) |combine({
       item.item.ID: item.item.Users |union(item.removed)
       |difference(item.added) }) }}"
   loop: "{{ UserDelta.results }}"
 # Apply skips
+
+- name: Put main dictionary defaults in temp one
+  set_fact:
+    defaultUsers: "{{ defaultUsers |combine(MachineDefaults[defEntry]) }}"
 
 - debug:
     var: defaultUsers
@@ -48,7 +52,7 @@
 
 - name: Add default users dictionary to MachineDefaults
   set_fact:
-    MachineDefaults: "{{ MachineDefaults |combine(defaultUsers) }}"
+    MachineDefaults: "{{ MachineDefaults |combine({defEntry:defaultUsers}) }}"
 
 - name: Write to MachineDefaults file
   win_copy:
