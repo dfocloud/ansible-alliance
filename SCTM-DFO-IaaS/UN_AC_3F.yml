@@ -37,7 +37,7 @@
       SecCat: UN
       TaskCat: AC_3F
       RegTasks: "{{ AC_3F_RegTasks }}"
-    when: not \"UN_AC_3F\" in MachineDefaults
+    when: not "UN_AC_3F" in MachineDefaults
 
   - name: Run regedit tasks
     include_tasks: WinRegedit.yml
@@ -82,7 +82,7 @@
     include_tasks: WinCommandDef.yml
     vars:
       ComTasks: "{{AC_3F_ComTasks}}"
-    when: not \"UN_AC_3F\" in MachineDefaults
+    when: not "UN_AC_3F" in MachineDefaults
 
   - name: Run windows command tasks
     include_tasks: WinCommand.yml
