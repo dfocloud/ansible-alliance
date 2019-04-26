@@ -85,7 +85,7 @@
     when: not \"UN_AC_3F\" in MachineDefaults
 
   - name: Run windows command tasks
-    include_taks: WinCommand.yml
+    include_tasks: WinCommand.yml
     vars:
       SecCat: UN
       TaskCat: AC_3F
