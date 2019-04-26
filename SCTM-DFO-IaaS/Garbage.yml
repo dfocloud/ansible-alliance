@@ -2,8 +2,12 @@
 - hosts: all
   vars:
     MachineDefaults: {}
-    Sec_Task: 'UN_AC_3F'
+    SecCat: UN
+    TaskCat: AC_3F
   tasks:
+
+  - set_fact:
+      Sec_Task: "{{SecCat}}_{{TaskCat}}"
 
   - name: Initia-friking-lize
     set_fact:
