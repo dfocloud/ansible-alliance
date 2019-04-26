@@ -4,7 +4,7 @@
 - hosts: all
   become_method: runas
   vars:
-    MachineDefaults: {}
+    MachineDefaults: { Metroid: Prime }
     MachineDefaultsPath: C:\AnsibleMachineDefaults.yml
   tasks:
 
