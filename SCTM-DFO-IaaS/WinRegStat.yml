@@ -25,7 +25,7 @@
 - name: "Initialize {{Sec_Task}} defaults"
   set_fact:
     MachineDefaults: "{{ MachineDefaults | combine({ 
-      Sec_Task: { Metroid: Prime } }) }}"
+      Sec_Task: { 'Metroid': 'Prime' } }) }}"
   when: not Sec_Task in MachineDefaults
 
 - name: "Get {{Sec_Task}} defaults"
