@@ -17,32 +17,34 @@
 #   - Value (unused)
 #   - Desc (unused)
 ---
-- name: Set process identifier name
+- name: Initialize facts
   set_fact:
-    ProcessID: "{{SecCat}}_{{TaskCat}}"
+    Sec_Task: "{{SecCat}}_{{TaskCat}}"
+    KeyDictionary: {}
 
-- name: "Get {{ProcessID}} defaults"
+- name: "Initialize {{Sec_Task}} defaults"
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults | combine(Sec_Task: {}) }}"
+  when: "not Sec_Task in MachineDefaults"
+
+- name: "Get {{Sec_Task}} defaults"
   win_reg_stat:
     path: "{{ item.RegPath }}"
     name: "{{ item.RegName }}"
   register: MachineKeys
   loop: "{{RegTasks}}"
 
-- name: Clear
-  set_fact:
-    KeyDictionary: {}
-
-- name: Add keys to a dictionary
+- name: Add reg keys to a temp dictionary
   set_fact:
     KeyDictionary: "{{KeyDictionary |combine( 
       {item.item.ID: (item.value if item.exists else 4294967295) } 
       )}}"
   loop: "{{MachineKeys.results}}"
 
-- name: Put category defaults in the MachineDefaults dictionary
+- name: Append regedit defaults to the MachineDefaults dictionary
   set_fact:
-    MachineDefaults: "{{MachineDefaults |combine({
-      ProcessID:KeyDictionary })}}"
+    MachineDefaults: "{{MachineDefaults |combine({ Sec_Task:
+      MachineDefaults[Sec_Task] |combine(KeyDictionary) }) }}"
 
 - name: Write to MachineDefaults file
   win_copy:

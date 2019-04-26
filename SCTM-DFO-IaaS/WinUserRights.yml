@@ -1,6 +1,6 @@
 # Task Script
-# Contains Tasks for handling all windows registry
-# editing. Called from a List Script
+# Contains Tasks for handling all windows registry editing.
+# Called from a List Script
 
 # Expected vars/facts:
 # - MachineDefaults {} (populated and with SecCat_TaskCat: {} entry)
@@ -14,18 +14,20 @@
 #   - Users []
 #   - Desc
 ---
-- set_fact:
+- name: Initialize facts
+  set_fact:
     Sec_Task: "{{ SecCat+'_'+TaskCat }}"
+    SkipIDs: []
 
-- name: Initialize dictionary user rights defaults
+- name: "Initialize {{Sec_Task}} defaults"
   set_fact:
     MachineDefaults: "{{ MachineDefaults | combine(Sec_Task: {}) }}"
   when: "not Sec_Task in MachineDefaults"
 
 - name: Load which tasks to skip
   set_fact:
-    SkipIDs: "{{ SkipIDs|default([]) + [item.lstrip(Sec_Task+'_')]
-      if Sec_Task in item else SkipIDs|default([]) }}"
+    SkipIDs: "{{ SkipIDs + [item.lstrip(Sec_Task+'_')]
+      if Sec_Task in item else SkipIDs }}"
   loop: "{{ Skips }}"
 
 - name: "{{Sec_Task+' user rights tasks'}}"
@@ -38,7 +40,7 @@
   register: UserDelta
   loop: "{{ RightsTasks }}"
 
-- name: Add default users into a temp dictionary
+- name: Add default users to a temp dictionary
   set_fact:
     defaultUsers: "{{ defaultUsers|default({}) |combine({
       item.item.ID: item.item.Users |union(item.removed)
@@ -46,7 +48,7 @@
   loop: "{{ UserDelta.results }}"
   when: not item.item.ID in SkipIDs
 
-- name: Add default users dictionary to MachineDefaults
+- name: Append user default to the MachineDefaults dictionary
   set_fact:
     MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:
       MachineDefaults[Sec_Task] |combine(defaultUsers) }) }}"
