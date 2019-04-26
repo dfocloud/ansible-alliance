@@ -85,6 +85,8 @@
   - name: Get command defaults
     include_tasks: WinCommandDef.yml
     vars:
+      SecCat: UN
+      TaskCat: AC_3F
       ComTasks: "{{AC_3F_ComTasks}}"
     when: not LoadedDefaults
 
