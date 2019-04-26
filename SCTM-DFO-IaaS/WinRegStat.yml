@@ -24,8 +24,8 @@
 
 - name: "Initialize {{Sec_Task}} defaults"
   set_fact:
-    MachineDefaults: "{{ MachineDefaults | combine(Sec_Task: {}) }}"
-  when: "not Sec_Task in MachineDefaults"
+    MachineDefaults: "{{ MachineDefaults | combine({ Sec_Task: {} }) }}"
+  when: not Sec_Task in MachineDefaults
 
 - name: "Get {{Sec_Task}} defaults"
   win_reg_stat:
