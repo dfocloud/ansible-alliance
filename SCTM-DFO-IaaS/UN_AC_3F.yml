@@ -12,7 +12,7 @@
       Skips: "{{ Skips|default(['HeheXD']) }}"
       Rollbacks: "{{ Rollbacks|default(['Metroid']) }}"
       Customs: "{{ Customs|default({}) }}"
-      MachineDefaults: {}
+      # MachineDefaults: {}
 
   - name: Initialize MachineDefaults dictionary
     include_tasks: WinDefaultsFile.yml
