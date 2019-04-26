@@ -9,10 +9,13 @@
   - set_fact:
       Sec_Task: "{{SecCat}}_{{TaskCat}}"
 
+  - debug:
+      var: Sec_Task
+
   - name: Initia-friking-lize
     set_fact:
-      MachineDefaults: "{{ MachineDefaults
-        |combine({ Sec_Task : \"Metroid\" }) }}"
+      MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task : \"Metroid\" }) }}"
+    when: not Sec_Task in MachineDefaults
 
   - debug:
       var: MachineDefaults
