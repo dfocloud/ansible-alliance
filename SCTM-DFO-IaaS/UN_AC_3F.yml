@@ -4,6 +4,7 @@
 - hosts: all
   become_method: runas
   vars:
+    MachineDefaults: {}
     MachineDefaultsPath: C:\AnsibleMachineDefaults.yml
   tasks:
 
@@ -12,8 +13,6 @@
       Skips: "{{ Skips|default(['HeheXD']) }}"
       Rollbacks: "{{ Rollbacks|default(['Metroid']) }}"
       Customs: "{{ Customs|default({}) }}"
-      MachineDefaults: "{{ MachineDefaults|default({ 
-        'Metroid':{'Prime':4} }) }}"
 
   - name: Initialize MachineDefaults dictionary
     include_tasks: WinDefaultsFile.yml

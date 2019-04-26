@@ -24,13 +24,13 @@
 
 - debug:
     var: Sec_Task
+
 - debug:
     var: MachineDefaults
 
 - name: "Initialize regedit defaults" # {{Sec_Task}}
   set_fact:
-    MachineDefaults: "{{ MachineDefaults|default({}) |combine({ 
-      Sec_Task:{'Metroid':'Prime'}}, recursive=True) }}"
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
   when: not Sec_Task in MachineDefaults
 
 - name: "Get {{Sec_Task}} regedit defaults"
@@ -38,17 +38,17 @@
     path: "{{ item.RegPath }}"
     name: "{{ item.RegName }}"
   register: MachineKeys
-  loop: "{{RegTasks}}"
+  loop: "{{ RegTasks }}"
 
 - name: Add reg keys to a temp dictionary
   set_fact:
-    KeyDictionary: "{{KeyDictionary |combine({
-      item.item.ID: (item.value if item.exists else 4294967295) }) }}"
-  loop: "{{MachineKeys.results}}"
+    KeyDictionary: "{{ KeyDictionary |combine({
+      item.item.ID:(item.value if item.exists else 4294967295) }) }}"
+  loop: "{{ MachineKeys.results }}"
 
 - name: Append regedit defaults to the MachineDefaults dictionary
   set_fact:
-    MachineDefaults: "{{MachineDefaults |combine({ Sec_Task:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:
       MachineDefaults[Sec_Task] |combine(KeyDictionary) }) }}"
 
 # - name: Write to MachineDefaults file
