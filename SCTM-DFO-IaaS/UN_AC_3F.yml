@@ -39,14 +39,14 @@
       RegTasks: "{{ AC_3F_RegTasks }}"
     when: not "UN_AC_3F" in MachineDefaults
 
-  - name: Run regedit tasks
-    include_tasks: WinRegedit.yml
-    vars:
-      SecCat: UN
-      TaskCat: AC_3F
-    loop: "{{ AC_3F_RegTasks }}"
-    loop_control:
-      loop_var: RegTask
+  # - name: Run regedit tasks
+  #   include_tasks: WinRegedit.yml
+  #   vars:
+  #     SecCat: UN
+  #     TaskCat: AC_3F
+  #   loop: "{{ AC_3F_RegTasks }}"
+  #   loop_control:
+  #     loop_var: RegTask
 
 # User rights example
   - name: Set AC_3F user rights tasks dictionary
@@ -84,11 +84,11 @@
       ComTasks: "{{AC_3F_ComTasks}}"
     when: not "UN_AC_3F" in MachineDefaults
 
-  - name: Run windows command tasks
-    include_tasks: WinCommand.yml
-    vars:
-      SecCat: UN
-      TaskCat: AC_3F
-    loop: "{{ AC_3F_ComTasks }}"
-    loop_control:
-      loop_var: ComTask
+  # - name: Run windows command tasks
+  #   include_tasks: WinCommand.yml
+  #   vars:
+  #     SecCat: UN
+  #     TaskCat: AC_3F
+  #   loop: "{{ AC_3F_ComTasks }}"
+  #   loop_control:
+  #     loop_var: ComTask

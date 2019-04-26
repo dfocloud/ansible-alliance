@@ -30,7 +30,7 @@
 - name: "Initialize regedit defaults" # {{Sec_Task}}
   set_fact:
     MachineDefaults: "{{ MachineDefaults|default({}) 
-      |combine({ Sec_Task : {} } }) }}"
+      |combine({ Sec_Task:{'Metroid':'Prime'}}, recursive=True) }}"
   when: not Sec_Task in MachineDefaults
 
 - name: "Get {{Sec_Task}} regedit defaults"
@@ -51,7 +51,7 @@
     MachineDefaults: "{{MachineDefaults |combine({ Sec_Task:
       MachineDefaults[Sec_Task] |combine(KeyDictionary) }) }}"
 
-- name: Write to MachineDefaults file
-  win_copy:
-    dest: "{{MachineDefaultsPath}}"
-    content: "{{MachineDefaults}}"
+# - name: Write to MachineDefaults file
+#   win_copy:
+#     dest: "{{MachineDefaultsPath}}"
+#     content: "{{MachineDefaults}}"
