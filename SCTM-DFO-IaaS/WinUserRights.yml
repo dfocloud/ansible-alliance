@@ -15,23 +15,25 @@
 #   - Desc
 ---
 - set_fact:
-    defEntry: "{{ SecCat+'_'+TaskCat }}"
+    Sec_Task: "{{ SecCat+'_'+TaskCat }}"
 
 - name: Initialize dictionary user rights defaults
   set_fact:
-    MachineDefaults: "{{ MachineDefaults | combine(defEntry: {}) }}"
-  when: "not defEntry in MachineDefaults"
+    MachineDefaults: "{{ MachineDefaults | combine(Sec_Task: {}) }}"
+  when: "not Sec_Task in MachineDefaults"
 
 - name: Load which tasks to skip
   set_fact:
-    SkipIDs: "{{ SkipIDs|default([]) + [item.lstrip(defEntry+'_')]
-      if defEntry in item else SkipIDs|default([]) }}"
+    SkipIDs: "{{ SkipIDs|default([]) + [item.lstrip(Sec_Task+'_')]
+      if Sec_Task in item else SkipIDs|default([]) }}"
   loop: "{{ Skips }}"
 
-- name: "{{defEntry+' user rights tasks'}}"
+- name: "{{Sec_Task+' user rights tasks'}}"
   win_user_right:
     name: "{{item.Name}}"
-    users: "{{item.Users}}"
+    users: "{{item.Users if Sec_Task not in Rollbacks and
+      item.ID not in MachineDefaults[Sec_Task] else
+      MachineDefaults[Sec_Task][item.ID] }}"
     action: set
   register: UserDelta
   loop: "{{ RightsTasks }}"
@@ -46,8 +48,8 @@
 
 - name: Add default users dictionary to MachineDefaults
   set_fact:
-    MachineDefaults: "{{ MachineDefaults |combine({ defEntry:
-      MachineDefaults[defEntry] |combine(defaultUsers) }) }}"
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:
+      MachineDefaults[Sec_Task] |combine(defaultUsers) }) }}"
 
 - name: Write to MachineDefaults file
   win_copy:
