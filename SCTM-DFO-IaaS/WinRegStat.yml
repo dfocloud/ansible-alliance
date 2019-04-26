@@ -29,8 +29,8 @@
 
 - name: "Initialize regedit defaults" # {{Sec_Task}}
   set_fact:
-    MachineDefaults: "{{ MachineDefaults|default({}) 
-      |combine({ Sec_Task:{'Metroid':'Prime'}}, recursive=True) }}"
+    MachineDefaults: "{{ MachineDefaults|default({}) |combine({ 
+      Sec_Task:{'Metroid':'Prime'}}, recursive=True) }}"
   when: not Sec_Task in MachineDefaults
 
 - name: "Get {{Sec_Task}} regedit defaults"
