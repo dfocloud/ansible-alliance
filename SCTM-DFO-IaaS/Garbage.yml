@@ -14,7 +14,7 @@
 
   - name: Initia-friking-lize
     set_fact:
-      MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task : \"Metroid\" }) }}"
+      MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
     when: not Sec_Task in MachineDefaults
 
   - debug:

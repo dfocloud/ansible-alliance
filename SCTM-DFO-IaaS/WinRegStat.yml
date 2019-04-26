@@ -28,7 +28,7 @@
 - debug:
     var: MachineDefaults
 
-- name: "Initialize regedit defaults" # {{Sec_Task}}
+- name: "Initialize {{Sec_Task}} regedit defaults"
   set_fact:
     MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
   when: not Sec_Task in MachineDefaults

@@ -21,7 +21,7 @@
 
 - name: "Initialize {{Sec_Task}} user rights defaults"
   set_fact:
-    MachineDefaults: "{{ MachineDefaults | combine({ Sec_Task: \"F-Zero\" }) }}"
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
   when: not Sec_Task in MachineDefaults
 
 - name: Load which tasks to skip

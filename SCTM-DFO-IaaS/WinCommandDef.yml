@@ -23,8 +23,7 @@
 
 - name: "Initialize {{Sec_Task}} command defaults"
   set_fact:
-    MachineDefaults: "{{ MachineDefaults | combine({
-      Sec_Task: 'Pikmin' }) }}"
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
   when: not Sec_Task in MachineDefaults
 
 - name: Get network account data
