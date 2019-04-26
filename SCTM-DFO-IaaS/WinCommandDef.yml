@@ -23,7 +23,8 @@
 
 - name: "Initialize {{Sec_Task}} defaults"
   set_fact:
-    MachineDefaults: "{{ MachineDefaults | combine({ Sec_Task: {} }) }}"
+    MachineDefaults: "{{ MachineDefaults | combine({
+      Sec_Task: { Pikmin: 2 } }) }}"
   when: not Sec_Task in MachineDefaults
 
 - name: Get network account data
@@ -33,7 +34,7 @@
 - name: Parse output and add command values to temp dictionary
   set_fact:
     CommDefs: "{{ CommDefs |combine({ item.ID:
-      NetAccounts.stdout_lines[item.LineIdx].strip(item.Strip).strip() |int }) }}"
+      NetAccounts.stdout_lines[item.LineIdx].lstrip(item.Strip).strip() |int }) }}"
   loop: "{{ ComTasks }}"
 
 - name: Append command defaults to the MachineDefaults dictionary
