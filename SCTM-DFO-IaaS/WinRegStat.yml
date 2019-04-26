@@ -24,10 +24,13 @@
 
 - debug:
     var: Sec_Task
+- debug:
+    var: MachineDefaults
 
 - name: "Initialize regedit defaults" # {{Sec_Task}}
   set_fact:
-    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task : \"Metroid\" }) }}"
+    MachineDefaults: "{{ MachineDefaults|default({}) 
+      |combine({ Sec_Task : {} } }) }}"
   when: not Sec_Task in MachineDefaults
 
 - name: "Get {{Sec_Task}} regedit defaults"
