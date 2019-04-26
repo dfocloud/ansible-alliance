@@ -19,10 +19,10 @@
     Sec_Task: "{{ SecCat+'_'+TaskCat }}"
     SkipIDs: []
 
-- name: "Initialize {{Sec_Task}} defaults"
+- name: "Initialize {{Sec_Task}} user rights defaults"
   set_fact:
     MachineDefaults: "{{ MachineDefaults | combine({
-      Sec_Task: { 'F-Zero': 'GX' } }) }}"
+      Sec_Task: { 'F-Zero': GX } }, recursive=True) }}"
   when: not Sec_Task in MachineDefaults
 
 - name: Load which tasks to skip

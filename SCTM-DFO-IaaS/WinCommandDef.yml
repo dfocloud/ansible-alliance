@@ -21,10 +21,10 @@
     NetAccounts: null
     CommDefs: {}
 
-- name: "Initialize {{Sec_Task}} defaults"
+- name: "Initialize {{Sec_Task}} command defaults"
   set_fact:
     MachineDefaults: "{{ MachineDefaults | combine({
-      Sec_Task: { 'Pikmin': 2 } }) }}"
+      Sec_Task: { 'Pikmin': 2 } }, recursive=True) }}"
   when: not Sec_Task in MachineDefaults
 
 - name: Get network account data

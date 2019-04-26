@@ -22,13 +22,13 @@
     Sec_Task: "{{SecCat}}_{{TaskCat}}"
     KeyDictionary: {}
 
-- name: "Initialize {{Sec_Task}} defaults"
+- name: "Initialize {{Sec_Task}} regedit defaults"
   set_fact:
-    MachineDefaults: "{{ MachineDefaults | combine({ 
-      Sec_Task: { 'Metroid': 'Prime' } }) }}"
+    MachineDefaults: "{{ MachineDefaults |combine({ 
+      Sec_Task: { 'Metroid': Prime } }, recursive=True) }}"
   when: not Sec_Task in MachineDefaults
 
-- name: "Get {{Sec_Task}} defaults"
+- name: "Get {{Sec_Task}} regedit defaults"
   win_reg_stat:
     path: "{{ item.RegPath }}"
     name: "{{ item.RegName }}"
