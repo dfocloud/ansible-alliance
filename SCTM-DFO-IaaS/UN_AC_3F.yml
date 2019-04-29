@@ -1,5 +1,6 @@
 # List Script
 # Fake script to test the WinRegedit Task File
+---
 - name: Check if defaults were loaded for UN_AC_3F were loaded
   set_fact:
     LoadedDefaults: "{{ 'UN_AC_3F' in MachineDefaults }}"
@@ -8,20 +9,20 @@
 - name: Set AC_3F regedit tasks dictionary
   set_fact:
     AC_3F_RegTasks:
-      - { ID: A, Value: 1, RegType: dword, RegName: LimitBlankPasswordUse, # 1 
-      RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
+      - { ID: A, Value: 1, Type: dword, Name: LimitBlankPasswordUse, # 1 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
       Desc: 'Restrict use of blank passwords'}
-      - { ID: B, Value: 1, RegType: dword, RegName: AddPrinterDrivers, # 1
-      RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', 
+      - { ID: B, Value: 1, Type: dword, Name: AddPrinterDrivers, # 1
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', 
       Desc: 'Prevent printer driver installation for non-admins'}
-      - { ID: C, Value: 1, RegType: dword, RegName: ForceUnlockLogon, # 0
-      RegPath: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon', 
+      - { ID: C, Value: 1, Type: dword, Name: ForceUnlockLogon, # 0
+      Path: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon', 
       Desc: 'Require Domain Controller Authentication to unlock computer'}
-      - { ID: D, Value: 1, RegType: dword, RegName: fPromptForPassword, # 4294967295
-      RegPath: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services', 
+      - { ID: D, Value: 1, Type: dword, Name: fPromptForPassword, # 4294967295
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services', 
       Desc: 'Enforce password prompt for RDP'}
-      - { ID: E, Value: 0, RegType: dword, RegName: RequireStrongKey, # 1
-      RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', 
+      - { ID: E, Value: 0, Type: dword, Name: RequireStrongKey, # 1
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', 
       Desc: 'Enforce strong domain session keys'}
 
 - name: Get regedit defaults

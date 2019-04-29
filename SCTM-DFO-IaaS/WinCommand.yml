@@ -9,11 +9,11 @@
 # - SecCat
 # - TaskCat
 # - ComTask [] (looped)
+#   - Desc
 #   - ID
 #   - Value
 #   - Command
 #   - Strip
-#   - Desc
 ---
 - name: Initialize facts
   set_fact:

@@ -16,7 +16,7 @@
 
   - name: Initialize MachineDefaults dictionary
     include_tasks: WinDefaultsFile.yml
-  
+
   - name: Initialize global Skips
     set_fact:
       Skips: "{{ Skips + [item] }}"
@@ -32,7 +32,6 @@
     when: All in Rollbacks
 
 #==== List Script Includes =====#
-
   - name: Execute UN_AC_3F tasks
     include_tasks: UN_AC_3F.yml
     when: UN_AC_3F not in Skips

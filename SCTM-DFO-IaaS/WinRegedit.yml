@@ -9,12 +9,12 @@
 # - SecCat
 # - TaskCat
 # - RegTask {} (looped)
-#   - ID
-#   - RegPath
-#   - RegName
-#   - RegType
-#   - Value
 #   - Desc
+#   - ID
+#   - Name
+#   - Path
+#   - Type
+#   - Value
 ---
 - set_fact:
     skipVar: "{{SecCat+'_'+TaskCat+'_'+RegTask.ID}}"

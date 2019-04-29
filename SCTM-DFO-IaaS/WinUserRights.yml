@@ -9,10 +9,10 @@
 # - SecCat
 # - TaskCat
 # - RightsTasks [{}] (one object)
+#   - Desc
 #   - ID
 #   - Name
 #   - Users []
-#   - Desc
 ---
 - name: Initialize facts
   set_fact:
