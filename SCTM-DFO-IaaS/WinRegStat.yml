@@ -4,7 +4,7 @@
 # registry keys, and writing that dictionary onto
 # the host. Called from a List script
 
-# Expected var(s)/fact(s):
+# Expected var/fact:
 # - MachineDefaults {} (empty or populated)
 # - MachineDefaultsPath
 # - SecCat (Security Category, such as UN)

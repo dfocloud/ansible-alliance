@@ -1,10 +1,12 @@
 # Task Script
 # Contains Tasks for populating the MachineDefaults dictionary
 # with a host's default value for task commands, and writing
-# that dictionary onto the host. Called from a List Script
+# that dictionary onto the host.
+# Called from a List Script
 
 # Expected vars/facts:
 # - MachineDefaults {} (empty or populated)
+# - MachineDefaultsPath
 # - SecCat
 # - TaskCat
 # - ComTasks [{}] (one object)
