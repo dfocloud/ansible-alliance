@@ -16,13 +16,13 @@
 
   - name: Initialize MachineDefaults dictionary
     include_tasks: WinDefaultsFile.yml
-  
+
   - name: Initialize global Skips
     set_fact:
       Skips: "{{ Skips + [item] }}"
     loop:
       - UN_AC_3F
-    when: "'All' in Skips"
+    # when: "'All' in Skips"
 
   - debug:
       var: Rollbacks
@@ -30,10 +30,13 @@
   - name: Initialize global Rollbacks
     set_fact:
       Rollbacks: "{{ Rollbacks + ['UN_AC_3F'] }}"
-    when: "'All' in Rollbacks"
+    # when: "'All' in Rollbacks"
 
   - debug:
       var: Rollbacks
+
+  - debug:
+      var: Skips
 
 # #===== List Script Includes =====#
 
