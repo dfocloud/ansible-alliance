@@ -1,12 +1,11 @@
 # Task Script
-# Contains Tasks for handling all windows registry
-# editing. Called from a List Script
+# Contains Tasks for handling all windows registry editing.
+# Called from a List Script
 
 # Expected vars/facts:
-# - MachineDefaults {} (populated)
+# - MachineDefaults {} (populated and with SecCat_TaskCat: {} entry)
 # - Rollbacks []
 # - Skips []
-# - Customs {}
 # - SecCat
 # - TaskCat
 # - RegTask {} (looped)
