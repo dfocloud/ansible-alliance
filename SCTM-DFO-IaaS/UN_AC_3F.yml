@@ -37,6 +37,9 @@
   loop: "{{ AC_3F_RegTasks }}"
   when: "'UN_AC_3F' in Rollbacks"
 
+- debug:
+    var: Rollbacks
+
 - name: Get regedit defaults
   include_tasks: WinRegStat.yml
   vars:
