@@ -25,6 +25,18 @@
       Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', 
       Desc: 'Enforce strong domain session keys'}
 
+- name: Initialize Skips
+  set_fact:
+    Skips: "{{ Skips + ['UN_AC_3F_'+item.ID] }}"
+  loop: "{{ AC_3F_RegTasks }}"
+  when: "'UN_AC_3F' in Skips"
+
+- name: Initialize Rollbacks
+  set_fact:
+    Rollbacks: "{{ Rollbacks + ['UN_AC_3F_'+item.ID] }}"
+  loop: "{{ AC_3F_RegTasks }}"
+  when: "'UN_AC_3F' in Rollbacks"
+
 - name: Get regedit defaults
   include_tasks: WinRegStat.yml
   vars:
@@ -54,6 +66,18 @@
       Users: ['Network Service','Local Service','Administrators'],
       Desc: Only allow admins to log on locally } # [NtSv,LoSv,Ad]
 
+- name: Initialize Skips
+  set_fact:
+    Skips: "{{ Skips + ['UN_AC_3F_'+item.ID] }}"
+  loop: "{{ AC_3F_Rights }}"
+  when: "'UN_AC_3F' in Skips"
+
+- name: Initialize Rollbacks
+  set_fact:
+    Rollbacks: "{{ Rollbacks + ['UN_AC_3F_'+item.ID] }}"
+  loop: "{{ AC_3F_Rights }}"
+  when: "'UN_AC_3F' in Rollbacks"
+
 - name: Run user rights tasks # simultaneously saves defaults
   include_tasks: WinUserRights.yml
   vars:
@@ -74,6 +98,18 @@
       - { ID: CCC, Value: 60, Command: 'net accounts /lockoutwindow:',
         LineIdx: 7, Strip: "Lockout observation window (minutes):",
         Desc: Set time before password attempts resets to 60 minutes }
+
+- name: Initialize Skips
+  set_fact:
+    Skips: "{{ Skips + ['UN_AC_3F_'+item.ID] }}"
+  loop: "{{ AC_3F_ComTasks }}"
+  when: "'UN_AC_3F' in Skips"
+
+- name: Initialize Rollbacks
+  set_fact:
+    Rollbacks: "{{ Rollbacks + ['UN_AC_3F_'+item.ID] }}"
+  loop: "{{ AC_3F_ComTasks }}"
+  when: "'UN_AC_3F' in Rollbacks"
 
 - name: Get command defaults
   include_tasks: WinCommandDef.yml
