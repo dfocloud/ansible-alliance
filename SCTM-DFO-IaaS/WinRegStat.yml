@@ -11,9 +11,9 @@
 # - TaskCat (Task Category, such as AC_3)
 # - RegTasks [{}] (one object)
 #   - ID
-#   - RegPath
-#   - RegName
-#   - RegType (unused)
+#   - Path
+#   - Name
+#   - Type (unused)
 #   - Value (unused)
 #   - Desc (unused)
 ---
@@ -22,12 +22,6 @@
     Sec_Task: "{{SecCat}}_{{TaskCat}}"
     KeyDictionary: {}
 
-- debug:
-    var: Sec_Task
-
-- debug:
-    var: MachineDefaults
-
 - name: "Initialize {{Sec_Task}} regedit defaults"
   set_fact:
     MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
@@ -35,8 +29,8 @@
 
 - name: "Get {{Sec_Task}} regedit defaults"
   win_reg_stat:
-    path: "{{ item.RegPath }}"
-    name: "{{ item.RegName }}"
+    path: "{{ item.Path }}"
+    name: "{{ item.Name }}"
   register: MachineKeys
   loop: "{{ RegTasks }}"
 
@@ -51,7 +45,7 @@
     MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:
       MachineDefaults[Sec_Task] |combine(KeyDictionary) }) }}"
 
-# - name: Write to MachineDefaults file
-#   win_copy:
-#     dest: "{{MachineDefaultsPath}}"
-#     content: "{{MachineDefaults}}"
+- name: Write to MachineDefaults file
+  win_copy:
+    dest: "{{MachineDefaultsPath}}"
+    content: "{{MachineDefaults}}"

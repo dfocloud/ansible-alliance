@@ -23,6 +23,11 @@
     MachineDefaults: "{{ DefaultsFile['content'] | b64decode }}" 
   when: PathResult.stat.exists
 
+- name: Reset MachineDefaults if empty
+  set_fact:
+    MachineDefaults: {}
+  when: PathResult.stat.exists and MachineDefaults == ""
+
 - name: Create defaults file
   win_file:
     path: "{{ MachineDefaultsPath }}"

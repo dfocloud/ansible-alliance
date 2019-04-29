@@ -21,11 +21,11 @@
 
 - name: "{{SecCat+'_'+TaskCat+' '+RegTask.ID+' > '+RegTask.Desc}}"
   win_regedit:
-    path: "{{ RegTask.RegPath }}"
-    name: "{{ RegTask.RegName }}"
+    path: "{{ RegTask.Path }}"
+    name: "{{ RegTask.Name }}"
     data: "{{ RegTask.Value if SecCat+'_'+TaskCat not in Rollbacks else
       MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] }}"
-    type: "{{RegTask.RegType}}"
+    type: "{{RegTask.Type}}"
     state: "{{ 'absent' if SecCat+'_'+TaskCat not in Rollbacks and
       MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] == 4294967295 else 'present' }}"
   when: skipVar not in Skips
