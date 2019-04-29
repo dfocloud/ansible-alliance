@@ -19,10 +19,19 @@
     set_fact:
       SomeList: "{{ SomeList + ['SomeItem'] }}"
 
+  - debug:
+      var: SomeList
+
   - name: Append var to list
     set_fact:
       SomeList: "{{ SomeList + [SomeOtherItem] }}"
 
+  - debug:
+      var: SomeList
+
   - name: Append list to list
     set_fact:
       SomeList: "{{ SomeList + SomeOtherList }}"
+
+  - debug:
+      var: SomeList
