@@ -1,14 +1,5 @@
 # List Script
 # Fake script to test the WinRegedit Task File
-- name: Initialize template facts
-  set_fact:
-    Skips: "{{ Skips|default(['HeheXD']) }}"
-    Rollbacks: "{{ Rollbacks|default(['Metroid']) }}"
-    Customs: "{{ Customs|default({}) }}"
-
-- name: Initialize MachineDefaults dictionary
-  include_tasks: WinDefaultsFile.yml
-
 - name: Check if defaults were loaded for UN_AC_3F were loaded
   set_fact:
     LoadedDefaults: "{{ 'UN_AC_3F' in MachineDefaults }}"
@@ -26,6 +17,12 @@
       - { ID: C, Value: 1, RegType: dword, RegName: ForceUnlockLogon, # 0
       RegPath: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon', 
       Desc: 'Require Domain Controller Authentication to unlock computer'}
+      - { ID: D, Value: 1, RegType: dword, RegName: fPromptForPassword, # 4294967295
+      RegPath: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services', 
+      Desc: 'Enforce password prompt for RDP'}
+      - { ID: E, Value: 0, RegType: dword, RegName: RequireStrongKey, # 1
+      RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', 
+      Desc: 'Enforce strong domain session keys'}
 
 - name: Get regedit defaults
   include_tasks: WinRegStat.yml
