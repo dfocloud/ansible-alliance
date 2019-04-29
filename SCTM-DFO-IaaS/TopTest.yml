@@ -11,7 +11,7 @@
   - name: Initialize template facts
     set_fact:
       Skips: "{{ Skips|default([]) }}"
-      Rollbacks: "{{ Rollbacks|default([]) }}"
+      Rollbacks: "{{ Undo|default([]) }}"
       Customs: "{{ Customs|default({}) }}"
 
   - name: Initialize MachineDefaults dictionary
