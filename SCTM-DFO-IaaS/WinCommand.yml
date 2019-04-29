@@ -18,7 +18,7 @@
 - name: Initialize facts
   set_fact:
     Sec_Task: "{{ SecCat+'_'+TaskCat }}"
-    skipVar: "{{ SecCat+'_'+TaskCat+'_'+RegTask.ID }}"
+    skipVar: "{{ SecCat+'_'+TaskCat+'_'+ComTask.ID }}"
 
 - name: "{{ Sec_Task+' '+ComTask.ID+' > '+ComTask.Desc }}"
   win_command: "{{ ComTask.Command + ((ComTask.Value if Sec_Task not in
