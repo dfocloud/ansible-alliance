@@ -1,100 +1,95 @@
 # List Script
 # Fake script to test the WinRegedit Task File
----
-- hosts: all
-  become_method: runas
-  vars:
-    MachineDefaults: {}
-    MachineDefaultsPath: C:\AnsibleMachineDefaults.yml
-  tasks:
+- name: Initialize template facts
+  set_fact:
+    Skips: "{{ Skips|default(['HeheXD']) }}"
+    Rollbacks: "{{ Rollbacks|default(['Metroid']) }}"
+    Customs: "{{ Customs|default({}) }}"
 
-  - name: Initialize template facts
-    set_fact:
-      Skips: "{{ Skips|default(['HeheXD']) }}"
-      Rollbacks: "{{ Rollbacks|default(['Metroid']) }}"
-      Customs: "{{ Customs|default({}) }}"
+- name: Initialize MachineDefaults dictionary
+  include_tasks: WinDefaultsFile.yml
 
-  - name: Initialize MachineDefaults dictionary
-    include_tasks: WinDefaultsFile.yml
-
-  - name: Check if defaults were loaded for UN_AC_3F were loaded
-    set_fact:
-      LoadedDefaults: "{{ 'UN_AC_3F' in MachineDefaults }}"
+- name: Check if defaults were loaded for UN_AC_3F were loaded
+  set_fact:
+    LoadedDefaults: "{{ 'UN_AC_3F' in MachineDefaults }}"
 
 # Regedit example
-  - name: Set AC_3F regedit tasks dictionary
-    set_fact:
-      AC_3F_RegTasks:
-        - { ID: A, Value: 1, RegType: dword, RegName: LimitBlankPasswordUse, # 1 
-        RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
-        Desc: 'Restrict use of blank passwords'}
-        - { ID: B, Value: 1, RegType: dword, RegName: AddPrinterDrivers, # 1
-        RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', 
-        Desc: 'Prevent printer driver installation for non-admins'}
-        - { ID: C, Value: 1, RegType: dword, RegName: ForceUnlockLogon, # 0
-        RegPath: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon', 
-        Desc: 'Require Domain Controller Authentication to unlock computer'}
+- name: Set AC_3F regedit tasks dictionary
+  set_fact:
+    AC_3F_RegTasks:
+      - { ID: A, Value: 1, RegType: dword, RegName: LimitBlankPasswordUse, # 1 
+      RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
+      Desc: 'Restrict use of blank passwords'}
+      - { ID: B, Value: 1, RegType: dword, RegName: AddPrinterDrivers, # 1
+      RegPath: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', 
+      Desc: 'Prevent printer driver installation for non-admins'}
+      - { ID: C, Value: 1, RegType: dword, RegName: ForceUnlockLogon, # 0
+      RegPath: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon', 
+      Desc: 'Require Domain Controller Authentication to unlock computer'}
 
-  - name: Get regedit defaults
-    include_tasks: WinRegStat.yml
-    vars:
-      SecCat: UN
-      TaskCat: AC_3F
-      RegTasks: "{{ AC_3F_RegTasks }}"
-    when: not LoadedDefaults
+- name: Get regedit defaults
+  include_tasks: WinRegStat.yml
+  vars:
+    SecCat: UN
+    TaskCat: AC_3F
+    RegTasks: "{{ AC_3F_RegTasks }}"
+  when: not LoadedDefaults
 
-  # - name: Run regedit tasks
-  #   include_tasks: WinRegedit.yml
-  #   vars:
-  #     SecCat: UN
-  #     TaskCat: AC_3F
-  #   loop: "{{ AC_3F_RegTasks }}"
-  #   loop_control:
-  #     loop_var: RegTask
+- name: Run regedit tasks
+  include_tasks: WinRegedit.yml
+  vars:
+    SecCat: UN
+    TaskCat: AC_3F
+  loop: "{{ AC_3F_RegTasks }}"
+  loop_control:
+    loop_var: RegTask
 
 # User rights example
-  - name: Set AC_3F user rights tasks dictionary
-    set_fact:
-      AC_3F_Rights:
-        - { ID: AA, Name: SeTcbPrivilege, Users: [],
-        Desc: Set no one to act as part of the operating system } # []
-        - { ID: BB, Name: SeInteractiveLogonRight, Users: ['Administrators'],
-        Desc: Only allow admins to log on locally } # [Ad,Us,BaOp]
+- name: Set AC_3F user rights tasks dictionary
+  set_fact:
+    AC_3F_Rights:
+      - { ID: AA, Name: SeTcbPrivilege, Users: [],
+      Desc: Set no one to act as part of the operating system } # []
+      - { ID: BB, Name: SeInteractiveLogonRight, Users: ['Administrators'],
+      Desc: Only allow admins to log on locally } # [Ad,Us,BaOp]
+      - { ID: CC, Name: SeIncreaseQuotaPrivilege,
+      Users: ['Network Service','Local Service','Administrators'],
+      Desc: Only allow admins to log on locally } # [NtSv,LoSv,Ad]
 
-  - name: Run user rights tasks # simultaneously saves defaults
-    include_tasks: WinUserRights.yml
-    vars:
-      SecCat: UN
-      TaskCat: AC_3F
-      RightsTasks: "{{ AC_3F_Rights }}"
+- name: Run user rights tasks # simultaneously saves defaults
+  include_tasks: WinUserRights.yml
+  vars:
+    SecCat: UN
+    TaskCat: AC_3F
+    RightsTasks: "{{ AC_3F_Rights }}"
 
 # Command example
-  - name: Set AC_3F command tasks dictionary
-    set_fact:
-      AC_3F_ComTasks:
-        - { ID: AAA, Value: 5, Command: 'net accounts /lockoutthreshold:',
-          LineIdx: 5, Strip: "Lockout threshold:",
-          Desc: Set password attempts before lockout to 5 }
-        - { ID: BBB, Value: 60, Command: 'net accounts /lockoutduration:',
-          LineIdx: 6, Strip: "Lockout duration (minutes):",
-          Desc: Set lockout duration to 60 minutes }
-        - { ID: CCC, Value: 60, Command: 'net accounts /lockoutwindow:',
-          LineIdx: 7, Strip: "Lockout observation window (minutes):",
-          Desc: Set time before password attempts resets to 60 minutes }
+- name: Set AC_3F command tasks dictionary
+  set_fact:
+    AC_3F_ComTasks:
+      - { ID: AAA, Value: 5, Command: 'net accounts /lockoutthreshold:',
+        LineIdx: 5, Strip: "Lockout threshold:",
+        Desc: Set password attempts before lockout to 5 }
+      - { ID: BBB, Value: 60, Command: 'net accounts /lockoutduration:',
+        LineIdx: 6, Strip: "Lockout duration (minutes):",
+        Desc: Set lockout duration to 60 minutes }
+      - { ID: CCC, Value: 60, Command: 'net accounts /lockoutwindow:',
+        LineIdx: 7, Strip: "Lockout observation window (minutes):",
+        Desc: Set time before password attempts resets to 60 minutes }
 
-  - name: Get command defaults
-    include_tasks: WinCommandDef.yml
-    vars:
-      SecCat: UN
-      TaskCat: AC_3F
-      ComTasks: "{{AC_3F_ComTasks}}"
-    when: not LoadedDefaults
+- name: Get command defaults
+  include_tasks: WinCommandDef.yml
+  vars:
+    SecCat: UN
+    TaskCat: AC_3F
+    ComTasks: "{{AC_3F_ComTasks}}"
+  when: not LoadedDefaults
 
-  # - name: Run windows command tasks
-  #   include_tasks: WinCommand.yml
-  #   vars:
-  #     SecCat: UN
-  #     TaskCat: AC_3F
-  #   loop: "{{ AC_3F_ComTasks }}"
-  #   loop_control:
-  #     loop_var: ComTask
+- name: Run windows command tasks
+  include_tasks: WinCommand.yml
+  vars:
+    SecCat: UN
+    TaskCat: AC_3F
+  loop: "{{ AC_3F_ComTasks }}"
+  loop_control:
+    loop_var: ComTask

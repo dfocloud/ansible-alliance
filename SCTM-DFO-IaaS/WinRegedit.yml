@@ -9,7 +9,7 @@
 # - Customs {}
 # - SecCat
 # - TaskCat
-# - RegTask {} (many)
+# - RegTask {} (looped)
 #   - ID
 #   - RegPath
 #   - RegName
