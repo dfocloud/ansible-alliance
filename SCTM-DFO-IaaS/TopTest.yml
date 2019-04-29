@@ -29,7 +29,7 @@
 
   - name: Initialize global Rollbacks
     set_fact:
-      Rollbacks: "{{ Rollbacks | union(['UN_AC_3F']) }}"
+      Rollbacks: "{{ Rollbacks + ['UN_AC_3F'] }}"
     when: "'All' in Rollbacks"
 
   - debug:
