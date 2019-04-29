@@ -28,7 +28,7 @@
     set_fact:
       Rollbacks: "{{ Rollbacks + [item] }}"
     loop:
-      - UN_AC_3F
+      - 'UN_AC_3F'
     when: "'All' in Rollbacks"
 
   - debug:
