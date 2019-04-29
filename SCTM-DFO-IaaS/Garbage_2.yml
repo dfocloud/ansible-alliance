@@ -35,3 +35,21 @@
 
   - debug:
       var: SomeList
+
+  - name: Append vars to list loop
+    set_fact:
+      SomeList: "{{ SomeList + [item] }}"
+    loop:
+      - Loopy1
+      - Loopy2
+
+  - debug:
+      var: SomeList
+
+  - name: Append item conditionally to list
+    set_fact:
+      SomeList: "{{ SomeList + ['CondItem'] }}"
+    when: "'Loopy1' in SomeList"
+
+  - debug:
+      var: SomeList
