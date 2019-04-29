@@ -31,6 +31,10 @@
       - UN_AC_3F
     when: "'All' in Rollbacks"
 
+  - debug:
+      var: Rollbacks
+
+
 #===== List Script Includes =====#
 
   - name: Execute UN_AC_3F tasks
