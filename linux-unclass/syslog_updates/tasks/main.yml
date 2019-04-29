@@ -8,11 +8,31 @@
       $FileCreateMode 640
   when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
 
+- name: Find log directories
+  find:
+    paths: /var/log
+    file_type: directory
+    recurse: yes
+  register: logdirs
+
+- name: Set permissions on log directories.
+  file:
+    path: "{{ item.path }}"
+    mode: 0755
+  with_items: "{{ logdirs.files }}"
+
+- name: Find log files
+  find:
+    paths: /var/log
+    file_type: file
+    recurse: yes
+  register: logfiles
+
 - name: Removing excessive permission bits from log files (TBS compliance)
   file:
-    path: /var/log
-    mode: 0740
-    recurse: yes
+    path: "{{ item.path }}"
+    mode: 0640
+  with_items: "{{ logfiles.files }}"
 
 - name: Setting ownership and permission bits on syslog configuration file (TBS compliance)
   file:

@@ -23,16 +23,23 @@
     group: root
     mode: 0600
 
-- name: Removing execute permission bit from files that display messages at user login (TBS compliance)
-  file:
-    path: /etc/update-motd.d
-    mode: 0644
-    recurse: yes
-  when: ansible_distribution == "Ubuntu"
-
 - name: Adding execute permission bit to the directory that stores user login message files (TBS compliance)
   file:
     path: /etc/update-motd.d
     mode: 0755
-    recurse: no
+  when: ansible_distribution == "Ubuntu"
+
+- name: Get all files in /etc/update-motd.d
+  find:
+    paths: /etc/update-motd.d
+    file_type: file
+    recurse: yes
+  register: motdfiles
+  when: ansible_distribution == "Ubuntu"
+
+- name: Removing execute permission bit from files that display messages at user login (TBS compliance)
+  file:
+    path: "{{ item.path }}"
+    mode: 0644
+  with_items: "{{ motdfiles.files }}"
   when: ansible_distribution == "Ubuntu"
