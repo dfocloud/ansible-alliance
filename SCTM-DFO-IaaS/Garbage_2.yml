@@ -1,0 +1,28 @@
+---
+- hosts: all
+  become_method: runas
+  vars:
+    SomeList: []
+    SomeOtherList:
+      - value1
+      - value2
+    SomeOtherItem: 'value3'
+  tasks:
+  
+  - debug:
+      var: SomeList
+
+  - debug:
+      var: SomeOtherList
+
+  - name: Append item to list
+    set_fact:
+      SomeList: "{{ SomeList + ['SomeItem'] }}"
+
+  - name: Append var to list
+    set_fact:
+      SomeList: "{{ SomeList + [SomeOtherItem] }}"
+
+  - name: Append list to list
+    set_fact:
+      SomeList: "{{ SomeList + SomeOtherList }}"
