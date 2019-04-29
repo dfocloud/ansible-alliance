@@ -26,14 +26,13 @@
 
   - name: Initialize global Rollbacks
     set_fact:
-      Rollbacks: "{{ Rollbacks + [item] }}"
+      Rollbacks: "{{ Rollbacks | union([item]) }}"
     loop:
       - 'UN_AC_3F'
     when: "'All' in Rollbacks"
 
   - debug:
       var: Rollbacks
-
 
 #===== List Script Includes =====#
 
