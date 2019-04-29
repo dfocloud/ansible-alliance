@@ -21,6 +21,6 @@
     skipVar: "{{ SecCat+'_'+TaskCat+'_'+ComTask.ID }}"
 
 - name: "{{ Sec_Task+' '+ComTask.ID+' > '+ComTask.Desc }}"
-  win_command: "{{ ComTask.Command + ((ComTask.Value if Sec_Task not in
-    Rollbacks else MachineDefaults[Sec_Task][ComTask.ID])) }}"
+  win_command: "{{ ComTask.Command + (ComTask.Value if Sec_Task not in
+    Rollbacks else MachineDefaults[Sec_Task][ComTask.ID])|string }}"
   when : skipVar not in Skips
