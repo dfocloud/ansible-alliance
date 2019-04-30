@@ -64,8 +64,8 @@
     RegTasks: "{{ AC_3F_RegTasks }}"
   when: not Loaded_UN_AC_3F
 
-- name: Get command defaults
-  include_tasks: WinCommandDef.yml
+- name: Get network account defaults
+  include_tasks: NetAccountDef.yml
   vars:
     SecCat: UN
     TaskCat: AC_3F
