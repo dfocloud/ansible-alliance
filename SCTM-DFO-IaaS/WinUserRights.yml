@@ -30,6 +30,12 @@
       if Sec_Task in item else SkipIDs }}"
   loop: "{{ SkipList }}"
 
+- debug:
+    var: UndoList
+
+- debug:
+    var: MachineDefaults[Sec_Task].BB
+
 - name: "{{Sec_Task+' user rights tasks'}}"
   win_user_right:
     name: "{{item.Name}}"
