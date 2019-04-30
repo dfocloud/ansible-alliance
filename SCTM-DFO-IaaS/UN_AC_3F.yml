@@ -1,11 +1,6 @@
 # List Script
 # Fake script to test the WinRegedit Task File
 ---
-
-- name: Check if defaults were loaded for UN_AC_3F were loaded
-  set_fact:
-    LoadedDefaults: "{{ 'UN_AC_3F' in MachineDefaults }}"
-
 # Init task dictionaries
 - name: Set AC_3F regedit task dictionary
   set_fact:
@@ -51,6 +46,10 @@
         Desc: Set time before password attempts resets to 60 minutes }
 
 # Init and get defaults
+- name: Check if defaults were loaded for UN_AC_3F were loaded
+  set_fact:
+    Loaded_UN_AC_3F: "{{ 'UN_AC_3F' in MachineDefaults }}"
+
 - name: Initialize UndoList
   set_fact:
     UndoList: "{{ UndoList + ['UN_AC_3F_'+item.ID] }}"
@@ -63,7 +62,7 @@
     SecCat: UN
     TaskCat: AC_3F
     RegTasks: "{{ AC_3F_RegTasks }}"
-  when: not LoadedDefaults
+  when: not Loaded_UN_AC_3F
 
 - name: Get command defaults
   include_tasks: WinCommandDef.yml
@@ -71,10 +70,9 @@
     SecCat: UN
     TaskCat: AC_3F
     ComTasks: "{{AC_3F_ComTasks}}"
-  when: not LoadedDefaults
+  when: not Loaded_UN_AC_3F
 
   # Run tasks
-
 - name: Run regedit tasks
   include_tasks: WinRegedit.yml
   vars:
