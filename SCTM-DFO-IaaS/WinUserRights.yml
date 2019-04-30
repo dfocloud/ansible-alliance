@@ -19,7 +19,7 @@
     Sec_Task: "{{ SecCat+'_'+TaskCat }}"
     SkipIDs: []
 
-- name: "Initialize {{Sec_Task}} user rights defaults"
+- name: "Initialize {{ Sec_Task }} user rights defaults"
   set_fact:
     MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
   when: not Sec_Task in MachineDefaults
@@ -30,16 +30,11 @@
       if Sec_Task in item else SkipIDs }}"
   loop: "{{ SkipList }}"
 
-- debug:
-    var: UndoList
-
-- debug:
-    var: MachineDefaults[Sec_Task].BB
-
-- name: "{{Sec_Task+' user rights tasks'}}"
+- name: "{{ Sec_Task+' user rights tasks' }}"
   win_user_right:
-    name: "{{item.Name}}"
-    users: "{{item.Users if (Sec_Task+'_'+item.ID not in UndoList or
+    name: "{{ item.Name }}"
+    users: "{{ (item.Users if fullID not in CustomDict else CustomDict[fullID])
+      if (Sec_Task+'_'+item.ID not in UndoList or
       item.ID not in MachineDefaults[Sec_Task]) else
       MachineDefaults[Sec_Task][item.ID] }}"
     action: set
