@@ -4,8 +4,8 @@
 
 # Expected vars/facts:
 # - MachineDefaults {} (populated and with SecCat_TaskCat: {} entry)
-# - Rollbacks []
-# - Skips []
+# - UndoList []
+# - SkipList []
 # - SecCat
 # - TaskCat
 # - RightsTasks [{}] (one object)
@@ -28,12 +28,12 @@
   set_fact:
     SkipIDs: "{{ SkipIDs + [item.lstrip(Sec_Task+'_')]
       if Sec_Task in item else SkipIDs }}"
-  loop: "{{ Skips }}"
+  loop: "{{ SkipList }}"
 
 - name: "{{Sec_Task+' user rights tasks'}}"
   win_user_right:
     name: "{{item.Name}}"
-    users: "{{item.Users if Sec_Task not in Rollbacks and
+    users: "{{item.Users if Sec_Task not in UndoList and
       item.ID not in MachineDefaults[Sec_Task] else
       MachineDefaults[Sec_Task][item.ID] }}"
     action: set

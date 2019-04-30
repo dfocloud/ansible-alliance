@@ -4,8 +4,8 @@
 
 # Expected vars/facts:
 # - MachineDefaults {} (populated and with SecCat_TaskCat: {} entry)
-# - Rollbacks []
-# - Skips []
+# - UndoList []
+# - SkipList []
 # - SecCat
 # - TaskCat
 # - RegTask {} (looped)
@@ -23,9 +23,9 @@
   win_regedit:
     path: "{{ RegTask.Path }}"
     name: "{{ RegTask.Name }}"
-    data: "{{ RegTask.Value if SecCat+'_'+TaskCat not in Rollbacks else
+    data: "{{ RegTask.Value if SecCat+'_'+TaskCat not in UndoList else
       MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] }}"
     type: "{{RegTask.Type}}"
-    state: "{{ 'absent' if SecCat+'_'+TaskCat not in Rollbacks and
+    state: "{{ 'absent' if SecCat+'_'+TaskCat not in UndoList and
       MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] == 4294967295 else 'present' }}"
-  when: skipVar not in Skips
+  when: skipVar not in SkipList

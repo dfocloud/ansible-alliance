@@ -4,8 +4,8 @@
 
 # Expected vars/facts:
 # - MachineDefaults {} (populated and with SecCat_TaskCat: {} entry)
-# - Rollbacks []
-# - Skips []
+# - UndoList []
+# - SkipList []
 # - SecCat
 # - TaskCat
 # - ComTask [] (looped)
@@ -22,5 +22,5 @@
 
 - name: "{{ Sec_Task+' '+ComTask.ID+' > '+ComTask.Desc }}"
   win_command: "{{ ComTask.Command + (ComTask.Value if Sec_Task not in
-    Rollbacks else MachineDefaults[Sec_Task][ComTask.ID])|string }}"
-  when : skipVar not in Skips
+    UndoList else MachineDefaults[Sec_Task][ComTask.ID])|string }}"
+  when : skipVar not in SkipList
