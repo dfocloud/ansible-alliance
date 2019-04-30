@@ -33,7 +33,7 @@
 - name: "{{Sec_Task+' user rights tasks'}}"
   win_user_right:
     name: "{{item.Name}}"
-    users: "{{item.Users if (Sec_Task not in UndoList or
+    users: "{{item.Users if (Sec_Task+'_'+item.ID not in UndoList or
       item.ID not in MachineDefaults[Sec_Task]) else
       MachineDefaults[Sec_Task][item.ID] }}"
     action: set
