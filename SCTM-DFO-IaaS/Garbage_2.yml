@@ -8,7 +8,7 @@
       - value2
     SomeOtherItem: 'value3'
   tasks:
-  
+
   - debug:
       var: SomeList
 

@@ -10,38 +10,37 @@
 
   - name: Initialize template facts
     set_fact:
-      Skips: "{{ Skips|default([]) }}"
-      Rollbacks: "{{ Undo|default([]) }}"
-      Customs: "{{ Customs|default({}) }}"
+      SkipList: "{{ Skip|default([]) }}"
+      UndoList: "{{ Undo|default([]) }}"
+      CustomDict: "{{ Custom|default({}) }}"
 
   - name: Initialize MachineDefaults dictionary
     include_tasks: WinDefaultsFile.yml
 
-  - name: Initialize global Skips
+  - name: Initialize global SkipList
     set_fact:
-      Skips: "{{ Skips + [item] }}"
+      SkipList: "{{ SkipList + [item] }}"
     loop:
       - UN_AC_3F
-    # when: "'All' in Skips"
+    when: "'All' in SkipList"
 
   - debug:
-      var: Rollbacks
+      var: UndoList
 
-  - name: Initialize global Rollbacks
+  - name: Initialize global UndoList
     set_fact:
-      Rollbacks: "{{ Rollbacks + [item] }}"
+      UndoList: "{{ UndoList + [item] }}"
     loop:
       - UN_AC_3F
-    # when: "'All' in Rollbacks"
+    when: "'All' in UndoList"
 
   - debug:
-      var: Rollbacks
+      var: UndoList
 
   - debug:
-      var: Skips
+      var: SkipList
 
-# #===== List Script Includes =====#
-
-#   - name: Execute UN_AC_3F tasks
-#     include_tasks: UN_AC_3F.yml
-#     when: "'UN_AC_3F' not in Skips"
+#===== List Script Includes =====#
+  - name: Execute UN_AC_3F tasks
+    include_tasks: UN_AC_3F.yml
+    when: "'UN_AC_3F' not in SkipList"

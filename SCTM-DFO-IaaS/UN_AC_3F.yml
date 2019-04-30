@@ -25,17 +25,23 @@
       Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', 
       Desc: 'Enforce strong domain session keys'}
 
-- name: Initialize Skips
+- name: Initialize SkipList
   set_fact:
-    Skips: "{{ Skips + ['UN_AC_3F_'+item.ID] }}"
+    SkipList: "{{ SkipList + ['UN_AC_3F_'+item.ID] }}"
   loop: "{{ AC_3F_RegTasks }}"
-  when: "'UN_AC_3F' in Skips"
+  when: "'UN_AC_3F' in SkipList"
 
-- name: Initialize Rollbacks
+- name: Initialize UndoList
   set_fact:
-    Rollbacks: "{{ Rollbacks + ['UN_AC_3F_'+item.ID] }}"
+    UndoList: "{{ UndoList + ['UN_AC_3F_'+item.ID] }}"
   loop: "{{ AC_3F_RegTasks }}"
-  when: "'UN_AC_3F' in Rollbacks"
+  when: "'UN_AC_3F' in UndoList"
+
+- debug:
+    var: SkipList
+
+- debug:
+    var: UndoList
 
 - name: Get regedit defaults
   include_tasks: WinRegStat.yml
@@ -66,17 +72,17 @@
 #       Users: ['Network Service','Local Service','Administrators'],
 #       Desc: Only allow admins to log on locally } # [NtSv,LoSv,Ad]
 
-# - name: Initialize Skips
+# - name: Initialize SkipList
 #   set_fact:
-#     Skips: "{{ Skips + ['UN_AC_3F_'+item.ID] }}"
+#     SkipList: "{{ SkipList + ['UN_AC_3F_'+item.ID] }}"
 #   loop: "{{ AC_3F_Rights }}"
-#   when: "'UN_AC_3F' in Skips"
+#   when: "'UN_AC_3F' in SkipList"
 
-# - name: Initialize Rollbacks
+# - name: Initialize UndoList
 #   set_fact:
-#     Rollbacks: "{{ Rollbacks + ['UN_AC_3F_'+item.ID] }}"
+#     UndoList: "{{ UndoList + ['UN_AC_3F_'+item.ID] }}"
 #   loop: "{{ AC_3F_Rights }}"
-#   when: "'UN_AC_3F' in Rollbacks"
+#   when: "'UN_AC_3F' in UndoList"
 
 # - name: Run user rights tasks # simultaneously saves defaults
 #   include_tasks: WinUserRights.yml
@@ -99,17 +105,17 @@
 #         LineIdx: 7, Strip: "Lockout observation window (minutes):",
 #         Desc: Set time before password attempts resets to 60 minutes }
 
-# - name: Initialize Skips
+# - name: Initialize SkipList
 #   set_fact:
-#     Skips: "{{ Skips + ['UN_AC_3F_'+item.ID] }}"
+#     SkipList: "{{ SkipList + ['UN_AC_3F_'+item.ID] }}"
 #   loop: "{{ AC_3F_ComTasks }}"
-#   when: "'UN_AC_3F' in Skips"
+#   when: "'UN_AC_3F' in SkipList"
 
-# - name: Initialize Rollbacks
+# - name: Initialize UndoList
 #   set_fact:
-#     Rollbacks: "{{ Rollbacks + ['UN_AC_3F_'+item.ID] }}"
+#     UndoList: "{{ UndoList + ['UN_AC_3F_'+item.ID] }}"
 #   loop: "{{ AC_3F_ComTasks }}"
-#   when: "'UN_AC_3F' in Rollbacks"
+#   when: "'UN_AC_3F' in UndoList"
 
 # - name: Get command defaults
 #   include_tasks: WinCommandDef.yml
