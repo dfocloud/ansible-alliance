@@ -51,10 +51,16 @@
         Desc: Set time before password attempts resets to 60 minutes }
 
 # Init and get defaults
+- set_fact:
+    Conglom: "{{ AC_3F_RegTasks | combine(AC_3F_RightsTasks) | combine(AC_3F_ComTasks) }}"
+
+- debug:
+    var: Conglom
+
 - name: Initialize UndoList
   set_fact:
     UndoList: "{{ UndoList + ['UN_AC_3F_'+item.ID] }}"
-  loop: "{{ AC_3F_RegTasks | combine(AC_3F_RightsTasks) | combine(AC_3F_ComTasks) }}"
+  loop: "{{ Conglom }}"
   when: "'UN_AC_3F' in UndoList"
 
 - debug:
