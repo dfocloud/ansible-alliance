@@ -8,6 +8,7 @@
 # - SkipList []
 # - SecCat
 # - TaskCat
+# - Loaded
 # - RightsTasks [{}] (one object)
 #   - Desc
 #   - ID
@@ -19,10 +20,9 @@
     Sec_Task: "{{ SecCat+'_'+TaskCat }}"
     SkipIDs: []
 
-- name: "Initialize {{ Sec_Task }} user rights defaults"
+- name: "Check for existing {{ Sec_Task }} user rights defaults"
   set_fact:
-    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
-  when: not Sec_Task in MachineDefaults
+    HasDefaults: Sec_Task in MachineDefaults
 
 - name: Load which tasks to skip
   set_fact:
@@ -42,20 +42,27 @@
   register: UserDelta
   loop: "{{ RightsTasks }}"
 
+- name: "Check {{ Sec_Task }} dictionary keys"
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
+  when: Sec_Task not in MachineDefaults
+
 - name: Add default users to a temp dictionary
   set_fact:
     defaultUsers: "{{ defaultUsers|default({}) |combine({
       item.item.ID: item.item.Users |union(item.removed)
       |difference(item.added) }) }}"
   loop: "{{ UserDelta.results }}"
-  when: not item.item.ID in SkipIDs
+  when: not item.item.ID in SkipIDs and not Loaded
 
 - name: Append user default to the MachineDefaults dictionary
   set_fact:
     MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:
       MachineDefaults[Sec_Task] |combine(defaultUsers) }) }}"
+  when: not Loaded
 
 - name: Write to MachineDefaults file
   win_copy:
     dest: "{{ MachineDefaultsPath }}"
     content: "{{ MachineDefaults }}"
+  when: not Loaded

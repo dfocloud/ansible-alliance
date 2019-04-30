@@ -87,6 +87,7 @@
   vars:
     SecCat: UN
     TaskCat: AC_3F
+    Loaded: Loaded_UN_AC_3F
     RightsTasks: "{{ AC_3F_RightsTasks }}"
 
 - name: Run windows command tasks
