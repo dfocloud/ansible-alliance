@@ -25,12 +25,6 @@
       Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', 
       Desc: 'Enforce strong domain session keys'}
 
-- name: Initialize SkipList
-  set_fact:
-    SkipList: "{{ SkipList + ['UN_AC_3F_'+item.ID] }}"
-  loop: "{{ AC_3F_RegTasks }}"
-  when: "'UN_AC_3F' in SkipList"
-
 - name: Initialize UndoList
   set_fact:
     UndoList: "{{ UndoList + ['UN_AC_3F_'+item.ID] }}"
