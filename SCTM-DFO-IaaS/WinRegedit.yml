@@ -23,7 +23,7 @@
   win_regedit:
     path: "{{ RegTask.Path }}"
     name: "{{ RegTask.Name }}"
-    data: "{{ RegTask.Value if fullID in UndoList else
+    data: "{{ RegTask.Value if fullID not in UndoList else
       MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] }}"
     type: "{{RegTask.Type}}"
     state: "{{ 'absent' if (fullID in UndoList and
