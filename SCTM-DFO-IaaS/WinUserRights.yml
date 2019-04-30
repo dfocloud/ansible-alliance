@@ -33,7 +33,8 @@
 - name: "{{ Sec_Task+' user rights tasks' }}"
   win_user_right:
     name: "{{ item.Name }}"
-    users: "{{ (item.Users if fullID not in CustomDict else CustomDict[fullID])
+    users: "{{ (item.Users if Sec_Task+'_'+item.ID not in CustomDict
+      else CustomDict[Sec_Task+'_'+item.ID])
       if (Sec_Task+'_'+item.ID not in UndoList or
       item.ID not in MachineDefaults[Sec_Task]) else
       MachineDefaults[Sec_Task][item.ID] }}"
