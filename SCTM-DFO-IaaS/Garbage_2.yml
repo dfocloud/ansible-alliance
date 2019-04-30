@@ -2,54 +2,23 @@
 - hosts: all
   become_method: runas
   vars:
-    SomeList: []
-    SomeOtherList:
-      - value1
-      - value2
-    SomeOtherItem: 'value3'
+    Dict1: {
+      "Derp": 4,
+      "Lerp": 8
+    }
+    Dict4: {
+      "Snag": 3,
+      "Shag": 69
+    }
   tasks:
 
   - debug:
-      var: SomeList
+      var: Dict1
 
-  - debug:
-      var: SomeOtherList
-
-  - name: Append item to list
+  - name: Combine dictionaries
     set_fact:
-      SomeList: "{{ SomeList + ['SomeItem'] }}"
+      SomeDict: "{{ SomeDict|default({})
+      |combine(Dict1) |combine(Dict2) }}"
 
   - debug:
-      var: SomeList
-
-  - name: Append var to list
-    set_fact:
-      SomeList: "{{ SomeList + [SomeOtherItem] }}"
-
-  - debug:
-      var: SomeList
-
-  - name: Append list to list
-    set_fact:
-      SomeList: "{{ SomeList + SomeOtherList }}"
-
-  - debug:
-      var: SomeList
-
-  - name: Append vars to list loop
-    set_fact:
-      SomeList: "{{ SomeList + [item] }}"
-    loop:
-      - Loopy1
-      - Loopy2
-
-  - debug:
-      var: SomeList
-
-  - name: Append item conditionally to list
-    set_fact:
-      SomeList: "{{ SomeList + ['CondItem'] }}"
-    when: "'Loopy1' in SomeList"
-
-  - debug:
-      var: SomeList
+      var: SomeDict

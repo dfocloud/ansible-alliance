@@ -52,7 +52,8 @@
 
 # Init and get defaults
 - set_fact:
-    Conglom: "{{ AC_3F_RegTasks | combine(AC_3F_RightsTasks) | combine(AC_3F_ComTasks) }}"
+    Conglom: "{{ Conglom|default({}) | combine(AC_3F_RegTasks) 
+      | combine(AC_3F_RightsTasks) | combine(AC_3F_ComTasks) }}"
 
 - debug:
     var: Conglom
