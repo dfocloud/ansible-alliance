@@ -10,6 +10,7 @@
       "Snag": 3,
       "Shag": 69
     }
+    Dict6: {}
   tasks:
 
   - debug:
@@ -17,8 +18,7 @@
 
   - name: Combine dictionaries
     set_fact:
-      SomeDict: "{{ SomeDict|default({})
-      |combine(Dict1) |combine(Dict2) }}"
+      Dict6: "{{ Dict1 |combine(Dict2) }}"
 
   - debug:
       var: SomeDict
