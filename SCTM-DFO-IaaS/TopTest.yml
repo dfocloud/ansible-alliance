@@ -25,7 +25,7 @@
     when: "'All' in SkipList"
 
   - debug:
-      var: UndoList
+      var: SkipList
 
   - name: Initialize global UndoList
     set_fact:
@@ -33,12 +33,6 @@
     loop:
       - UN_AC_3F
     when: "'All' in UndoList"
-
-  - debug:
-      var: UndoList
-
-  - debug:
-      var: SkipList
 
 #===== List Script Includes =====#
   - name: Execute UN_AC_3F tasks
