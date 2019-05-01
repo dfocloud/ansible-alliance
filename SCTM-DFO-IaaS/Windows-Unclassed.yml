@@ -1,3 +1,4 @@
+# == Orchestrator Script ==
 # STCM-DFO-IaaS compliant configuration for
 # a Windows virtual machine in Azure Cloud
 # Based on RFP 16-42051B
@@ -5,13 +6,6 @@
 # A Windows VM in Azure Cloud with this
 # configuration may contain Government of
 # Canada 'Unclassed' information
-#
-# Author:
-#     Alex Imray Papineau
-# Last edit:
-#     01 May 2019
-# Editor:
-#     Alex Imray Papineau
 ---
 - hosts: all
   become_method: runas
@@ -37,9 +31,6 @@
       - UN_AC_7
       - UN_IA_2
     when: "'All' in SkipList"
-
-  - debug:
-      var: SkipList
 
   - name: Initialize global UndoList
     set_fact:

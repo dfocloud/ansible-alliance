@@ -1,4 +1,4 @@
-# List Script
+# == List Script ==
 # Includes all the tasks that fall under
 # the Unclassed IA-2 protocol requirements
 
@@ -7,7 +7,7 @@
 ---
 # Init task dictionaries
 - name: Set AC-3 regedit task dictionary
-  sef_fact:
+  set_fact:
     UN_IA_2_RegTasks:
     - { Desc: Prevent NULL session fallback,
       ID: A, Value: 0, Type: dword, Name: allownullsessionfallback,

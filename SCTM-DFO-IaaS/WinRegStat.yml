@@ -1,4 +1,4 @@
-# Task Script
+# == Task Script ==
 # Contains Tasks for retrieving and populating the 
 # MachineDefaults dictionary with a host's default
 # registry keys, and writing that dictionary onto
