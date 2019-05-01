@@ -4,7 +4,7 @@
 #
 # A Windows VM in Azure Cloud with this
 # configuration may contain Government of
-# Canada 'unclassed' information
+# Canada 'Unclassed' information
 #
 # Author:
 #     Alex Imray Papineau
@@ -34,10 +34,8 @@
       SkipList: "{{ SkipList + [item] }}"
     loop:
       - UN_AC_3
-      - UN_AC_4
       - UN_AC_7
-      - UN_AC_8
-      - UN_AC_11
+      - UN_IA_2
     when: "'All' in SkipList"
 
   - debug:
@@ -48,10 +46,8 @@
       UndoList: "{{ UndoList + [item] }}"
     loop:
       - UN_AC_3
-      - UN_AC_4
       - UN_AC_7
-      - UN_AC_8
-      - UN_AC_11
+      - UN_IA_2
     when: "'All' in UndoList"
 
 #========== List Script Includes ==========#
@@ -59,9 +55,13 @@
     include_tasks: UN_AC_3.yml
     when: "'UN_AC_3' not in SkipList"
 
-  # - name: Execute UN_AC_4 tasks
-  #   include_tasks: UN_AC_4.yml
-  #   when: "'UN_AC_4' not in SkipList"
+  - name: Execute UN_AC_7 tasks
+    include_tasks: UN_AC_7.yml
+    when: "'UN_AC_7' not in SkipList"
+
+  - name: Execute UN_IA_2 tasks
+    include_tasks: UN_IA_2.yml
+    when: "'UN_IA_2' not in SkipList"
 
 #========== Old ==========#
 # - name: Get Security Policy Tasks

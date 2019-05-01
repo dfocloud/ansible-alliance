@@ -1,66 +1,108 @@
----
-# Called from Windows-Rollback.yml
+# List Script
 # Includes all the tasks that fall under
-# the Unclassed UN_IA_2 protocol requirements
+# the Unclassed IA-2 protocol requirements
+---
+# Init task dictionaries
+- name: Set AC-3 regedit task dictionary
+  sef_fact:
+    UN_IA_2_RegTasks:
+    - { Desc: Prevent NULL session fallback,
+      ID: A, Value: 0, Type: dword, Name: allownullsessionfallback,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0' }
+    - { Desc: Prevent online identity use for PKU2U authentication requests, 
+      ID: B, Value: 0, Type: dword, Name: allowonlineid, # OwO what's this?
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\pku2u' }
+    - { Desc: Enforce password prompt for RDP,
+      ID: C, Value: 1, Type: dword, Name: fPromptForPassword,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services' }
 
-# Imported vars: RegDefaultsPath RegistryDefaults
-
-- name: UN_IA_2 ? > Check for UN_IA_2 defaults entry
+#Init and get defaults
+- name: Check if defaults were loaded for UN_IA_2 were loaded
   set_fact:
-    HasUNIA2Def: "{{ 'UN_IA_2' in RegistryDefaults }}"
+    Loaded_UN_IA_2: "{{ 'UN_IA_2' in MachineDefaults }}"
 
-- name: UN_IA_2 = > Get keys in UN_IA_2 is not 'present'
-  win_reg_stat:
-    path: "{{ item.path }}"
-    name: "{{ item.name }}"
-  register: UN_IA2_DefKeys
-  loop:
-    - { ID: A, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0', name: allownullsessionfallback }
-    - { ID: B, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\pku2u', name: allowonlineid }
-    - { ID: C, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services', name: fPromptForPassword }
-  when: not HasUNIA2Def
-
-- name: UN_IA_2 + > Add keys to a dictionary
+- name: Initialize UndoList
   set_fact:
-    UN_IA_2_Def: "{{ UN_IA_2_Def|default({}) | combine( {item.item.ID: (item.value if item.exists else 4294967295)} ) }}"
-  loop: "{{ UN_IA2_DefKeys.results }}"
-  when: not HasUNIA2Def
+    UndoList: "{{ UndoList + ['UN_IA_2_'+item.ID] }}"
+  loop: "{{ UN_IA_2_RegTasks }}"
+  when: "'UN_IA_2' in UndoList"
 
-- name: UN_IA_2 ++ > Add dictionary to RegistryDefaults dictionary
-  set_fact:
-    RegistryDefaults: "{{ RegistryDefaults | combine({'UN_IA_2':UN_IA_2_Def}) }}"
-  when: not HasUNIA2Def
+- name: Get regedit defaults
+  include_tasks: WinRegStat.yml
+  vars:
+    SecCat: UN
+    TaskCat: IA_2
+    RegTasks: "{{ UN_IA_2_RegTasks }}"
+  when: not Loaded_UN_IA_2
 
-- name: UN_IA_2 IO > Write dictionary
-  win_copy:
-    dest: "{{ RegDefaultsPath }}"
-    content: "{{ RegistryDefaults }}"
-  when: not HasUNIA2Def
+# Run Tasks
+- name: Run regedit tasks
+  include_tasks: WinRegedit.yml
+  vars:
+    SecCat: UN
+    TaskCat: IA_2
+  loop: "{{ UN_IA_2_RegTasks }}"
+  loop_control:
+    loop_var: RegTask
 
-# Tasks
-- name: UN_IA_2 A > Prevent NULL session fallback
-  win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
-    name: allownullsessionfallback
-    data: "{{ 0 if undo_UN_IA_2 is not defined else RegistryDefaults.UN_IA_2.A }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_IA_2 is defined and RegistryDefaults.UN_IA_2.A == 4294967295) else 'present'}}"
-  when: skip_UN_IA_2_A is not defined
 
-- name: UN_IA_2 B > Prevent online identity use for PKU2U authentication requests
-  win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\pku2u
-    name: allowonlineid # OwO
-    data: "{{ 0 if undo_UN_IA_2 is not defined else RegistryDefaults.UN_IA_2.B }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_IA_2 is defined and RegistryDefaults.UN_IA_2.B == 4294967295) else 'present'}}"
-  when: skip_UN_IA_2_B is not defined
+# OLD
+# - name: UN_IA_2 ? > Check for UN_IA_2 defaults entry
+#   set_fact:
+#     HasUNIA2Def: "{{ 'UN_IA_2' in RegistryDefaults }}"
 
-- name: UN_IA_2 C > Enforce password prompt for RDP
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
-    name: fPromptForPassword
-    data: "{{ 1 if undo_UN_IA_2 is not defined else RegistryDefaults.UN_IA_2.C }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_IA_2 is defined and RegistryDefaults.UN_IA_2.C == 4294967295) else 'present'}}"
-  when: skip_UN_IA_2_C is not defined
+# - name: UN_IA_2 = > Get keys in UN_IA_2 is not 'present'
+#   win_reg_stat:
+#     path: "{{ item.path }}"
+#     name: "{{ item.name }}"
+#   register: UN_IA2_DefKeys
+#   loop:
+#     - { ID: A, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0', name: allownullsessionfallback }
+#     - { ID: B, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\pku2u', name: allowonlineid }
+#     - { ID: C, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services', name: fPromptForPassword }
+#   when: not HasUNIA2Def
+
+# - name: UN_IA_2 + > Add keys to a dictionary
+#   set_fact:
+#     UN_IA_2_Def: "{{ UN_IA_2_Def|default({}) | combine( {item.item.ID: (item.value if item.exists else 4294967295)} ) }}"
+#   loop: "{{ UN_IA2_DefKeys.results }}"
+#   when: not HasUNIA2Def
+
+# - name: UN_IA_2 ++ > Add dictionary to RegistryDefaults dictionary
+#   set_fact:
+#     RegistryDefaults: "{{ RegistryDefaults | combine({'UN_IA_2':UN_IA_2_Def}) }}"
+#   when: not HasUNIA2Def
+
+# - name: UN_IA_2 IO > Write dictionary
+#   win_copy:
+#     dest: "{{ RegDefaultsPath }}"
+#     content: "{{ RegistryDefaults }}"
+#   when: not HasUNIA2Def
+
+# # Tasks
+# - name: UN_IA_2 A > Prevent NULL session fallback
+#   win_regedit:
+#     path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
+#     name: allownullsessionfallback
+#     data: "{{ 0 if undo_UN_IA_2 is not defined else RegistryDefaults.UN_IA_2.A }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_IA_2 is defined and RegistryDefaults.UN_IA_2.A == 4294967295) else 'present'}}"
+#   when: skip_UN_IA_2_A is not defined
+
+# - name: UN_IA_2 B > Prevent online identity use for PKU2U authentication requests
+#   win_regedit:
+#     path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\pku2u
+#     name: allowonlineid # OwO what's this?
+#     data: "{{ 0 if undo_UN_IA_2 is not defined else RegistryDefaults.UN_IA_2.B }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_IA_2 is defined and RegistryDefaults.UN_IA_2.B == 4294967295) else 'present'}}"
+#   when: skip_UN_IA_2_B is not defined
+
+# - name: UN_IA_2 C > Enforce password prompt for RDP
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+#     name: fPromptForPassword
+#     data: "{{ 1 if undo_UN_IA_2 is not defined else RegistryDefaults.UN_IA_2.C }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_IA_2 is defined and RegistryDefaults.UN_IA_2.C == 4294967295) else 'present'}}"
+#   when: skip_UN_IA_2_C is not defined
