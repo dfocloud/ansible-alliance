@@ -1,0 +1,24 @@
+# == Task Script ==
+# Appends to the SkipList array based on
+# supercategory and global skip variables
+---
+- name: Append global skips
+  set_fact:
+    SkipList: "{{ SkipList + [item] }}"
+  loop:
+    - UN_AC
+    - UN_AU_9
+    - UN_IA_2
+    - UN_SC_5
+  when: "'All' in SkipList"
+
+- name: Append AC supercategory skips
+  set_fact:
+    SkipList: "{{ SkipList + [item] }}"
+  loop:
+    - UN_AC_3
+    - UN_AC_4
+    - UN_AC_7
+    - UN_AC_8
+    - UN_AC_11
+  when: "'UN_AC' in SkipList"
