@@ -9,143 +9,150 @@
 - name: Set AC-3 regedit task dictionary
   set_fact:
     UN_AC_3_RegTasks:
-    - { ID: A, Value: 1, Type: dword, Name: LimitBlankPasswordUse, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
-    Desc: Restrict use of blank passwords }
-    - { ID: B, Value: 1, Type: dword, Name: AddPrinterDrivers, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers', 
-    Desc: Prevent printer driver installation for non-admins }
-    - { ID: C, Value: 1, Type: dword, Name: RequireSignOrSeal, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', 
-    Desc: Enforce encrypted or signed channel data }
-    - { ID: D, Value: 1, Type: dword, Name: SignSecureChannel, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', 
-    Desc: Enforce encrypted of signed channel data }
-    - { ID: E, Value: 1, Type: dword, Name: dontdisplaylastusername, 
-    Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', 
-    Desc: Do not display last user name }
-    - { ID: F, Value: 1, Type: dword, Name: disabledcad, 
-    Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', 
-    Desc: Require CTRL + ALT + DEL to logon }
-    - { ID: G, Value: 1, Type: dword, Name: EnableSecuritySignature, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters', 
-    Desc: Enforce digital signing of communications (Workstation) }
-    - { ID: H, Value: 1, Type: dword, Name: enablesecuritysignature, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', 
-    Desc: Enforce digital signing of communications (Server) }
-    - { ID: I, Value: 1, Type: dword, Name: SafeDllSearchMode, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager', 
-    Desc: Allow SafeDLL search mode }
-    - { ID: J, Value: 4, Type: dword, Name: ScreenSaverGracePeriod, 
-    Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon', 
-    Desc: Set screen saver grace period to 4 }
-    - { ID: K, Value: 1, Type: dword, Name: restrictanonymoussam, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
-    Desc: Prevent SAM account searching }
-    - { ID: L, Value: 0, Type: dword, Name: everyoneincludesanonymous, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
-    Desc: Restrict anonymous user permissions }
-    - { ID: M, Value: 1, Type: dword, Name: restrictnullsessaccess, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', 
-    Desc: Restrict anonymous access to pipes }
-    - { ID: 'N', Value: 1, Type: dword, Name: ldapclientintegrity, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\ldap', 
-    Desc: Enforce LDAP client signing }
-    - { ID: O, Value: 0, Type: dword, Name: shutdownwithoutlogon, 
-    Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', 
-    Desc: Allow system shutdown without logon }
-    - { ID: P, Value: 0, Type: dword, Name: EnableUIADesktopToggle, 
-    Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', 
-    Desc: Prevent unsecure elevation prompts from applications }
-    - { ID: Q, Value: 1, Type: dword, Name: EnableInstallerDetection, 
-    Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', 
-    Desc: Prevent application installation without prompt }
-    - { ID: R, Value: 1, Type: dword, Name: EnableLUA, 
-    Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', 
-    Desc: Run admins in Admin Approval Mode }
-    - { ID: S, Value: 1, Type: dword, Name: PromptOnSecureDesktop, 
-    Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', 
-    Desc: Enforce secure desktop for elevation prompts }
-    - { ID: T, Value: 1, Type: dword, Name: EnableVirtualization, 
-    Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', 
-    Desc: Restrict legacy application registry write locations }
-    - { ID: OO, Value: 3, Type: dword, Name: noconnecteduser, 
-    Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', 
-    Desc: Prevent Microsoft accounts from logging in }
-    - { ID: PP, Value: 0, Type: dword, Name: submitcontrol, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
-    Desc: Prohibit server controllers from scheduling tasks }
-    - { ID: QQ, Value: '', Type: multistring, Name: NullSessionPipes, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', 
-    Desc: Prohibit anonymous access to names pipes }
-    - { ID: RR, Value: '', Type: multistring, Name: NullSessionShares, 
-    Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', 
-    Desc: Prohibit anonymous access to session shares }
-    - { ID: SS, Value: 1, Type: dword, Name: DisableAutomaticRestartSignOn, 
-    Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', 
-    Desc: Prevent last user's credentials from being stored }
-    - { ID: TT, Value: 1, Type: dword, Name: EnableAuthEpResolution , 
-    Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc', 
-    Desc: Require authentication for RPC service access }
-    - { ID: UU, Value: 1, Type: dword, Name: ForceUnlockLogon, 
-    Path: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon', 
-    Desc: Require Domain Controller Authentication to unlock computer }
+    - { Desc: Restrict use of blank passwords,
+      ID: A, Value: 1, Type: dword, Name: LimitBlankPasswordUse, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' }
+    - { Desc: Prevent printer driver installation for non-admins,
+      ID: B, Value: 1, Type: dword, Name: AddPrinterDrivers, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers' }
+    - { Desc: Enforce encrypted or signed channel data,
+      ID: C, Value: 1, Type: dword, Name: RequireSignOrSeal, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' }
+    - { Desc: Enforce encrypted of signed channel data,
+      ID: D, Value: 1, Type: dword, Name: SignSecureChannel, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' }
+    - { Desc: Do not display last user name,
+      ID: E, Value: 1, Type: dword, Name: dontdisplaylastusername, 
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+
+    - { Desc: Require CTRL + ALT + DEL to logon,
+      ID: F, Value: 1, Type: dword, Name: disabledcad, 
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+    - { Desc: Enforce digital signing of communications (Workstation),
+      ID: G, Value: 1, Type: dword, Name: EnableSecuritySignature, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters' }
+    - { Desc: Enforce digital signing of communications (Server),
+      ID: H, Value: 1, Type: dword, Name: enablesecuritysignature, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' }
+    - { Desc: Allow SafeDLL search mode,
+      ID: I, Value: 1, Type: dword, Name: SafeDllSearchMode, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager' }
+    - { Desc: Set screen saver grace period to 4,
+      ID: J, Value: 4, Type: dword, Name: ScreenSaverGracePeriod, 
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' }
+
+    - { Desc: Prevent SAM account searching,
+      ID: K, Value: 1, Type: dword, Name: restrictanonymoussam, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' }
+    - { Desc: Restrict anonymous user permissions,
+      ID: L, Value: 0, Type: dword, Name: everyoneincludesanonymous, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' }
+    - { Desc: Restrict anonymous access to pipes,
+      ID: M, Value: 1, Type: dword, Name: restrictnullsessaccess, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' }
+    - { Desc: Enforce LDAP client signing,
+      ID: 'N', Value: 1, Type: dword, Name: ldapclientintegrity, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\ldap' }
+    - { Desc: Allow system shutdown without logon,
+      ID: O, Value: 0, Type: dword, Name: shutdownwithoutlogon, 
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+
+    - { Desc: Prevent unsecure elevation prompts from applications,
+      ID: P, Value: 0, Type: dword, Name: EnableUIADesktopToggle, 
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+    - { Desc: Prevent application installation without prompt,
+      ID: Q, Value: 1, Type: dword, Name: EnableInstallerDetection, 
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+    - { Desc: Run admins in Admin Approval Mode,
+      ID: R, Value: 1, Type: dword, Name: EnableLUA, 
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+    - { Desc: Enforce secure desktop for elevation prompts,
+      ID: S, Value: 1, Type: dword, Name: PromptOnSecureDesktop, 
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+    - { Desc: Restrict legacy application registry write locations,
+      ID: T, Value: 1, Type: dword, Name: EnableVirtualization, 
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+
+    - { Desc: Prevent Microsoft accounts from logging in,
+      ID: OO, Value: 3, Type: dword, Name: noconnecteduser, 
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+    - { Desc: Prohibit server controllers from scheduling tasks,
+      ID: PP, Value: 0, Type: dword, Name: submitcontrol, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' }
+    - { Desc: Prohibit anonymous access to names pipes,
+      ID: QQ, Value: '', Type: multistring, Name: NullSessionPipes, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' }
+    - { Desc: Prohibit anonymous access to session shares,
+      ID: RR, Value: '', Type: multistring, Name: NullSessionShares, 
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' }
+    - { Desc: Prevent last user's credentials from being stored,
+      ID: SS, Value: 1, Type: dword, Name: DisableAutomaticRestartSignOn, 
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+
+    - { Desc: Require authentication for RPC service access,
+      ID: TT, Value: 1, Type: dword, Name: EnableAuthEpResolution , 
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc' }
+    - { Desc: Require Domain Controller Authentication to unlock computer,
+      ID: UU, Value: 1, Type: dword, Name: ForceUnlockLogon, 
+      Path: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon' }
 
 - name: Set AC-3 user rights task dictionary
   set_fact:
     UN_AC_3_RightsTasks:
     - { Desc: Set no one to act as part of the operating system,
-    ID: U, Name: SeTcbPrivilege, 
-    Users: [] }
+      ID: U, Name: SeTcbPrivilege, 
+      Users: [] }
     - { Desc: Set Administrators to log on locally,
-    ID: V, Name: SeInteractiveLogonRight, 
-    Users: ['Administrators'] }
+      ID: V, Name: SeInteractiveLogonRight, 
+      Users: ['Administrators'] }
     - { Desc: Allow Admins and Remote users to log on with RDP,
-    ID: W, Name: SeRemoteInteractiveLogonRight, 
-    Users: ['Administrators','Remote Desktop 
-    Users'] }
+      ID: W, Name: SeRemoteInteractiveLogonRight, 
+      Users: ['Administrators','Remote Desktop Users'] }
     - { Desc: Only Admins and local service can change system time,
-    ID: X, Name: SeSystemtimePrivilege, 
-    Users: ['Administrators','Local Service'] }
+      ID: X, Name: SeSystemtimePrivilege, 
+      Users: ['Administrators','Local Service'] }
     - { Desc: Restrict pagefile creation to Admins,
-    ID: 'Y', Name: SeCreatePagefilePrivilege, 
-    Users: ['Administrators'] }
+      ID: 'Y', Name: SeCreatePagefilePrivilege, 
+      Users: ['Administrators'] }
+
     - { Desc: "Allow Admins, Service, Local Service and Network Service to create global objects",
-    ID: Z, Name: SeCreateGlobalPrivilege, 
-    Users: ['Administrators','Service','Local Service','Network Service'] }
+      ID: Z, Name: SeCreateGlobalPrivilege, 
+      Users: ['Administrators','Service','Local Service','Network Service'] }
     - { Desc: "Set deny computer access via network for Guests",
-    ID: AA, Name: SeDenyNetworkLogonRight, 
-    Users: ['Guests'] }
+      ID: AA, Name: SeDenyNetworkLogonRight, 
+      Users: ['Guests'] }
     - { Desc: Deny guests local log on,
-    ID: BB, Name: SeDenyInteractiveLogonRight, 
-    Users: ['Guests'] }
+      ID: BB, Name: SeDenyInteractiveLogonRight, 
+      Users: ['Guests'] }
     - { Desc: Allow force shutdown via remote to Admins,
-    ID: CC, Name: SeRemoteShutdownPrivilege, 
-    Users: ['Administrators'] }
+      ID: CC, Name: SeRemoteShutdownPrivilege, 
+      Users: ['Administrators'] }
     - { Desc: Allow security audit generation for Local Service and Network Service,
-    ID: DD, Name: SeAuditPrivilege, 
-    Users: ['Local Service','Network Service'] }
-    - { Desc: Allow client impersonation for ,
-    ID: EE, Name: SeImpersonatePrivilege, 
-    Users: ['Administrators','Service','Local Service','Network Service'] }
+      ID: DD, Name: SeAuditPrivilege, 
+      Users: ['Local Service','Network Service'] }
+
+    - { Desc: "Allow client impersonation for Admins, Service, Local Service and Network Service",
+      ID: EE, Name: SeImpersonatePrivilege, 
+      Users: ['Administrators','Service','Local Service','Network Service'] }
     - { Desc: Allow scheduling priority changes to Admins,
-    ID: FF, Name: SeIncreaseBasePriorityPrivilege, 
-    Users: ['Administrators'] }
+      ID: FF, Name: SeIncreaseBasePriorityPrivilege, 
+      Users: ['Administrators'] }
     - { Desc: Restrict driver device loading/unloading to Admins,
-    ID: GG, Name: SeLoadDriverPrivilege, 
-    Users: ['Administrators'] }
+      ID: GG, Name: SeLoadDriverPrivilege, 
+      Users: ['Administrators'] }
     - { Desc: Prevent anyone from modifying object labels,
-    ID: HH, Name: SeRelabelPrivilege, 
-    Users: [] }
+      ID: HH, Name: SeRelabelPrivilege, 
+      Users: [] }
     - { Desc: Allow system performance profiling for Admins and NT Service\WdiServiceHost,
-    ID: II, Name: SeSystemProfilePrivilege, 
-    Users: ['Administrators','NT SERVICE\WdiServiceHost'] }
+      ID: II, Name: SeSystemProfilePrivilege, 
+      Users: ['Administrators','NT SERVICE\WdiServiceHost'] }
+
     - { Desc: Restrict system shutdown to Admins,
-    ID: NN, Name: SeShutdownPrivilege, 
-    Users: ['Administrators'] }
+      ID: NN, Name: SeShutdownPrivilege, 
+      Users: ['Administrators'] }
     - { Desc: "Deny RDP log on for Guests, Local Account and Domain Admins (we only deny Guests)",
-    ID: NN, Name: SeTcbPrivilege, 
-    Users: ['Guests'] }
+      ID: NN, Name: SeTcbPrivilege, 
+      Users: ['Guests'] }
 
 # Init and get defaults
 - name: Check if defaults were loaded for UN_AC_3 were loaded
@@ -184,7 +191,7 @@
     Loaded: Loaded_UN_AC_3
     RightsTasks: "{{ UN_AC_3_RightsTasks }}"
 
-
+# OLDS
 # #Tasks
 # - name: UN_AC_3 A > Restrict use of blank passwords
 #   win_regedit:

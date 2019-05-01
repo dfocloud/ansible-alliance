@@ -30,6 +30,7 @@
       - UN_AC_3
       - UN_AC_7
       - UN_IA_2
+      - UN_SC_5
     when: "'All' in SkipList"
 
   - name: Initialize global UndoList
@@ -39,6 +40,7 @@
       - UN_AC_3
       - UN_AC_7
       - UN_IA_2
+      - UN_SC_5
     when: "'All' in UndoList"
 
 #========== List Script Includes ==========#
@@ -53,6 +55,10 @@
   - name: Execute UN_IA_2 tasks
     include_tasks: UN_IA_2.yml
     when: "'UN_IA_2' not in SkipList"
+
+  - name: Execute UN_SC_5 tasks
+    include_tasks: UN_SC_5.yml
+    when: "'UN_SC_5' not in SkipList"
 
 #========== Old ==========#
 # - name: Get Security Policy Tasks
