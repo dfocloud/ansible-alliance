@@ -1,6 +1,9 @@
 # List Script
 # Includes all the tasks that fall under
 # the Unclassed AC-7 protocol requirements
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
 ---
 # Init task dictionaries
 - name: Set AC-7 command task dictionary
