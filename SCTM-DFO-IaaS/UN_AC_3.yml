@@ -7,7 +7,7 @@
 ---
 # Init task dictionaries
 - name: Set AC-3 regedit task dictionary
-  sef_fact:
+  set_fact:
     UN_AC_3_RegTasks:
     - { ID: A, Value: 1, Type: dword, Name: LimitBlankPasswordUse, 
     Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa', 
