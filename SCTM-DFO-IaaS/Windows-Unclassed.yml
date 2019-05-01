@@ -35,9 +35,15 @@
       - UN_AC_7
       - UN_AC_8
       - UN_AC_11
+      
       - UN_AU_9
+      
       - UN_IA_2
+      
+      - UN_SC_2
       - UN_SC_5
+      - UN_SC_7
+      - UN_SC_10
     when: "'All' in UndoList"
 
 #========== List Script Includes ==========#
@@ -63,6 +69,10 @@
     when: "'UN_AC_11' not in SkipList"
 
   # AU
+  - name: Execute UN_AU_3 tasks
+    include_tasks: UN_AU_3.yml
+    when: "'UN_AU_3' not in SkipList"
+
   - name: Execute UN_AU_9 tasks
     include_tasks: UN_AU_9.yml
     when: "'UN_AU_9' not in SkipList"
@@ -73,6 +83,10 @@
     when: "'UN_IA_2' not in SkipList"
 
   # SC
+  - name: Execute UN_SC_2_7_10 tasks
+    include_tasks: UN_SC_2_7_10.yml
+    when: "'UN_SC' not in SkipList"
+
   - name: Execute UN_SC_5 tasks
     include_tasks: UN_SC_5.yml
     when: "'UN_SC_5' not in SkipList"

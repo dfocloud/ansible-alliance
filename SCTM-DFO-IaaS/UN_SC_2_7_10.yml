@@ -1,68 +1,106 @@
----
-# Called from Windows-Rollback.yml
+# == List Script ==
 # Includes all the tasks that fall under
-# the Unclassed UN_SC_2, UN_SC_7, and UN_SC_10 protocol requirements
+# the Unclassed SC-2-7-10 protocol requirements
 
-# Imported vars: RegDefaultsPath RegistryDefaults
-
-- name: UN_SC_2710 ? > Check for UN_SC_2710 defaults entry
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+# Init task dictionaries
+- name: Set SC-2-7-10 regedit task dictionary
   set_fact:
-    HasUNSC2710Def: "{{ 'UN_SC_2710' in RegistryDefaults }}"
+    UN_SC_2710_RegTasks:
+    - { Desc: Prohibit IP source routing,
+      ID: 2, Value: 2, Type: dword, Name: DisableIPSourceRouting,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters' }
+    - { Desc: Prevent bypassing SmartScreen prompts,
+      ID: 7, Value: 1, Type: dword, Name: PreventOverride,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter' }
+    - { Desc: Limit idle RDP sessions to 15 mins,
+      ID: 10, Value: 900000, Type: dword, Name: MaxIdleTime,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services' }
 
-- name: UN_SC_2710 = > Get keys if UN_SC_2710 is not 'present'
-  win_reg_stat:
-    path: "{{ item.path }}"
-    name: "{{ item.name }}"
-  register: UN_SC2710_DefKeys
-  loop:
-    - { taskID: SC_2, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters', name: DisableIPSourceRouting }
-    - { taskID: SC_7, path: 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter', name: PreventOverride }
-    - { taskID: SC_10, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services', name: MaxIdleTime }
-  when: not HasUNSC2710Def
-
-- name: UN_SC_2710 + > Add keys to a dictionary
+# Init and get defaults
+- name: Check if defaults for SC-2-7-10 were loaded
   set_fact:
-    UN_SC_2710_Def: "{{ UN_SC_2710_Def|default({}) | combine( {item.item.taskID: (item.value if item.exists else 4294967295)} ) }}"
-  loop: "{{ UN_SC2710_DefKeys.results }}"
-  when: not HasUNSC2710Def
+    Loaded_UN_SC: "{{ 'UN_SC' in MachineDefaults }}"
 
-- name: UN_SC_2710 ++ > Add dictionary to RegistryDefaults dictionary
-  set_fact:
-    RegistryDefaults: "{{ RegistryDefaults | combine({'UN_SC_2710':UN_SC_2710_Def}) }}"
-  when: not HasUNSC2710Def
+- name: Get regedit defaults
+  include_tasks: WinRegStat.yml
+  vars:
+    SecCat: UN
+    TaskCat: SC
+    RegTasks: "{{ UN_SC_2710_RegTasks }}"
+  when: not Loaded_UN_SC
 
-- name: UN_SC_2710 IO > Write dictionary
-  win_copy:
-    dest: "{{ RegDefaultsPath }}"
-    content: "{{ RegistryDefaults }}"
-  when: not HasUNSC2710Def
+# Run tasks
+- name: Run regedit tasks
+  include_tasks: WinRegedit.yml
+  vars:
+    SecCat: UN
+    TaskCat: SC
+  loop: "{{ UN_SC_2710_RegTasks }}"
+  loop_control:
+    loop_var: RegTask
 
-# UN_SC_2
-- name: UN_SC_2 > Prohibit IP source routing
-  win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters
-    name: DisableIPSourceRouting
-    data: "{{ 2 if undo_UN_SC_2 is not defined else RegistryDefaults.UN_SC_2710.SC_2 }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_2 is defined and RegistryDefaults.UN_SC_2710.SC_2 == 4294967295) else 'present'}}"
-  when: skip_UN_SC_2 is not defined
+# OLD
+# - name: UN_SC_2710 ? > Check for UN_SC_2710 defaults entry
+#   set_fact:
+#     HasUNSC2710Def: "{{ 'UN_SC_2710' in RegistryDefaults }}"
 
-# UN_SC_7
-- name: UN_SC_7 > Prevent bypassing SmartScreen prompts
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter
-    name: PreventOverride
-    data: "{{ 1 if undo_UN_SC_7 is not defined else RegistryDefaults.UN_SC_2710.SC_7 }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_7 is defined and RegistryDefaults.UN_SC_2710.SC_7 == 4294967295) else 'present'}}"
-  when: skip_UN_SC_7 is not defined
+# - name: UN_SC_2710 = > Get keys if UN_SC_2710 is not 'present'
+#   win_reg_stat:
+#     path: "{{ item.path }}"
+#     name: "{{ item.name }}"
+#   register: UN_SC2710_DefKeys
+#   loop:
+#     - { taskID: SC_2, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters', name: DisableIPSourceRouting }
+#     - { taskID: SC_7, path: 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter', name: PreventOverride }
+#     - { taskID: SC_10, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services', name: MaxIdleTime }
+#   when: not HasUNSC2710Def
 
-# UN_SC_10
-- name: UN_SC_10 > Limit idle RDP sessions to 15 mins
-  win_regedit:
-    path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
-    name: MaxIdleTime
-    data: "{{ 900000 if undo_UN_SC_10 is not defined else RegistryDefaults.UN_SC_2710.SC_10 }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_10 is defined and RegistryDefaults.UN_SC_2710.SC_10 == 4294967295) else 'present'}}"
-  when: skip_UN_SC_10 is not defined
+# - name: UN_SC_2710 + > Add keys to a dictionary
+#   set_fact:
+#     UN_SC_2710_Def: "{{ UN_SC_2710_Def|default({}) | combine( {item.item.taskID: (item.value if item.exists else 4294967295)} ) }}"
+#   loop: "{{ UN_SC2710_DefKeys.results }}"
+#   when: not HasUNSC2710Def
+
+# - name: UN_SC_2710 ++ > Add dictionary to RegistryDefaults dictionary
+#   set_fact:
+#     RegistryDefaults: "{{ RegistryDefaults | combine({'UN_SC_2710':UN_SC_2710_Def}) }}"
+#   when: not HasUNSC2710Def
+
+# - name: UN_SC_2710 IO > Write dictionary
+#   win_copy:
+#     dest: "{{ RegDefaultsPath }}"
+#     content: "{{ RegistryDefaults }}"
+#   when: not HasUNSC2710Def
+
+# # UN_SC_2
+# - name: UN_SC_2 > Prohibit IP source routing
+#   win_regedit:
+#     path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters
+#     name: DisableIPSourceRouting
+#     data: "{{ 2 if undo_UN_SC_2 is not defined else RegistryDefaults.UN_SC_2710.SC_2 }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_2 is defined and RegistryDefaults.UN_SC_2710.SC_2 == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_2 is not defined
+
+# # UN_SC_7
+# - name: UN_SC_7 > Prevent bypassing SmartScreen prompts
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter
+#     name: PreventOverride
+#     data: "{{ 1 if undo_UN_SC_7 is not defined else RegistryDefaults.UN_SC_2710.SC_7 }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_7 is defined and RegistryDefaults.UN_SC_2710.SC_7 == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_7 is not defined
+
+# # UN_SC_10
+# - name: UN_SC_10 > Limit idle RDP sessions to 15 mins
+#   win_regedit:
+#     path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
+#     name: MaxIdleTime
+#     data: "{{ 900000 if undo_UN_SC_10 is not defined else RegistryDefaults.UN_SC_2710.SC_10 }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_10 is defined and RegistryDefaults.UN_SC_2710.SC_10 == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_10 is not defined
