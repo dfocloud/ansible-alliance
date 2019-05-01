@@ -1,4 +1,3 @@
----
 # STCM-DFO-IaaS compliant configuration for
 # a Windows virtual machine in Azure Cloud
 # Based on RFP 16-42051B
@@ -10,250 +9,301 @@
 # Author:
 #     Alex Imray Papineau
 # Last edit:
-#     26 March 2019
+#     01 May 2019
 # Editor:
 #     Alex Imray Papineau
-
-- name: Get Security Policy Tasks
-  import_playbook: security_policy.yml
-
+---
 - hosts: all
   become_method: runas
   vars:
-    AC_3: true #Import
-    AC_4: true
-    AC_7: true
-    AC_8: true #Import
-    AC_11: true
-
-    AU_3: true
-    AU_9: true
-
-    CM_3: true
-    CM_6: true
-    
-    IA_2: true
-    IA_5: true #Import
-    
-    SC_2: true
-    SC_5: true #Import
-    SC_7: true
-    SC_8: true #Import
-    SC_10: true
-    SC_13: true
-    SC_15: true
-    SC_23: true
-    SC_28: true
-
-    SI_2: true
-    SI_3: true #Import
-
+    MachineDefaults: {}
+    MachineDefaultsPath: C:\AnsibleMachineDefaults.yml
   tasks:
 
-  - name: Get AC-3 Compliance Tasks A-Z
-    include_tasks: AC-3_Tasks.yml
-    when: AC_3
+  - name: Initialize template facts
+    set_fact:
+      SkipList: "{{ Skip|default([]) }}"
+      UndoList: "{{ Undo|default([]) }}"
+      CustomDict: "{{ Custom|default({}) }}"
 
-  - name: Get AC-8 Compliance Tasks A-E
-    include_tasks: AC-8_Tasks.yml
-    when: AC_8
+  - name: Initialize MachineDefaults dictionary
+    include_tasks: WinDefaultsFile.yml
 
-  - name: Get IA-5 Compliance Tasks A-L
-    include_tasks: IA-5_Tasks.yml
-    when: IA_5
-
-  - name: Get SC-5 Compliance Tasks A-E
-    include_tasks: SC-5_Tasks.yml
-    when: SC_5 or SI_2 or SC_23
-
-  - name: Get SC-8 Compliance Tasks A-I
-    include_tasks: SC-8_Tasks.yml
-    when: CM_3 or SC_2 or SC_8 or SC_23 or SC_28
-
-  - name: Get SI-3 Compliance Tasks A-E
-    include_tasks: SI-3_Tasks.yml
-    when: SI_3
-
-# AC-4
-  - name: AC-4 A > Prevent storing LAN Manager hash value
-    win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
-      name: NoLmHash
-      data: 1
-      type: dword
-    when: AC_4
-
-  - name: AC-4 B > Set LAN Manager authentication
-    win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
-      name: lmcompatibilitylevel
-      data: 5
-      type: dword
-    when: AC_4
-
-  - name: AC-4 C > Set minimum server network traffic security
-    win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
-      name: NtkmMinServerSec
-      data: 20000000
-      type: dword
-    when: AC_4 or CM_3
-
-  - name: AC-4 > Prohibit connection between secure and insecure networks
-    win_regedit:
-      path: HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy
-      name: fBlockNonDomain
-      data: 1
-      type: dword
-    when: AC_4
-
-# AC-7
-  - name: AC-7 A > 
-    win_command: "net accounts /lockoutthreshold:5"
-    when: AC_7
-
-  - name: AC-7 B > 
-    win_command: "net accounts /lockoutduration:60"
-    when: AC_7
-
-  - name: AC-7 C > 
-    win_command: "net accounts /lockoutwindow:60"
-    when: AC_7
-
-# AC-11
-  - name: AC-11 A > Password-protect screen saver
-    win_regedit:
-      path: HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop
-      name: ScreenSaverIsSecure
-      data: 1
-      type: string
-    when: AC_11
-
-  - name: AC-11 B > Screen saver activates after 5 mins of inactivity
-    win_regedit:
-      path: HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop
-      name: ScreenSaverTimeOut
-      data: 600
-      type: string
-    when: AC_11
-
-  - name: AC-11 C (DC)
-    block:
-      - name: AC-11 > Require password when waking computer (DC)
-        win_regedit:
-          path: HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
-          name: DCSettingIndex
-          data: 1
-          type: dword
-    rescue:
-      - debug:
-          msg: "Registry Entry 'DCSettingIndex' is not present for this computer"
-    when: AC_11
-
-  - name: AC-11 D (AC)
-    block:
-      - name: AC-11 > Require password when waking computer (AC)
-        win_regedit:
-          path: HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
-          name: ACSettingIndex
-          data: 1
-          type: dword
-    rescue:
-      - debug:
-          msg: "Registry Entry 'ACSettingIndex' is not present for this computer"
-    when: AC_11
-
-# AU-3
-  - name: AU-3 > Ensure firewalls log dropped packets
-    win_regedit:
-      path: "HKLM:\\Software\\Policies\\Microsoft\\WindowsFirewall\\{{ item }}\\Logging"
-      name: LogDroppedPackets
-      data: 1
-      type: dword
+  - name: Initialize global SkipList
+    set_fact:
+      SkipList: "{{ SkipList + [item] }}"
     loop:
-      - DomainProfile
-      - PrivateProfile
-      - PublicProfile
-    when: AU_3
+      - UN_AC_3
+      - UN_AC_4
+      - UN_AC_7
+      - UN_AC_8
+      - UN_AC_11
+    when: "'All' in SkipList"
 
-# AU-9
-  - name: AU-9 > Ensure firewalls log to correct files
-    win_regedit:
-      path: "HKLM:\\Software\\Policies\\Microsoft\\WindowsFirewall\\{{ item.path }}\\Logging"
-      name: LogFilePath
-      data: "%SYSTEMROOT%\\System32\\logfiles\\firewall\\{{ item.file }}"
-      type: string
+  - debug:
+      var: SkipList
+
+  - name: Initialize global UndoList
+    set_fact:
+      UndoList: "{{ UndoList + [item] }}"
     loop:
-      - { path: DomainProfile, file: domainfw.log }
-      - { path: PrivateProfile, file: privatefw.log }
-      - { path: PublicProfile, file: publicfw.log }
-    when: AU_9
+      - UN_AC_3
+      - UN_AC_4
+      - UN_AC_7
+      - UN_AC_8
+      - UN_AC_11
+    when: "'All' in UndoList"
 
-# IA-2
-  - name: IA-2 A > Prevent NULL session fallback
-    win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
-      name: allownullsessionfallback
-      data: 0
-      type: dword
-    when: IA_2
+#========== List Script Includes ==========#
+  - name: Execute UN_AC_3 tasks
+    include_tasks: UN_AC_3.yml
+    when: "'UN_AC_3' not in SkipList"
 
-  - name: IA-2 B > Prevent online identity use for PKU2U authentication requests
-    win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\pku2u
-      name: allowonlineid # OwO
-      data: 0
-      type: dword
-    when: IA_2
+  # - name: Execute UN_AC_4 tasks
+  #   include_tasks: UN_AC_4.yml
+  #   when: "'UN_AC_4' not in SkipList"
 
-  - name: IA-2 C > Enforce password prompt for RDP
-    win_regedit:
-      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
-      name: fPromptForPassword
-      data: 1
-      type: dword
-    when: IA_2
+#========== Old ==========#
+# - name: Get Security Policy Tasks
+#   import_playbook: security_policy.yml
 
-# SC-2
-  - name: SC-2 > Prohibit IP source routing
-    win_regedit:
-      path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters
-      name: DisableIPSourceRouting
-      data: 2
-      type: dword
-    when: SC_2
+# - hosts: all
+#   become_method: runas
+#   vars:
+#     AC_3: true #Import
+#     AC_4: true
+#     AC_7: true
+#     AC_8: true #Import
+#     AC_11: true
 
-# SC-7
-  - name: SC-7 > Prevent bypassing SmartScreen prompts
-    win_regedit:
-      path: HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter
-      name: PreventOverride
-      data: 1
-      type: dword
-    when: SC_7
+#     AU_3: true
+#     AU_9: true
 
-# SC-10
-  - name: SC-10 > Limit idle RDP sessions to 15 mins
-    win_regedit:
-      path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
-      name: MaxIdleTime
-      data: 900000
-      type: dword
-    when: SC_10
+#     CM_3: true
+#     CM_6: true
+    
+#     IA_2: true
+#     IA_5: true #Import
+    
+#     SC_2: true
+#     SC_5: true #Import
+#     SC_7: true
+#     SC_8: true #Import
+#     SC_10: true
+#     SC_13: true
+#     SC_15: true
+#     SC_23: true
+#     SC_28: true
 
-# SI-2
-  - name: SI-2 A > Prevent attachment downloads through RSS
-    win_regedit:
-      path: HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds
-      name: DisableEnclosureDownload
-      data: 1
-      type: dword
-    when: SI_2
+#     SI_2: true
+#     SI_3: true #Import
 
-  - name: SI-2 B > Ensure attachments are scanned with antivirus
-    win_regedit:
-      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments
-      name: ScanWithAntiVirus
-      data: 3
-      type: dword
-    when: SI_2
+#   tasks:
+
+#   - name: Get AC-3 Compliance Tasks A-Z
+#     include_tasks: AC-3_Tasks.yml
+#     when: AC_3
+
+#   - name: Get AC-8 Compliance Tasks A-E
+#     include_tasks: AC-8_Tasks.yml
+#     when: AC_8
+
+#   - name: Get IA-5 Compliance Tasks A-L
+#     include_tasks: IA-5_Tasks.yml
+#     when: IA_5
+
+#   - name: Get SC-5 Compliance Tasks A-E
+#     include_tasks: SC-5_Tasks.yml
+#     when: SC_5 or SI_2 or SC_23
+
+#   - name: Get SC-8 Compliance Tasks A-I
+#     include_tasks: SC-8_Tasks.yml
+#     when: CM_3 or SC_2 or SC_8 or SC_23 or SC_28
+
+#   - name: Get SI-3 Compliance Tasks A-E
+#     include_tasks: SI-3_Tasks.yml
+#     when: SI_3
+
+# # AC-4
+#   - name: AC-4 A > Prevent storing LAN Manager hash value
+#     win_regedit:
+#       path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+#       name: NoLmHash
+#       data: 1
+#       type: dword
+#     when: AC_4
+
+#   - name: AC-4 B > Set LAN Manager authentication
+#     win_regedit:
+#       path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+#       name: lmcompatibilitylevel
+#       data: 5
+#       type: dword
+#     when: AC_4
+
+#   - name: AC-4 C > Set minimum server network traffic security
+#     win_regedit:
+#       path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
+#       name: NtkmMinServerSec
+#       data: 20000000
+#       type: dword
+#     when: AC_4 or CM_3
+
+#   - name: AC-4 > Prohibit connection between secure and insecure networks
+#     win_regedit:
+#       path: HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy
+#       name: fBlockNonDomain
+#       data: 1
+#       type: dword
+#     when: AC_4
+
+# # AC-7
+#   - name: AC-7 A > 
+#     win_command: "net accounts /lockoutthreshold:5"
+#     when: AC_7
+
+#   - name: AC-7 B > 
+#     win_command: "net accounts /lockoutduration:60"
+#     when: AC_7
+
+#   - name: AC-7 C > 
+#     win_command: "net accounts /lockoutwindow:60"
+#     when: AC_7
+
+# # AC-11
+#   - name: AC-11 A > Password-protect screen saver
+#     win_regedit:
+#       path: HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop
+#       name: ScreenSaverIsSecure
+#       data: 1
+#       type: string
+#     when: AC_11
+
+#   - name: AC-11 B > Screen saver activates after 5 mins of inactivity
+#     win_regedit:
+#       path: HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop
+#       name: ScreenSaverTimeOut
+#       data: 600
+#       type: string
+#     when: AC_11
+
+#   - name: AC-11 C (DC)
+#     block:
+#       - name: AC-11 > Require password when waking computer (DC)
+#         win_regedit:
+#           path: HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
+#           name: DCSettingIndex
+#           data: 1
+#           type: dword
+#     rescue:
+#       - debug:
+#           msg: "Registry Entry 'DCSettingIndex' is not present for this computer"
+#     when: AC_11
+
+#   - name: AC-11 D (AC)
+#     block:
+#       - name: AC-11 > Require password when waking computer (AC)
+#         win_regedit:
+#           path: HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51
+#           name: ACSettingIndex
+#           data: 1
+#           type: dword
+#     rescue:
+#       - debug:
+#           msg: "Registry Entry 'ACSettingIndex' is not present for this computer"
+#     when: AC_11
+
+# # AU-3
+#   - name: AU-3 > Ensure firewalls log dropped packets
+#     win_regedit:
+#       path: "HKLM:\\Software\\Policies\\Microsoft\\WindowsFirewall\\{{ item }}\\Logging"
+#       name: LogDroppedPackets
+#       data: 1
+#       type: dword
+#     loop:
+#       - DomainProfile
+#       - PrivateProfile
+#       - PublicProfile
+#     when: AU_3
+
+# # AU-9
+#   - name: AU-9 > Ensure firewalls log to correct files
+#     win_regedit:
+#       path: "HKLM:\\Software\\Policies\\Microsoft\\WindowsFirewall\\{{ item.path }}\\Logging"
+#       name: LogFilePath
+#       data: "%SYSTEMROOT%\\System32\\logfiles\\firewall\\{{ item.file }}"
+#       type: string
+#     loop:
+#       - { path: DomainProfile, file: domainfw.log }
+#       - { path: PrivateProfile, file: privatefw.log }
+#       - { path: PublicProfile, file: publicfw.log }
+#     when: AU_9
+
+# # IA-2
+#   - name: IA-2 A > Prevent NULL session fallback
+#     win_regedit:
+#       path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
+#       name: allownullsessionfallback
+#       data: 0
+#       type: dword
+#     when: IA_2
+
+#   - name: IA-2 B > Prevent online identity use for PKU2U authentication requests
+#     win_regedit:
+#       path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\pku2u
+#       name: allowonlineid # OwO
+#       data: 0
+#       type: dword
+#     when: IA_2
+
+#   - name: IA-2 C > Enforce password prompt for RDP
+#     win_regedit:
+#       path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+#       name: fPromptForPassword
+#       data: 1
+#       type: dword
+#     when: IA_2
+
+# # SC-2
+#   - name: SC-2 > Prohibit IP source routing
+#     win_regedit:
+#       path: HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters
+#       name: DisableIPSourceRouting
+#       data: 2
+#       type: dword
+#     when: SC_2
+
+# # SC-7
+#   - name: SC-7 > Prevent bypassing SmartScreen prompts
+#     win_regedit:
+#       path: HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter
+#       name: PreventOverride
+#       data: 1
+#       type: dword
+#     when: SC_7
+
+# # SC-10
+#   - name: SC-10 > Limit idle RDP sessions to 15 mins
+#     win_regedit:
+#       path: HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+#       name: MaxIdleTime
+#       data: 900000
+#       type: dword
+#     when: SC_10
+
+# # SI-2
+#   - name: SI-2 A > Prevent attachment downloads through RSS
+#     win_regedit:
+#       path: HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds
+#       name: DisableEnclosureDownload
+#       data: 1
+#       type: dword
+#     when: SI_2
+
+#   - name: SI-2 B > Ensure attachments are scanned with antivirus
+#     win_regedit:
+#       path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments
+#       name: ScanWithAntiVirus
+#       data: 3
+#       type: dword
+#     when: SI_2
