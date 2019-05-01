@@ -1,66 +1,128 @@
----
-# Called from Windows-Rollback.yml
+# == List Script ==
 # Includes all the tasks that fall under
-# the Unclassed UN_AU_9 protocol requirements
+# the Unclassed AU-9 protocol requirements
 
-# Imported vars: RegDefaultsPath RegistryDefaults
-
-- name: UN_AU_9 ? > Check for UN_AU_9 defaults entry
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+# Init task dictionaries
+- name: Set AU-9 regedit task dictionary
   set_fact:
-    HasUNAU9Def: "{{ 'UN_AU_9' in RegistryDefaults }}"
+    UN_AU_9_RegTasks:
+    - { Desc: Ensure firewalls log to correct files (domain),
+      ID: A, Value: '%SYSTEMROOT%\\System32\\logfiles\\firewall\\domainfw.log',
+      Type: string, Name: NoAutoRebootWithLoggedOnUsers,
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging' }
+    - { Desc: Ensure firewalls log to correct files (private),
+      ID: B, Value: '%SYSTEMROOT%\\System32\\logfiles\\firewall\\privatefw.log',
+      Type: string, Name: TcpMaxDataRetransmissions,
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging' }
+    - { Desc: Ensure firewalls log to correct files (public),
+      ID: C, Value: '%SYSTEMROOT%\\System32\\logfiles\\firewall\\publicfw.log',
+      Type: string, Name: TcpMaxDataRetransmissions,
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging' }
 
-- name: UN_AU_9 = > Get keys in UN_AU_9 is not 'present'
-  win_reg_stat:
-    path: "{{ item.path }}"
-    name: LogFilePath
-  register: UN_AU9_DefKeys
-  loop:
-    - { ID: A, path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging' }
-    - { ID: B, path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging' }
-    - { ID: C, path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging' }
-  when: not HasUNAU9Def
-
-- name: UN_AU_9 + > Add keys to a dictionary
+- name: Set AU-9 user rights task dictionary
   set_fact:
-    UN_AU_9_Def: "{{ UN_AU_9_Def|default({}) | combine( {item.item.ID: (item.value if item.exists else 4294967295)} ) }}"
-  loop: "{{ UN_AU9_DefKeys.results }}"
-  when: not HasUNAU9Def
+    UN_AU_9_RightsTasks:
+    - { Desc: "Restrict audit and secutiry log management to no one (we put Admins)",
+      ID: D, Name: SeSecurityPrivilege, 
+      Users: ['Administrators'] }
 
-- name: UN_AU_9 ++ > Add dictionary to RegistryDefaults dictionary
+# Init and get defaults
+- name: Check if defaults for AU-9 were loaded
   set_fact:
-    RegistryDefaults: "{{ RegistryDefaults | combine({'UN_AU_9':UN_AU_9_Def}) }}"
-  when: not HasUNAU9Def
+    Loaded_UN_AU_9: "{{ 'UN_AU_9' in MachineDefaults }}"
 
-- name: UN_AU_9 IO > Write dictionary
-  win_copy:
-    dest: "{{ RegDefaultsPath }}"
-    content: "{{ RegistryDefaults }}"
-  when: not HasUNAU9Def
+- name: Initialize UndoList
+  set_fact:
+    UndoList: "{{ UndoList + ['UN_AU_9_'+item.ID] }}"
+  loop: "{{ UN_AU_9_RegTasks |union(UN_AU_9_RightsTasks) }}"
+  when: "'UN_AU_9' in UndoList"
 
-# Tasks
-- name: UN_AU_9 A > Ensure firewalls log to correct files
-  win_regedit:
-    path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging
-    name: LogFilePath
-    data: "{{ '%SYSTEMROOT%\\System32\\logfiles\\firewall\\domainfw.log' if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.A }}"
-    type: string
-    state: "{{'absent' if (undo_UN_AU_9 is defined and RegistryDefaults.UN_AU_9.A == 4294967295) else 'present'}}"
-  when: skip_UN_AU_9_A is not defined
+- name: Get regedit defaults
+  include_tasks: WinRegStat.yml
+  vars:
+    SecCat: UN
+    TaskCat: AU_9
+    RegTasks: "{{ UN_AU_9_RegTasks }}"
+  when: not Loaded_UN_AU_9
 
-- name: UN_AU_9 B > Ensure firewalls log to correct files
-  win_regedit:
-    path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging
-    name: LogFilePath
-    data: "{{ '%SYSTEMROOT%\\System32\\logfiles\\firewall\\privatefw.log' if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.B }}"
-    type: string
-    state: "{{'absent' if (undo_UN_AU_9 is defined and RegistryDefaults.UN_AU_9.B == 4294967295) else 'present'}}"
-  when: skip_UN_AU_9_B is not defined
+# Run tasks
+- name: Run regedit tasks
+  include_tasks: WinRegedit.yml
+  vars:
+    SecCat: UN
+    TaskCat: AU_9
+  loop: "{{ UN_AU_9_RegTasks }}"
+  loop_control:
+    loop_var: RegTask
 
-- name: UN_AU_9 C > Ensure firewalls log to correct files
-  win_regedit:
-    path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging
-    name: LogFilePath
-    data: "{{ '%SYSTEMROOT%\\System32\\logfiles\\firewall\\publicfw.log' if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.C }}"
-    type: string
-    state: "{{'absent' if (undo_UN_AU_9 is defined and RegistryDefaults.UN_AU_9.C == 4294967295) else 'present'}}"
-  when: skip_UN_AU_9_C is not defined
+- name: Run user rights tasks # simultaneously saves defaults
+  include_tasks: WinUserRights.yml
+  vars:
+    SecCat: UN
+    TaskCat: AU_9
+    Loaded: Loaded_UN_AU_9
+    RightsTasks: "{{ UN_AU_9_RightsTasks }}"
+
+# OLD
+# - name: UN_AU_9 ? > Check for UN_AU_9 defaults entry
+#   set_fact:
+#     HasUNAU9Def: "{{ 'UN_AU_9' in RegistryDefaults }}"
+
+# - name: UN_AU_9 = > Get keys in UN_AU_9 is not 'present'
+#   win_reg_stat:
+#     path: "{{ item.path }}"
+#     name: LogFilePath
+#   register: UN_AU9_DefKeys
+#   loop:
+#     - { ID: A, path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging' }
+#     - { ID: B, path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging' }
+#     - { ID: C, path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging' }
+#   when: not HasUNAU9Def
+
+# - name: UN_AU_9 + > Add keys to a dictionary
+#   set_fact:
+#     UN_AU_9_Def: "{{ UN_AU_9_Def|default({}) | combine( {item.item.ID: (item.value if item.exists else 4294967295)} ) }}"
+#   loop: "{{ UN_AU9_DefKeys.results }}"
+#   when: not HasUNAU9Def
+
+# - name: UN_AU_9 ++ > Add dictionary to RegistryDefaults dictionary
+#   set_fact:
+#     RegistryDefaults: "{{ RegistryDefaults | combine({'UN_AU_9':UN_AU_9_Def}) }}"
+#   when: not HasUNAU9Def
+
+# - name: UN_AU_9 IO > Write dictionary
+#   win_copy:
+#     dest: "{{ RegDefaultsPath }}"
+#     content: "{{ RegistryDefaults }}"
+#   when: not HasUNAU9Def
+
+# # Tasks
+# - name: UN_AU_9 A > Ensure firewalls log to correct files
+#   win_regedit:
+#     path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging
+#     name: LogFilePath
+#     data: "{{ '%SYSTEMROOT%\\System32\\logfiles\\firewall\\domainfw.log' if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.A }}"
+#     type: string
+#     state: "{{'absent' if (undo_UN_AU_9 is defined and RegistryDefaults.UN_AU_9.A == 4294967295) else 'present'}}"
+#   when: skip_UN_AU_9_A is not defined
+
+# - name: UN_AU_9 B > Ensure firewalls log to correct files
+#   win_regedit:
+#     path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging
+#     name: LogFilePath
+#     data: "{{ '%SYSTEMROOT%\\System32\\logfiles\\firewall\\privatefw.log' if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.B }}"
+#     type: string
+#     state: "{{'absent' if (undo_UN_AU_9 is defined and RegistryDefaults.UN_AU_9.B == 4294967295) else 'present'}}"
+#   when: skip_UN_AU_9_B is not defined
+
+# - name: UN_AU_9 C > Ensure firewalls log to correct files
+#   win_regedit:
+#     path: HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging
+#     name: LogFilePath
+#     data: "{{ '%SYSTEMROOT%\\System32\\logfiles\\firewall\\publicfw.log' if undo_UN_AU_9 is not defined else RegistryDefaults.UN_AU_9.C }}"
+#     type: string
+#     state: "{{'absent' if (undo_UN_AU_9 is defined and RegistryDefaults.UN_AU_9.C == 4294967295) else 'present'}}"
+#   when: skip_UN_AU_9_C is not defined

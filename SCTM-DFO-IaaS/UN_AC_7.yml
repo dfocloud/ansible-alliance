@@ -20,7 +20,7 @@
         LineIdx: 7, Strip: "Lockout observation window (minutes):" } # 60
 
 # Init and get defaults
-- name: Check if defaults were loaded for UN_AC_7 were loaded
+- name: Check if defaults for AC-7 were loaded
   set_fact:
     Loaded_UN_AC_7: "{{ 'UN_AC_7' in MachineDefaults }}"
 
@@ -47,47 +47,3 @@
   loop: "{{ UN_AC_7_ComTasks }}"
   loop_control:
     loop_var: ComTask
-
-# OLD
-# - name: UN_AC_7 ? > Check for UN_AC_7 defaults entry
-#   set_fact:
-#     HasUNAC7Def: "{{ 'UN_AC_7' in RegistryDefaults }}"
-
-# - name: UN_AC_7 = > Get keys if UN_AC_7 is not an entry
-#   win_command: "net accounts"
-#   register: UN_AC7_NetAccounts
-#   when: not HasUNAC7Def
-
-# - name: UN_AC_7 %+ > Parse ouput and add keys to dictionary
-#   set_fact:
-#     UN_AC_7_Def: "{{ UN_AC_7_Def|default({}) | combine( {item.name: (UN_AC7_NetAccounts.stdout_lines[item.index].strip(item.strip).strip() | int)} ) }}"
-#   loop:
-#     - { name: A, index: 5, strip: "Lockout threshold:" }
-#     - { name: B, index: 6, strip: "Lockout duration (minutes):" }
-#     - { name: C, index: 7, strip: "Lockout observation window (minutes):" }
-#   when: not HasUNAC7Def
-
-# - name: UN_AC_7 ++ > Add dictionary to RegistryDefaults dictionary
-#   set_fact:
-#     RegistryDefaults: "{{ RegistryDefaults | combine({'UN_AC_7':UN_AC_7_Def}) }}"
-#   when: not HasUNAC7Def
-
-# - name: UN_AC_7 IO > Write dictionary
-#   win_copy:
-#     dest: "{{ RegDefaultsPath }}"
-#     content: "{{ RegistryDefaults }}"
-#   when: not HasUNAC7Def
-
-# # Tasks
-# - name: UN_AC_7 A > Set password attempts before lockout to 5
-#   win_command: "{{ 'net accounts /lockoutthreshold:'+((5 if undo_UN_AC_7 is not defined else RegistryDefaults.UN_AC_7.A)|string) }}"
-#   when: skip_UN_AC_7_A is not defined
-
-# - name: UN_AC_7 B > Set lockout duration to 60 minutes
-# #  win_command: "{{ 'net accounts /lockoutduration:'+((60 if undo_UN_AC_7 is not defined else RegistryDefaults.UN_AC_7.B)|string) }}" <- this doesn't work for some reason
-#   win_command: "net accounts /lockoutduration:60"
-#   when: skip_UN_AC_7_B is not defined
-
-# - name: UN_AC_7 C > Set time before password attempts resets to 60 minutes
-#   win_command: "{{ 'net accounts /lockoutwindow:'+((60 if undo_UN_AC_7 is not defined else RegistryDefaults.UN_AC_7.C)|string) }}"
-#   when: skip_UN_AC_7_C is not defined
