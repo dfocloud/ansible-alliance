@@ -11,16 +11,16 @@
     UN_AC_11_RegTasks:
     - { Desc: Password-protect screen saver,
       ID: A, Value: 1, Type: string, Name: ScreenSaverIsSecure,
-      Path: 'HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop' }
+      Path: 'HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop' } # 4294967295
     - { Desc: Screen saver activates after 5 mins of inactivity,
       ID: B, Value: 600, Type: string, Name: ScreenSaverTimeOut,
-      Path: 'HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop' }
+      Path: 'HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop' } # 4294967295
     - { Desc: Require password when waking computer (AC),
       ID: C, Value: 1, Type: dword, Name: ACSettingIndex,
-      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51' }
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51' } # 4294967295
     - { Desc: Require password when waking computer (DC),
       ID: D, Value: 1, Type: dword, Name: DCSettingIndex,
-      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51' }
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51' } # 4294967295
 
 # Init and get defaults
 - name: Check if defaults for AC-11 were loaded

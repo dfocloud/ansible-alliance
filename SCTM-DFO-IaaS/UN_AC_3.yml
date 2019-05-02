@@ -11,90 +11,90 @@
     UN_AC_3_RegTasks:
     - { Desc: Restrict use of blank passwords,
       ID: A, Value: 1, Type: dword, Name: LimitBlankPasswordUse, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' } # 1
     - { Desc: Prevent printer driver installation for non-admins,
       ID: B, Value: 1, Type: dword, Name: AddPrinterDrivers, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers' } # 1
     - { Desc: Enforce encrypted or signed channel data,
       ID: C, Value: 1, Type: dword, Name: RequireSignOrSeal, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' } # 1
     - { Desc: Enforce encrypted of signed channel data,
       ID: D, Value: 1, Type: dword, Name: SignSecureChannel, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' } # 1
     - { Desc: Do not display last user name,
       ID: E, Value: 1, Type: dword, Name: dontdisplaylastusername, 
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 0
 
     - { Desc: Require CTRL + ALT + DEL to logon,
       ID: F, Value: 1, Type: dword, Name: disabledcad, 
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 4294967295
     - { Desc: Enforce digital signing of communications (Workstation),
       ID: G, Value: 1, Type: dword, Name: EnableSecuritySignature, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters' } # 1
     - { Desc: Enforce digital signing of communications (Server),
       ID: H, Value: 1, Type: dword, Name: enablesecuritysignature, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' } # 0
     - { Desc: Allow SafeDLL search mode,
       ID: I, Value: 1, Type: dword, Name: SafeDllSearchMode, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager' } # 4294967295
     - { Desc: Set screen saver grace period to 4,
       ID: J, Value: 4, Type: dword, Name: ScreenSaverGracePeriod, 
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' } # 4294967295
 
     - { Desc: Prevent SAM account searching,
       ID: K, Value: 1, Type: dword, Name: restrictanonymoussam, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' } # 1
     - { Desc: Restrict anonymous user permissions,
       ID: L, Value: 0, Type: dword, Name: everyoneincludesanonymous, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' } # 0
     - { Desc: Restrict anonymous access to pipes,
       ID: M, Value: 1, Type: dword, Name: restrictnullsessaccess, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' } # 1
     - { Desc: Enforce LDAP client signing,
       ID: 'N', Value: 1, Type: dword, Name: ldapclientintegrity, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\ldap' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\ldap' } # 1
     - { Desc: Allow system shutdown without logon,
       ID: O, Value: 0, Type: dword, Name: shutdownwithoutlogon, 
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 0
 
     - { Desc: Prevent unsecure elevation prompts from applications,
       ID: P, Value: 0, Type: dword, Name: EnableUIADesktopToggle, 
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 0
     - { Desc: Prevent application installation without prompt,
       ID: Q, Value: 1, Type: dword, Name: EnableInstallerDetection, 
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 1
     - { Desc: Run admins in Admin Approval Mode,
       ID: R, Value: 1, Type: dword, Name: EnableLUA, 
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 1
     - { Desc: Enforce secure desktop for elevation prompts,
       ID: S, Value: 1, Type: dword, Name: PromptOnSecureDesktop, 
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 1
     - { Desc: Restrict legacy application registry write locations,
       ID: T, Value: 1, Type: dword, Name: EnableVirtualization, 
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 1
 
     - { Desc: Prevent Microsoft accounts from logging in,
       ID: OO, Value: 3, Type: dword, Name: noconnecteduser, 
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 4294967295
     - { Desc: Prohibit server controllers from scheduling tasks,
       ID: PP, Value: 0, Type: dword, Name: submitcontrol, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' } # 4294967295
     - { Desc: Prohibit anonymous access to names pipes,
       ID: QQ, Value: '', Type: multistring, Name: NullSessionPipes, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' } # [""]
     - { Desc: Prohibit anonymous access to session shares,
       ID: RR, Value: '', Type: multistring, Name: NullSessionShares, 
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' } # 4294967295
     - { Desc: Prevent last user's credentials from being stored,
       ID: SS, Value: 1, Type: dword, Name: DisableAutomaticRestartSignOn, 
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 1
 
     - { Desc: Require authentication for RPC service access,
       ID: TT, Value: 1, Type: dword, Name: EnableAuthEpResolution , 
-      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc' }
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Rpc' } # 4294967295
     - { Desc: Require Domain Controller Authentication to unlock computer,
       ID: UU, Value: 1, Type: dword, Name: ForceUnlockLogon, 
-      Path: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon' }
+      Path: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon' } # 0
 
 - name: Set AC-3 user rights task dictionary
   set_fact:

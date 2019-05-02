@@ -11,13 +11,13 @@
     UN_IA_2_RegTasks:
     - { Desc: Prevent NULL session fallback,
       ID: A, Value: 0, Type: dword, Name: allownullsessionfallback,
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0' } # 4294967295
     - { Desc: Prevent online identity use for PKU2U authentication requests, 
       ID: B, Value: 0, Type: dword, Name: allowonlineid, # OwO what's this?
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\pku2u' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\pku2u' } # 4294967295
     - { Desc: Enforce password prompt for RDP,
       ID: C, Value: 1, Type: dword, Name: fPromptForPassword,
-      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services' }
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services' } # 4294967295
 
 #Init and get defaults
 - name: Check if defaults for IA-2 were loaded

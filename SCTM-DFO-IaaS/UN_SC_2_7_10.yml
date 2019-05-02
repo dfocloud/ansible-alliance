@@ -11,13 +11,13 @@
     UN_SC_2710_RegTasks:
     - { Desc: Prohibit IP source routing,
       ID: '2', Value: 2, Type: dword, Name: DisableIPSourceRouting,
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters' } # 4294967295
     - { Desc: Prevent bypassing SmartScreen prompts,
       ID: '7', Value: 1, Type: dword, Name: PreventOverride,
-      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter' }
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter' } # 4294967295
     - { Desc: Limit idle RDP sessions to 15 mins,
       ID: '10', Value: 900000, Type: dword, Name: MaxIdleTime,
-      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services' }
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services' } # 4294967295
 
 # Init and get defaults
 - name: Check if defaults for SC-2-7-10 were loaded

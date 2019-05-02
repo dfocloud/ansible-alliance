@@ -11,19 +11,19 @@
     UN_SI_3_RegTasks:
     - { Desc: "Boot-Start Driver Initialization Policy is set to Enabled Good, unknown and bad but critical",
       ID: A, Value: 3, Type: dword, Name: DriverLoadPolicy,
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch' } # 4294967295
     - { Desc: Prevent downloading of enclosures is set to Enabled,
       ID: B, Value: 1, Type: dword, Name: DisableEnclosureDownload,
-      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds' }
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds' } # 4294967295
     - { Desc: Notify antivirus programs when opening attachments is set to Enabled,
       ID: C, Value: 3, Type: dword, Name: ScanWithAntiVirus,
-      Path: 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments' }
+      Path: 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments' } # 4294967295
     - { Desc: Turn off Data Execution Prevention for Explorer is set to Disabled,
       ID: D, Value: 0, Type: dword, Name: NoDataExecutionPrevention,
-      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer' }
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer' } # 4294967295
     - { Desc: Turn off heap termination on corruption is set to Disabled,
       ID: E, Value: 0, Type: dword, Name: NoHeapTerminationOnCorruption,
-      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer' }
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer' } # 4294967295
 
 # Init and get defaults
 - name: Check if defaults for SI-3 were loaded

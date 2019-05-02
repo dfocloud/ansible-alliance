@@ -11,13 +11,13 @@
     UN_AU_3_RegTasks:
     - { Desc: Ensure firewalls log dropped packets (domain),
       ID: A, Value: 1, Type: dword, Name: LogDroppedPackets,
-      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging' }
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging' } # 4294967295
     - { Desc: Ensure firewalls log dropped packets (private),
       ID: B, Value: 1, Type: dword, Name: LogDroppedPackets,
-      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging' }
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging' } # 4294967295
     - { Desc: Ensure firewalls log dropped packets (public),
       ID: C, Value: 1, Type: dword, Name: LogDroppedPackets,
-      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging' }
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging' } # 4294967295
 
 # Init and get defaults
 - name: Check if defaults for AU-3 were loaded

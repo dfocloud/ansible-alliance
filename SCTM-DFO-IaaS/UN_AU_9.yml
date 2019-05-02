@@ -12,15 +12,15 @@
     - { Desc: Ensure firewalls log to correct files (domain),
       ID: A, Value: '%SYSTEMROOT%\\System32\\logfiles\\firewall\\domainfw.log',
       Type: string, Name: NoAutoRebootWithLoggedOnUsers,
-      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging' }
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging' } # 4294967295
     - { Desc: Ensure firewalls log to correct files (private),
       ID: B, Value: '%SYSTEMROOT%\\System32\\logfiles\\firewall\\privatefw.log',
       Type: string, Name: TcpMaxDataRetransmissions,
-      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging' }
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging' } # 4294967295
     - { Desc: Ensure firewalls log to correct files (public),
       ID: C, Value: '%SYSTEMROOT%\\System32\\logfiles\\firewall\\publicfw.log',
       Type: string, Name: TcpMaxDataRetransmissions,
-      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging' }
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging' } # 4294967295
 
 - name: Set AU-9 user rights task dictionary
   set_fact:

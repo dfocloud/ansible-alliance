@@ -11,10 +11,10 @@
     UN_SI_2_RegTasks:
     - { Desc: Prevent attachment downloads through RSS,
       ID: A, Value: 1, Type: dword, Name: DisableIPSourceRouting,
-      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds' }
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds' } # 4294967295
     - { Desc: Ensure attachments are scanned with antivirus,
       ID: B, Value: 3, Type: dword, Name: PreventOverride,
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments' } # 4294967295
 
 # Init and get defaults
 - name: Check if defaults for SI-2 were loaded

@@ -11,26 +11,26 @@
     UN_SC_5_RegTasks:
     - { Desc: Set computer to restart for updates even if user(s) logged in,
       ID: A, Value: 0, Type: dword, Name: NoAutoRebootWithLoggedOnUsers,
-      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU' }
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU' } # 4294967295
     - { Desc: Limit unacknowledged data retransmission (IPv6),
       ID: B, Value: 3, Type: dword, Name: TcpMaxDataRetransmissions,
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\TCPIP6\Parameters' } # 4294967295
     - { Desc: Limit unacknowledged data retransmission (IPv4),
       ID: C, Value: 3, Type: dword, Name: TcpMaxDataRetransmissions,
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' } # 4294967295
     - { Desc: Set keep-alive packet send interval,
       ID: D, Value: 30000, Type: dword, Name: KeepAliveTime,
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' } # 4294967295
     - { Desc: Disable IRDP Default Gateway configuration,
       ID: E, Value: 0, Type: dword, Name: PerformRouterDiscovery,
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' } # 4294967295
 
 - name: Set SC-5 user rights task dictionary
   set_fact:
     UN_SC_5_RightsTasks:
     - { Desc: "Allow process memory quota adjustments for Admins, Local and Network Service",
       ID: F, Name: SeIncreaseQuotaPrivilege, 
-      Users: ['Administrators','Local Service','Network Service'] }
+      Users: ['Administrators','Local Service','Network Service'] } # []
     - { Desc: "Restrict sympolic link creation to Admins",
       ID: G, Name: SeCreateSymbolicLinkPrivilege, 
       Users: ['Administrators'] }

@@ -44,19 +44,19 @@
     UN_AC_8_RegTasks:
     - { Desc: Set legal warning caption for logon and use of computer,
       ID: A, Value: "{{ LegalCaption }}", Type: string, Name: legalnoticecaption,
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # ""
     - { Desc: Set legal warning text for logon and use of computer,
       ID: B, Value: "{{ LegalText }}", Type: string, Name: legalnoticetext,
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # \u0000
     - { Desc: Restrict domain-cached logon information to 2 users,
       ID: C, Value: 2, Type: string, Name: CachedLogonsCount,
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' } # 10
     - { Desc: Set 14-day prompt for user to change password,
       ID: D, Value: 14, Type: dword, Name: PasswordExpiryWarning,
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' }
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' } # 5
     - { Desc: Enforce digitally signing network server communications,
       ID: E, Value: 1, Type: dword, Name: requiresecuritysignature,
-      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' }
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' } # 0
 
 # Init and get defaults
 - name: Check if defaults for AC-8 were loaded
