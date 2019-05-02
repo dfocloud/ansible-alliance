@@ -30,7 +30,7 @@
   loop: "{{ UN_AC_7_ComTasks }}"
   when: "'UN_AC_7' in UndoList"
 
-- name: Get network account defaults
+- name: Get AC-7 network account defaults
   include_tasks: NetAccountDef.yml
   vars:
     SecCat: UN
@@ -39,7 +39,7 @@
   when: not Loaded_UN_AC_7
 
 # Run tasks
-- name: Run windows command tasks
+- name: Run AC-7 windows command tasks
   include_tasks: WinCommand.yml
   vars:
     SecCat: UN

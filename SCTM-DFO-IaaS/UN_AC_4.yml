@@ -34,7 +34,7 @@
   loop: "{{ UN_AC_4_RegTasks }}"
   when: "'UN_AC_4' in UndoList"
 
-- name: Get regedit defaults
+- name: Get AC-4 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
     SecCat: UN
@@ -43,7 +43,7 @@
   when: not Loaded_UN_AC_4
 
 # Run tasks
-- name: Run regedit tasks
+- name: Run AC-4 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
     SecCat: UN

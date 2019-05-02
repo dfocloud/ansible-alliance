@@ -55,7 +55,7 @@
   loop: "{{ UN_SC_5_RegTasks |union(UN_SC_5_RightsTasks) }}"
   when: "'UN_SC_5' in UndoList"
 
-- name: Get regedit defaults
+- name: Get SC-5 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
     SecCat: UN
@@ -64,7 +64,7 @@
   when: not Loaded_UN_SC_5
 
 # Run tasks
-- name: Run regedit tasks
+- name: Run SC-5 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
     SecCat: UN
@@ -73,7 +73,7 @@
   loop_control:
     loop_var: RegTask
 
-- name: Run user rights tasks # simultaneously saves defaults
+- name: Run SC-5 user rights tasks # simultaneously saves defaults
   include_tasks: WinUserRights.yml
   vars:
     SecCat: UN

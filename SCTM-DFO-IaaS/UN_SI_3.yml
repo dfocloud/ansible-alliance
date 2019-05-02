@@ -36,7 +36,7 @@
   loop: "{{ UN_SI_3_RegTasks }}"
   when: "'UN_SI_3' in UndoList"
 
-- name: Get regedit defaults
+- name: Get SI-3 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
     SecCat: UN
@@ -45,7 +45,7 @@
   when: not Loaded_UN_SI_3
 
 # Run tasks
-- name: Run regedit tasks
+- name: Run SI-3 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
     SecCat: UN

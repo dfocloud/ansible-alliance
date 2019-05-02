@@ -165,7 +165,7 @@
   loop: "{{ UN_AC_3_RegTasks |union(UN_AC_3_RightsTasks) }}"
   when: "'UN_AC_3' in UndoList"
 
-- name: Get regedit defaults
+- name: Get AC-3 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
     SecCat: UN
@@ -174,7 +174,7 @@
   when: not Loaded_UN_AC_3
 
 # Run tasks
-- name: Run regedit tasks
+- name: Run AC-3 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
     SecCat: UN
@@ -183,7 +183,7 @@
   loop_control:
     loop_var: RegTask
 
-- name: Run user rights tasks # simultaneously saves defaults
+- name: Run AC-3 user rights tasks # simultaneously saves defaults
   include_tasks: WinUserRights.yml
   vars:
     SecCat: UN

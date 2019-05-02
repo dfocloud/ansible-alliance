@@ -40,7 +40,7 @@
   loop: "{{ UN_AU_9_RegTasks |union(UN_AU_9_RightsTasks) }}"
   when: "'UN_AU_9' in UndoList"
 
-- name: Get regedit defaults
+- name: Get AU-9 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
     SecCat: UN
@@ -49,7 +49,7 @@
   when: not Loaded_UN_AU_9
 
 # Run tasks
-- name: Run regedit tasks
+- name: Run AU-9 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
     SecCat: UN

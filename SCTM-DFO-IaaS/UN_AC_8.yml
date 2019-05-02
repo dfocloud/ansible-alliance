@@ -69,7 +69,7 @@
   loop: "{{ UN_AC_8_RegTasks }}"
   when: "'UN_AC_8' in UndoList"
 
-- name: Get regedit defaults
+- name: Get AC-7 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
     SecCat: UN
@@ -78,7 +78,7 @@
   when: not Loaded_UN_AC_8
 
 # Run tasks
-- name: Run regedit tasks
+- name: Run AC-7 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
     SecCat: UN

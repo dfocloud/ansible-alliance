@@ -57,7 +57,7 @@
   loop: "{{ UN_IA_5_RegTasks }}"
   when: "'UN_IA_5' in UndoList"
 
-- name: Get regedit defaults
+- name: Get IA-5 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
     SecCat: UN
@@ -66,7 +66,7 @@
   when: not Loaded_UN_IA_5
 
 # Run tasks
-- name: Run regedit tasks
+- name: Run IA-5 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
     SecCat: UN
