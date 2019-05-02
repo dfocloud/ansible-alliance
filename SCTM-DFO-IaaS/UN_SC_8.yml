@@ -1,206 +1,292 @@
----
-# Called from Windows-Rollback.yml
+# == List Script ==
 # Includes all the tasks that fall under
-# the Unclassed UN_SC_8 protocol requirements
+# the Unclassed SC-8 protocol requirements
 
-# Imported vars: RegDefaultsPath RegistryDefaults
-
-- name: UN_SC_8 ? > Check for UN_SC_8 defaults entry
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+# Init task dictionaries
+- name: Set SC-8 regedit task dictionary
   set_fact:
-    HasUNSC8Def: "{{ 'UN_SC_8' in RegistryDefaults }}"
+    UN_SC_8_RegTasks:
+    - { Desc: Enforce strong domain session keys,
+      ID: A, Value: 0, Type: dword, Name: RequireStrongKey,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' }
+    - { Desc: Enforce LDAP server signing,
+      ID: B, Value: 2, Type: dword, Name: LDAPServerIntegrity,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters' }
+    - { Desc: Ensure kerberos encryption is supported,
+      ID: C, Value: '0x7ffffff8', Type: dword, Name: SupportedEncryptionTypes,
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\kerberos\parameters' }
+    - { Desc: Ensure UNC paths are hardened (Network Logon),
+      ID: D, Value: 'RequireMutualAuthentication=1, RequireIntegrity=1', Type: string, Name: \\*\NETLOGON,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths' }
+    - { Desc: Ensure UNC paths are hardened (System Volume),
+      ID: E, Value: 'RequireMutualAuthentication=1, RequireIntegrity=1', Type: string, Name: \\*\SYSVOL,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths' }
+    - { Desc: Prevent indexing of encrypted files,
+      ID: F, Value: 0, Type: dword, Name: AllowIndexingEncryptedStoresOrItems,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search' }
+    - { Desc: Prevent unencrypted client traffic (Client),
+      ID: G, Value: 0, Type: dword, Name: AllowUnencryptedTraffic,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client' }
+    - { Desc: Prevent unencrypted service traffic (Service),
+      ID: H, Value: 0, Type: dword, Name: AllowUnencryptedTraffic,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service' }
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: I, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128' }
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: J, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128' }
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: K, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128' }
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: L, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128' }
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: M, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128' }
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: 'N', Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128' }
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: O, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128' }
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: P, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL' }
+    - { Desc: Comply with CSE ITSP.40.062 (Hashes),
+      ID: Q, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5' }
 
-- name: UN_SC_8 = > Get keys if UN_SC_8 is not 'present'
-  win_reg_stat:
-    path: "{{ item.path }}"
-    name: "{{ item.name }}"
-  register: UN_SC8_DefKeys
-  loop:
-    - { taskID: A, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', name: RequireStrongKey }
-    - { taskID: B, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters', name: LDAPServerIntegrity }
-    - { taskID: C, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\kerberos\parameters', name: SupportedEncryptionTypes }
-    - { taskID: D, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths', name: \\*\NETLOGON }
-    - { taskID: E, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths', name: \\*\SYSVOL }
-    - { taskID: F, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search', name: AllowIndexingEncryptedStoresOrItems }
-    - { taskID: G, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client', name: AllowUnencryptedTraffic }
-    - { taskID: H, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service', name: AllowUnencryptedTraffic }
-    - { taskID: I, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128', name: Enabled }
-    - { taskID: J, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128', name: Enabled }
-    - { taskID: K, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128', name: Enabled }
-    - { taskID: L, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128', name: Enabled }
-    - { taskID: M, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128', name: Enabled }
-    - { taskID: 'N', path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128', name: Enabled }
-    - { taskID: O, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128', name: Enabled }
-    - { taskID: P, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL', name: Enabled }
-    - { taskID: Q, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5', name: Enabled }
-  when: not HasUNSC8Def
-
-- name: UN_SC_8 + > Add keys to a dictionary
+# Init and get defaults
+- name: Check if defaults for SC-8 were loaded
   set_fact:
-    UN_SC_8_Def: "{{ UN_SC_8_Def|default({}) | combine( {item.item.taskID: (item.value if item.exists else 4294967295)} ) }}"
-  loop: "{{ UN_SC8_DefKeys.results }}"
-  when: not HasUNSC8Def
+    Loaded_UN_SC_8: "{{ 'UN_SC_8' in MachineDefaults }}"
 
-- name: UN_SC_8 ++ > Add dictionary to RegistryDefaults dictionary
+- name: Initialize UndoList
   set_fact:
-    RegistryDefaults: "{{ RegistryDefaults | combine({'UN_SC_8':UN_SC_8_Def}) }}"
-  when: not HasUNSC8Def
+    UndoList: "{{ UndoList + ['UN_SC_8_'+item.ID] }}"
+  loop: "{{ UN_SC_8_RegTasks }}"
+  when: "'UN_SC_8' in UndoList"
 
-- name: UN_SC_8 IO > Write dictionary
-  win_copy:
-    dest: "{{ RegDefaultsPath }}"
-    content: "{{ RegistryDefaults }}"
-  when: not HasUNSC8Def
+- name: Get regedit defaults
+  include_tasks: WinRegStat.yml
+  vars:
+    SecCat: UN
+    TaskCat: SC_8
+    RegTasks: "{{ UN_SC_8_RegTasks }}"
+  when: not Loaded_UN_SC_8
 
-# Tasks
-- name: UN_SC_8 A > Enforce strong domain session keys
-  win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
-    name: RequireStrongKey
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.A }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.A == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_A is not defined
+# Run tasks
+- name: Run regedit tasks
+  include_tasks: WinRegedit.yml
+  vars:
+    SecCat: UN
+    TaskCat: SC_8
+  loop: "{{ UN_SC_8_RegTasks }}"
+  loop_control:
+    loop_var: RegTask
 
-- name: UN_SC_8 B > Enforce LDAP server signing
-  win_regedit:
-    path: HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters
-    name: LDAPServerIntegrity
-    data: "{{ 2 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.B }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.B == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_B is not defined
+#OLD
+# - name: UN_SC_8 ? > Check for UN_SC_8 defaults entry
+#   set_fact:
+#     HasUNSC8Def: "{{ 'UN_SC_8' in RegistryDefaults }}"
 
-- name: UN_SC_8 C > Ensure kerberos encryption is supported
-  win_regedit:
-    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\kerberos\parameters
-    name: SupportedEncryptionTypes
-    data: "{{ '0x7ffffff8' if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.C }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.C == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_C is not defined
+# - name: UN_SC_8 = > Get keys if UN_SC_8 is not 'present'
+#   win_reg_stat:
+#     path: "{{ item.path }}"
+#     name: "{{ item.name }}"
+#   register: UN_SC8_DefKeys
+#   loop:
+#     - { taskID: A, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters', name: RequireStrongKey }
+#     - { taskID: B, path: 'HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters', name: LDAPServerIntegrity }
+#     - { taskID: C, path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\kerberos\parameters', name: SupportedEncryptionTypes }
+#     - { taskID: D, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths', name: \\*\NETLOGON }
+#     - { taskID: E, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths', name: \\*\SYSVOL }
+#     - { taskID: F, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search', name: AllowIndexingEncryptedStoresOrItems }
+#     - { taskID: G, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client', name: AllowUnencryptedTraffic }
+#     - { taskID: H, path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service', name: AllowUnencryptedTraffic }
+#     - { taskID: I, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128', name: Enabled }
+#     - { taskID: J, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128', name: Enabled }
+#     - { taskID: K, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128', name: Enabled }
+#     - { taskID: L, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128', name: Enabled }
+#     - { taskID: M, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128', name: Enabled }
+#     - { taskID: 'N', path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128', name: Enabled }
+#     - { taskID: O, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128', name: Enabled }
+#     - { taskID: P, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL', name: Enabled }
+#     - { taskID: Q, path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5', name: Enabled }
+#   when: not HasUNSC8Def
 
-- name: UN_SC_8 D > Ensure UNC paths are hardened
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths
-    name: \\*\NETLOGON
-    data: "{{ 'RequireMutualAuthentication=1, RequireIntegrity=1' if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.D }}"
-    type: string
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.D == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_D is not defined
+# - name: UN_SC_8 + > Add keys to a dictionary
+#   set_fact:
+#     UN_SC_8_Def: "{{ UN_SC_8_Def|default({}) | combine( {item.item.taskID: (item.value if item.exists else 4294967295)} ) }}"
+#   loop: "{{ UN_SC8_DefKeys.results }}"
+#   when: not HasUNSC8Def
 
-- name: UN_SC_8 E > Ensure UNC paths are hardened
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths
-    name: \\*\SYSVOL
-    data: "{{ 'RequireMutualAuthentication=1, RequireIntegrity=1' if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.E }}"
-    type: string
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.E == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_E is not defined
+# - name: UN_SC_8 ++ > Add dictionary to RegistryDefaults dictionary
+#   set_fact:
+#     RegistryDefaults: "{{ RegistryDefaults | combine({'UN_SC_8':UN_SC_8_Def}) }}"
+#   when: not HasUNSC8Def
 
-- name: UN_SC_8 F > Prevent indexing of encrypted files
-  win_regedit:
-    path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search'
-    name: AllowIndexingEncryptedStoresOrItems
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.F }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.F == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_F is not defined
+# - name: UN_SC_8 IO > Write dictionary
+#   win_copy:
+#     dest: "{{ RegDefaultsPath }}"
+#     content: "{{ RegistryDefaults }}"
+#   when: not HasUNSC8Def
 
-- name: UN_SC_8 G > Prevent unencrypted client traffic
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client
-    name: AllowUnencryptedTraffic
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.G }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.G == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_G is not defined
+# # Tasks
+# - name: UN_SC_8 A > Enforce strong domain session keys
+#   win_regedit:
+#     path: HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
+#     name: RequireStrongKey
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.A }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.A == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_A is not defined
 
-- name: UN_SC_8 H > Prevent unencrypted service traffic
-  win_regedit:
-    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service
-    name: AllowUnencryptedTraffic
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.H }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.H == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_H is not defined
+# - name: UN_SC_8 B > Enforce LDAP server signing
+#   win_regedit:
+#     path: HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters
+#     name: LDAPServerIntegrity
+#     data: "{{ 2 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.B }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.B == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_B is not defined
 
-- name: UN_SC_8 I > Comply with CSE ITSP.40.062 (Ciphers)
-  win_regedit:
-    path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128'
-    name: Enabled
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.I }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.I == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_I is not defined
+# - name: UN_SC_8 C > Ensure kerberos encryption is supported
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\kerberos\parameters
+#     name: SupportedEncryptionTypes
+#     data: "{{ '0x7ffffff8' if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.C }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.C == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_C is not defined
 
-- name: UN_SC_8 J > Comply with CSE ITSP.40.062 (Ciphers)
-  win_regedit:
-    path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128'
-    name: Enabled
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.J }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.J == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_J is not defined
+# - name: UN_SC_8 D > Ensure UNC paths are hardened
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths
+#     name: \\*\NETLOGON
+#     data: "{{ 'RequireMutualAuthentication=1, RequireIntegrity=1' if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.D }}"
+#     type: string
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.D == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_D is not defined
 
-- name: UN_SC_8 K > Comply with CSE ITSP.40.062 (Ciphers)
-  win_regedit:
-    path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128'
-    name: Enabled
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.K }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.K == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_K is not defined
+# - name: UN_SC_8 E > Ensure UNC paths are hardened
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths
+#     name: \\*\SYSVOL
+#     data: "{{ 'RequireMutualAuthentication=1, RequireIntegrity=1' if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.E }}"
+#     type: string
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.E == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_E is not defined
 
-- name: UN_SC_8 L > Comply with CSE ITSP.40.062 (Ciphers)
-  win_regedit:
-    path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128'
-    name: Enabled
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.L }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.L == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_L is not defined
+# - name: UN_SC_8 F > Prevent indexing of encrypted files
+#   win_regedit:
+#     path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search'
+#     name: AllowIndexingEncryptedStoresOrItems
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.F }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.F == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_F is not defined
 
-- name: UN_SC_8 M > Comply with CSE ITSP.40.062 (Ciphers)
-  win_regedit:
-    path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128'
-    name: Enabled
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.M }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.M == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_M is not defined
+# - name: UN_SC_8 G > Prevent unencrypted client traffic
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client
+#     name: AllowUnencryptedTraffic
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.G }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.G == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_G is not defined
 
-- name: UN_SC_8 N > Comply with CSE ITSP.40.062 (Ciphers)
-  win_regedit:
-    path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128'
-    name: Enabled
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.N }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.N == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_N is not defined
+# - name: UN_SC_8 H > Prevent unencrypted service traffic
+#   win_regedit:
+#     path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service
+#     name: AllowUnencryptedTraffic
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.H }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.H == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_H is not defined
 
-- name: UN_SC_8 O > Comply with CSE ITSP.40.062 (Ciphers)
-  win_regedit:
-    path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128'
-    name: Enabled
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.O }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.O == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_O is not defined
+# - name: UN_SC_8 I > Comply with CSE ITSP.40.062 (Ciphers)
+#   win_regedit:
+#     path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128'
+#     name: Enabled
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.I }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.I == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_I is not defined
 
-- name: UN_SC_8 P > Comply with CSE ITSP.40.062 (Ciphers)
-  win_regedit:
-    path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL'
-    name: Enabled
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.P }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.P == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_P is not defined
+# - name: UN_SC_8 J > Comply with CSE ITSP.40.062 (Ciphers)
+#   win_regedit:
+#     path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128'
+#     name: Enabled
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.J }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.J == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_J is not defined
 
-- name: UN_SC_8 Q > Comply with CSE ITSP.40.062 (Hashes)
-  win_regedit:
-    path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5'
-    name: Enabled
-    data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.Q }}"
-    type: dword
-    state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.Q == 4294967295) else 'present'}}"
-  when: skip_UN_SC_8_Q is not defined
+# - name: UN_SC_8 K > Comply with CSE ITSP.40.062 (Ciphers)
+#   win_regedit:
+#     path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128'
+#     name: Enabled
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.K }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.K == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_K is not defined
+
+# - name: UN_SC_8 L > Comply with CSE ITSP.40.062 (Ciphers)
+#   win_regedit:
+#     path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128'
+#     name: Enabled
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.L }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.L == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_L is not defined
+
+# - name: UN_SC_8 M > Comply with CSE ITSP.40.062 (Ciphers)
+#   win_regedit:
+#     path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128'
+#     name: Enabled
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.M }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.M == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_M is not defined
+
+# - name: UN_SC_8 N > Comply with CSE ITSP.40.062 (Ciphers)
+#   win_regedit:
+#     path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128'
+#     name: Enabled
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.N }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.N == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_N is not defined
+
+# - name: UN_SC_8 O > Comply with CSE ITSP.40.062 (Ciphers)
+#   win_regedit:
+#     path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128'
+#     name: Enabled
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.O }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.O == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_O is not defined
+
+# - name: UN_SC_8 P > Comply with CSE ITSP.40.062 (Ciphers)
+#   win_regedit:
+#     path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL'
+#     name: Enabled
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.P }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.P == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_P is not defined
+
+# - name: UN_SC_8 Q > Comply with CSE ITSP.40.062 (Hashes)
+#   win_regedit:
+#     path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5'
+#     name: Enabled
+#     data: "{{ 0 if undo_UN_SC_8 is not defined else RegistryDefaults.UN_SC_8.Q }}"
+#     type: dword
+#     state: "{{'absent' if (undo_UN_SC_8 is defined and RegistryDefaults.UN_SC_8.Q == 4294967295) else 'present'}}"
+#   when: skip_UN_SC_8_Q is not defined

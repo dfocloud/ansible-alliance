@@ -26,25 +26,8 @@
   - name: Initialize SkipList array
     include_tasks: InitSkips.yml
 
-  - name: Initialize global UndoList
-    set_fact:
-      UndoList: "{{ UndoList + [item] }}"
-    loop:
-      - UN_AC_3
-      - UN_AC_4
-      - UN_AC_7
-      - UN_AC_8
-      - UN_AC_11
-      
-      - UN_AU_9
-      
-      - UN_IA_2
-      
-      - UN_SC_2
-      - UN_SC_5
-      - UN_SC_7
-      - UN_SC_10
-    when: "'All' in UndoList"
+  - name: Initialize UndoList array
+    include_tasks: InitUndos.yml
 
 #========== List Script Includes ==========#
   # AC
@@ -82,6 +65,10 @@
     include_tasks: UN_IA_2.yml
     when: "'UN_IA_2' not in SkipList"
 
+  - name: Execute UN_IA_5 tasks
+    include_tasks: UN_IA_5.yml
+    when: "'UN_IA_5' not in SkipList"
+
   # SC
   - name: Execute UN_SC_2_7_10 tasks
     include_tasks: UN_SC_2_7_10.yml
@@ -91,4 +78,15 @@
     include_tasks: UN_SC_5.yml
     when: "'UN_SC_5' not in SkipList"
 
+  - name: Execute UN_SC_8 tasks
+    include_tasks: UN_SC_8.yml
+    when: "'UN_SC_8' not in SkipList"
+
   # SI
+  - name: Execute UN_SI_2 tasks
+    include_tasks: UN_SI_2.yml
+    when: "'UN_SI_2' not in SkipList"
+
+  - name: Execute UN_SI_3 tasks
+    include_tasks: UN_SI_3.yml
+    when: "'UN_SI_3' not in SkipList"
