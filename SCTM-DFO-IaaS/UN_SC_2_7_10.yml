@@ -10,13 +10,13 @@
   set_fact:
     UN_SC_2710_RegTasks:
     - { Desc: Prohibit IP source routing,
-      ID: 2, Value: 2, Type: dword, Name: DisableIPSourceRouting,
+      ID: '2', Value: 2, Type: dword, Name: DisableIPSourceRouting,
       Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters' }
     - { Desc: Prevent bypassing SmartScreen prompts,
-      ID: 7, Value: 1, Type: dword, Name: PreventOverride,
+      ID: '7', Value: 1, Type: dword, Name: PreventOverride,
       Path: 'HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter' }
     - { Desc: Limit idle RDP sessions to 15 mins,
-      ID: 10, Value: 900000, Type: dword, Name: MaxIdleTime,
+      ID: '10', Value: 900000, Type: dword, Name: MaxIdleTime,
       Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services' }
 
 # Init and get defaults
@@ -24,7 +24,7 @@
   set_fact:
     Loaded_UN_SC: "{{ 'UN_SC' in MachineDefaults }}"
 
-- name: Get regedit defaults
+- name: Get SC-2-7-10 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
     SecCat: UN
@@ -33,7 +33,7 @@
   when: not Loaded_UN_SC
 
 # Run tasks
-- name: Run regedit tasks
+- name: Run SC-2-7-10 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
     SecCat: UN
