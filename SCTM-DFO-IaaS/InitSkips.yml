@@ -2,6 +2,11 @@
 # Appends to the SkipList array based on
 # supercategory and global skip variables
 ---
+- name: Check excusive run variable
+  set_fact:
+    SkipList: ["All"]
+  when: not OnlyRun == "None"
+
 - name: Append global skips
   set_fact:
     SkipList: "{{ SkipList + [item] }}"
@@ -12,6 +17,11 @@
     - UN_SC
     - UN_SI
   when: "'All' in SkipList"
+
+- name: Remove from global skips
+  set_fact:
+    SkipList: "{{ SkipList |difference([ OnlyRun ]) }}"
+  when: not OnlyRun == "None" and OnlyRun in SkipList
 
 - name: Append AC supercategory skips
   set_fact:
@@ -58,3 +68,8 @@
     - UN_SI_2
     - UN_SI_3
   when: "'UN_SI' in SkipList"
+
+- name: Remove from supercategory skips
+  set_fact:
+    SkipList: "{{ SkipList |difference([ OnlyRun ]) }}"
+  when: not OnlyRun == "None" and OnlyRun in SkipList

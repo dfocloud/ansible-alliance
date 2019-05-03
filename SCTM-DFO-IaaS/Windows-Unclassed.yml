@@ -19,6 +19,7 @@
       SkipList: "{{ Skip|default([]) }}"
       UndoList: "{{ Undo|default([]) }}"
       CustomDict: "{{ Custom|default({}) }}"
+      OnlyRun: "{{ OnlyRun|default('None') }}"
 
   - name: Initialize MachineDefaults dictionary
     include_tasks: WinDefaultsFile.yml
