@@ -108,20 +108,20 @@
       # ['Administrators', 'Users', 'Backup Operators']
     - { Desc: Allow Admins and Remote users to log on with RDP,
       ID: W, Name: SeRemoteInteractiveLogonRight, 
-      Users: ['Administrators','Remote Desktop Users'] }
-      # ['Administrators','Remote Desktop Users']
+      Users: ['Administrators', 'Remote Desktop Users'] }
+      # ['Administrators', 'Remote Desktop Users']
     - { Desc: Only Admins and local service can change system time,
       ID: X, Name: SeSystemtimePrivilege, 
-      Users: ['Administrators','Local Service'] }
-      # ['Administrators','Local Service']
+      Users: ['Administrators', 'Local Service'] }
+      # ['Administrators', 'Local Service']
     - { Desc: Restrict pagefile creation to Admins,
       ID: 'Y', Name: SeCreatePagefilePrivilege, 
       Users: ['Administrators'] } # ['Administrators']
 
     - { Desc: "Allow Admins, Service, Local Service and Network Service to create global objects",
       ID: Z, Name: SeCreateGlobalPrivilege, 
-      Users: ['Administrators','Service','Local Service','Network Service'] }
-      # ['Administrators','Service','Local Service','Network Service']
+      Users: ['Administrators', 'Service', 'Local Service', 'Network Service'] }
+      # ['Administrators', 'Service', 'Local Service', 'Network Service']
     - { Desc: "Set deny computer access via network for Guests",
       ID: AA, Name: SeDenyNetworkLogonRight, 
       Users: ['Guests'] } # []
@@ -133,15 +133,15 @@
       Users: ['Administrators'] } # ['Administrators']
     - { Desc: Allow security audit generation for Local Service and Network Service,
       ID: DD, Name: SeAuditPrivilege, 
-      Users: ['Local Service','Network Service'] } # ['Local Service','Network Service']
+      Users: ['Local Service', 'Network Service'] } # ['Local Service', 'Network Service']
 
     - { Desc: "Allow client impersonation for Admins, Service, Local Service and Network Service",
       ID: EE, Name: SeImpersonatePrivilege, 
-      Users: ['Administrators','Service','Local Service','Network Service'] } 
-      # ['Administrators','Service','Local Service','Network Service']
+      Users: ['Administrators', 'Service', 'Local Service', 'Network Service'] } 
+      # ['Administrators', 'Service', 'Local Service', 'Network Service']
     - { Desc: Allow scheduling priority changes to Admins,
       ID: FF, Name: SeIncreaseBasePriorityPrivilege, 
-      Users: ['Administrators'] } # ['Administrators', 'Windows Manager Group']
+      Users: ['Administrators'] } # ['Administrators', 'Window Manager\\Window Manager Group']
     - { Desc: Restrict driver device loading/unloading to Admins,
       ID: GG, Name: SeLoadDriverPrivilege, 
       Users: ['Administrators'] } # ['Administrators']
