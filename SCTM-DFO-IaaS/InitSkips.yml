@@ -21,7 +21,7 @@
 - name: Remove from global skips
   set_fact:
     SkipList: "{{ SkipList |difference([ OnlyRun ]) }}"
-  when: not OnlyRun == "None" and OnlyRun in SkipList
+  when: OnlyRun in SkipList and not OnlyRun == "None"
 
 - name: Append AC supercategory skips
   set_fact:
@@ -72,4 +72,4 @@
 - name: Remove from supercategory skips
   set_fact:
     SkipList: "{{ SkipList |difference([ OnlyRun ]) }}"
-  when: not OnlyRun == "None" and OnlyRun in SkipList
+  when: OnlyRun in SkipList and not OnlyRun == "None"
