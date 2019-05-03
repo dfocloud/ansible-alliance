@@ -53,16 +53,16 @@
       item.item.ID: item.item.Users |union(item.removed)
       |difference(item.added) }) }}"
   loop: "{{ UserDelta.results }}"
-  when: Loaded == false
+  when: not Loaded
 
 - name: Append user default to the MachineDefaults dictionary
   set_fact:
     MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:
       MachineDefaults[Sec_Task] |combine(defaultUsers) }) }}"
-  when: Loaded == false
+  when: not Loaded
 
 - name: Write to MachineDefaults file
   win_copy:
     dest: "{{ MachineDefaultsPath }}"
     content: "{{ MachineDefaults }}"
-  when: Loaded == false
+  when: not Loaded

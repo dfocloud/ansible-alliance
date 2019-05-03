@@ -101,58 +101,64 @@
     UN_AC_3_RightsTasks:
     - { Desc: Set no one to act as part of the operating system,
       ID: U, Name: SeTcbPrivilege, 
-      Users: [] }
+      Users: [] } # []
     - { Desc: Set Administrators to log on locally,
       ID: V, Name: SeInteractiveLogonRight, 
       Users: ['Administrators'] }
+      # ['Administrators', 'Users', 'Backup Operators']
     - { Desc: Allow Admins and Remote users to log on with RDP,
       ID: W, Name: SeRemoteInteractiveLogonRight, 
       Users: ['Administrators','Remote Desktop Users'] }
+      # ['Administrators','Remote Desktop Users']
     - { Desc: Only Admins and local service can change system time,
       ID: X, Name: SeSystemtimePrivilege, 
       Users: ['Administrators','Local Service'] }
+      # ['Administrators','Local Service']
     - { Desc: Restrict pagefile creation to Admins,
       ID: 'Y', Name: SeCreatePagefilePrivilege, 
-      Users: ['Administrators'] }
+      Users: ['Administrators'] } # ['Administrators']
 
     - { Desc: "Allow Admins, Service, Local Service and Network Service to create global objects",
       ID: Z, Name: SeCreateGlobalPrivilege, 
       Users: ['Administrators','Service','Local Service','Network Service'] }
+      # ['Administrators','Service','Local Service','Network Service']
     - { Desc: "Set deny computer access via network for Guests",
       ID: AA, Name: SeDenyNetworkLogonRight, 
-      Users: ['Guests'] }
+      Users: ['Guests'] } # []
     - { Desc: Deny guests local log on,
       ID: BB, Name: SeDenyInteractiveLogonRight, 
-      Users: ['Guests'] }
+      Users: ['Guests'] } # []
     - { Desc: Allow force shutdown via remote to Admins,
       ID: CC, Name: SeRemoteShutdownPrivilege, 
-      Users: ['Administrators'] }
+      Users: ['Administrators'] } # ['Administrators']
     - { Desc: Allow security audit generation for Local Service and Network Service,
       ID: DD, Name: SeAuditPrivilege, 
-      Users: ['Local Service','Network Service'] }
+      Users: ['Local Service','Network Service'] } # ['Local Service','Network Service']
 
     - { Desc: "Allow client impersonation for Admins, Service, Local Service and Network Service",
       ID: EE, Name: SeImpersonatePrivilege, 
-      Users: ['Administrators','Service','Local Service','Network Service'] }
+      Users: ['Administrators','Service','Local Service','Network Service'] } 
+      # ['Administrators','Service','Local Service','Network Service']
     - { Desc: Allow scheduling priority changes to Admins,
       ID: FF, Name: SeIncreaseBasePriorityPrivilege, 
-      Users: ['Administrators'] }
+      Users: ['Administrators'] } # ['Administrators', 'Windows Manager Group']
     - { Desc: Restrict driver device loading/unloading to Admins,
       ID: GG, Name: SeLoadDriverPrivilege, 
-      Users: ['Administrators'] }
+      Users: ['Administrators'] } # ['Administrators']
     - { Desc: Prevent anyone from modifying object labels,
       ID: HH, Name: SeRelabelPrivilege, 
-      Users: [] }
+      Users: [] } # []
     - { Desc: Allow system performance profiling for Admins and NT Service\WdiServiceHost,
       ID: II, Name: SeSystemProfilePrivilege, 
       Users: ['Administrators','NT SERVICE\WdiServiceHost'] }
+      # ['Administrators', 'NT SERVICE\WdiServiceHost']
 
     - { Desc: Restrict system shutdown to Admins,
-      ID: NN, Name: SeShutdownPrivilege, 
-      Users: ['Administrators'] }
+      ID: JJ, Name: SeShutdownPrivilege, 
+      Users: ['Administrators'] } # ['Administrators', 'Backup Operators']
     - { Desc: "Deny RDP log on for Guests, Local Account and Domain Admins (we only deny Guests)",
-      ID: NN, Name: SeTcbPrivilege, 
-      Users: ['Guests'] }
+      ID: KK, Name: SeDenyRemoteInteractiveLogonRight,
+      Users: ['Guests'] } # []
 
 # Init and get defaults
 - name: Check if defaults for AC-3 were loaded
@@ -188,5 +194,5 @@
   vars:
     SecCat: UN
     TaskCat: AC_3
-    Loaded: Loaded_UN_AC_3
+    Loaded: "{{ Loaded_UN_AC_3 }}"
     RightsTasks: "{{ UN_AC_3_RightsTasks }}"

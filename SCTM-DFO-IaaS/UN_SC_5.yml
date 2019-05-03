@@ -30,19 +30,24 @@
     UN_SC_5_RightsTasks:
     - { Desc: "Allow process memory quota adjustments for Admins, Local and Network Service",
       ID: F, Name: SeIncreaseQuotaPrivilege, 
-      Users: ['Administrators','Local Service','Network Service'] } # []
+      Users: ['Administrators','Local Service','Network Service'] }
+      # ['Administrators','Local Service','Network Service']
     - { Desc: "Restrict sympolic link creation to Admins",
       ID: G, Name: SeCreateSymbolicLinkPrivilege, 
       Users: ['Administrators'] }
+      # ['Administrators']
     - { Desc: "Restrict firmware environment value changes to Admins",
       ID: H, Name: SeSystemEnvironmentPrivilege, 
       Users: ['Administrators'] }
+      # ['Administrators']
     - { Desc: "Restrict volume maintenance tasks to Admins",
       ID: I, Name: SeManageVolumePrivilege, 
       Users: ['Administrators'] }
+      # ['Administrators']
     - { Desc: "Restrict file and directory retsoration to Admins",
       ID: J, Name: SeRestorePrivilege, 
       Users: ['Administrators'] }
+      # ['Administrators', 'Backup Operators']
 
 # Init and get defaults
 - name: Check if defaults for SC-5 were loaded
@@ -78,5 +83,5 @@
   vars:
     SecCat: UN
     TaskCat: SC_5
-    Loaded: Loaded_UN_SC_5
+    Loaded: "{{ Loaded_UN_SC_5 }}"
     RightsTasks: "{{ UN_SC_5_RightsTasks }}"
