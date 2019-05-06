@@ -47,7 +47,7 @@
       Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # ""
     - { Desc: Set legal warning text for logon and use of computer,
       ID: B, Value: "{{ LegalText }}", Type: string, Name: legalnoticetext,
-      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # \u0000
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # \u0000 or "" (not sure)
     - { Desc: Restrict domain-cached logon information to 2 users,
       ID: C, Value: 2, Type: string, Name: CachedLogonsCount,
       Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' } # 10
