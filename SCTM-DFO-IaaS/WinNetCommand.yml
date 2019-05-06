@@ -45,17 +45,13 @@
     if (Sec_Task+'_'+item.ID not in UndoList) else 
     MachineDefaults[Sec_Task][item.ID] )|string }}"
   loop: "{{ ComTasks }}"
-  when: item.ID not in SkipList
+  when: item.ID not in SkipIDs
+
+- debug:
+    var: SkipIDs
 
 - debug:
     var: CommandString
-
-# - name: "{{ Sec_Task+' '+ComTask.ID+' > '+ComTask.Desc }}"
-#   win_command: "{{ ComTask.Command + (
-#     (ComTask.Value if fullID not in CustomDict else CustomDict[fullID])
-#     if fullID not in UndoList else 
-#     MachineDefaults[Sec_Task][ComTask.ID])|string }}"
-#   when : fullID not in SkipList
 
 - name: Run command
   win_command: "{{ CommandString }}"
