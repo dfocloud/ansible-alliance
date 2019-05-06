@@ -4,7 +4,7 @@
 ---
 - name: Check excusive run variable
   set_fact:
-    SkipList: ["All"]
+    SkipList: "{{ SkipList + ['All'] }}"
   when: not OnlyRun == "None"
 
 - name: Append global skips
