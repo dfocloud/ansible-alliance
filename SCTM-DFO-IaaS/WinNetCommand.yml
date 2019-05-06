@@ -58,4 +58,4 @@
 #   when : fullID not in SkipList
 
 - name: Run command
-  win_command: CommandString
+  win_command: "{{ CommandString }}"
