@@ -43,7 +43,7 @@
   set_fact:
     CommandString: "{{ CommandString + item.Parameter + ( item.Value
     if (Sec_Task+'_'+item.ID not in UndoList) else 
-    MachineDefaults[Sec_Task][item.ID] ) }}"
+    MachineDefaults[Sec_Task][item.ID] )|string }}"
   loop: "{{ ComTasks }}"
   when: item.ID not in SkipList
 
