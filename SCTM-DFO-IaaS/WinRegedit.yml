@@ -23,10 +23,11 @@
   win_regedit:
     path: "{{ RegTask.Path }}"
     name: "{{ RegTask.Name }}"
-    data: "{{ (RegTask.Value if fullID not in CustomDict else CustomDict[fullID])
-      if fullID not in UndoList else
+    data: "{{ (RegTask.Value if fullID not in CustomDict else
+      CustomDict[fullID]) if fullID not in UndoList else
       MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] }}"
     type: "{{RegTask.Type}}"
     state: "{{ 'absent' if (fullID in UndoList and
-      MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] == 4294967295) else 'present' }}"
+      MachineDefaults[SecCat+'_'+TaskCat][RegTask.ID] == 4294967295)
+      else 'present' }}"
   when: fullID not in SkipList

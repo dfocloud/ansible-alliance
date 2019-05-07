@@ -26,7 +26,7 @@
       Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 0
 
     - { Desc: Require CTRL + ALT + DEL to logon,
-      ID: F, Value: 1, Type: dword, Name: disabledcad, 
+      ID: F, Value: 1, Type: dword, Name: disablecad, 
       Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # 4294967295
     - { Desc: Enforce digital signing of communications (Workstation),
       ID: G, Value: 1, Type: dword, Name: EnableSecuritySignature, 
@@ -37,8 +37,8 @@
     - { Desc: Allow SafeDLL search mode,
       ID: I, Value: 1, Type: dword, Name: SafeDllSearchMode, 
       Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager' } # 4294967295
-    - { Desc: Set screen saver grace period to 4,
-      ID: J, Value: 4, Type: dword, Name: ScreenSaverGracePeriod, 
+    - { Desc: Set screen saver grace period to 5 or less,
+      ID: J, Value: 5, Type: dword, Name: ScreenSaverGracePeriod, 
       Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' } # 4294967295
 
     - { Desc: Prevent SAM account searching,
@@ -104,11 +104,11 @@
       Users: [] } # []
     - { Desc: Set Administrators to log on locally,
       ID: V, Name: SeInteractiveLogonRight, 
-      Users: ['Administrators'] }
+      Users: ['Administrators', 'Remote Desktop Users'] }
       # ['Administrators', 'Users', 'Backup Operators']
     - { Desc: Allow Admins and Remote users to log on with RDP,
       ID: W, Name: SeRemoteInteractiveLogonRight, 
-      Users: ['Administrators', 'Remote Desktop Users'] }
+      Users: ['Administrators'] }
       # ['Administrators', 'Remote Desktop Users']
     - { Desc: Only Admins and local service can change system time,
       ID: X, Name: SeSystemtimePrivilege, 

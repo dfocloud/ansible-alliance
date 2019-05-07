@@ -24,19 +24,18 @@
       disciplinary or legal actions may be taken for conduct that does not
       conform to the above policies.
       
-      -----
+      ---------------------------------------------
       
-      Je reconnais que, en tant
-      qu’utilisateur autorisé des réseaux électroniques du MPO, y compris
-      Internet, je dois respecter la politique du Secrétariat du Conseil du
-      Trésor (SCT) sur l’utilisation acceptable des réseaux électroniques ainsi
-      que le supplément du MPO. Je comprends que je dois agir de manière
-      responsable et réfléchie lorsque j’utilise les réseaux électroniques 
-      du MPO., Je sais que le MPO surveille l’usage des réseaux électroniques 
-      conformément à la politique du SCT. Comme il s’agit d’un privilège, et non 
-      d’un droit, je reconnais que l’accès aux réseaux peut m’être refusé et que
-      le Ministère peut prendre des mesures disciplinaires ou judiciaires en cas 
-      d’infraction."
+      Je reconnais que, en tant qu’utilisateur autorisé des réseaux électroniques 
+      du MPO, y compris Internet, je dois respecter la politique du Secrétariat 
+      du Conseil du Trésor (SCT) sur l’utilisation acceptable des réseaux 
+      électroniques ainsi que le supplément du MPO. Je comprends que je dois agir 
+      de manière responsable et réfléchie lorsque j’utilise les réseaux
+      électroniques du MPO. Je sais que le MPO surveille l’usage des réseaux 
+      électroniques conformément à la politique du SCT. Comme il s’agit d’un 
+      privilège, et non d’un droit, je reconnais que l’accès aux réseaux peut 
+      m’être refusé et que le Ministère peut prendre des mesures disciplinaires 
+      ou judiciaires en cas d’infraction."
 
 # Init task dictionaries
 - name: Set AC-8 regedit task dictionary
@@ -48,7 +47,7 @@
     - { Desc: Set legal warning text for logon and use of computer,
       ID: B, Value: "{{ LegalText }}", Type: string, Name: legalnoticetext,
       Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # \u0000 or "" (not sure)
-    - { Desc: Restrict domain-cached logon information to 2 users,
+    - { Desc: Restrict domain-cached logon information to 4 or less users,
       ID: C, Value: 2, Type: string, Name: CachedLogonsCount,
       Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' } # 10
     - { Desc: Set 14-day prompt for user to change password,

@@ -22,6 +22,15 @@
     - { Desc: Prohibit connection between secure and insecure networks,
       ID: D, Value: 1, Type: dword, Name: fBlockNonDomain,
       Path: 'HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy' } # 4294967295
+    - { Desc: Prevent ICMP redirects to prevent exposure,
+      ID: E, Value: 0, Type: dword, Name: EnableICMPRedirect,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' } # 4294967295
+    - { Desc: Prevent users from creating network bridges,
+      ID: F, Value: 0, Type: dword, Name: NC_AllowNetBridge_NLA,
+      Path: 'HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy' } # 4294967295
+    - { Desc: Minimize connections from the Internet to the domain,
+      ID: G, Value: 1, Type: dword, Name: fMinimizeConnections,
+      Path: 'HKLM:\Software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy' } # 4294967295
 
 # Init and get defaults
 - name: Check if defaults for AC-4 were loaded
