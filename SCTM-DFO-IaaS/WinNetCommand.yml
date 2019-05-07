@@ -47,11 +47,5 @@
   loop: "{{ ComTasks }}"
   when: item.ID not in SkipIDs
 
-- debug:
-    var: SkipIDs
-
-- debug:
-    var: CommandString
-
 - name: Run command
   win_command: "{{ CommandString }}"
