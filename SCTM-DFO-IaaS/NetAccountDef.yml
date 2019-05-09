@@ -1,0 +1,49 @@
+# == Task Script ==
+# Contains Tasks for populating the MachineDefaults dictionary
+# with a host's default value for task commands, and writing
+# that dictionary onto the host.
+# Called from a List Script
+
+# Expected vars/facts:
+# - MachineDefaults {} (empty or populated)
+# - MachineDefaultsPath
+# - SecCat
+# - TaskCat
+# - ComTasks [{}] (one object)
+#   - ID
+#   - Value
+#   - Command
+#   - LineIdx
+#   - Strip
+#   - Desc
+---
+- name: Initialize facts
+  set_fact:
+    Sec_Task: "{{ SecCat+'_'+TaskCat }}"
+    NetAccounts: null
+    CommDefs: {}
+
+- name: "Initialize {{Sec_Task}} command defaults"
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
+  when: not Sec_Task in MachineDefaults
+
+- name: Get network account data
+  win_command: "net accounts"
+  register: NetAccounts
+
+- name: Parse output and add command values to temp dictionary
+  set_fact:
+    CommDefs: "{{ CommDefs |combine({ item.ID:
+      NetAccounts.stdout_lines[item.LineIdx].lstrip(item.Strip).strip() |int }) }}"
+  loop: "{{ ComTasks }}"
+
+- name: Append command defaults to the MachineDefaults dictionary
+  set_fact:
+    MachineDefaults: "{{MachineDefaults |combine({ Sec_Task:
+      MachineDefaults[Sec_Task] |combine(CommDefs) }) }}"
+
+- name: Write to MachineDefaults file
+  win_copy:
+    dest: "{{MachineDefaultsPath}}"
+    content: "{{MachineDefaults}}"

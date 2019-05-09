@@ -1,0 +1,51 @@
+# == Task Script ==
+# Contains Tasks for retrieving and populating the 
+# MachineDefaults dictionary with a host's default
+# registry keys, and writing that dictionary onto
+# the host. Called from a List script
+
+# Expected var/fact:
+# - MachineDefaults {} (empty or populated)
+# - MachineDefaultsPath
+# - SecCat (Security Category, such as UN)
+# - TaskCat (Task Category, such as AC_3)
+# - RegTasks [{}] (one object)
+#   - ID
+#   - Path
+#   - Name
+#   - Type (unused)
+#   - Value (unused)
+#   - Desc (unused)
+---
+- name: Initialize facts
+  set_fact:
+    Sec_Task: "{{SecCat}}_{{TaskCat}}"
+    KeyDictionary: {}
+
+- name: "Initialize {{Sec_Task}} regedit defaults"
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
+  when: not Sec_Task in MachineDefaults
+
+- name: "Get {{Sec_Task}} regedit defaults"
+  win_reg_stat:
+    path: "{{ item.Path }}"
+    name: "{{ item.Name }}"
+  register: MachineKeys
+  loop: "{{ RegTasks }}"
+
+- name: Add reg keys to a temp dictionary
+  set_fact:
+    KeyDictionary: "{{ KeyDictionary |combine({
+      item.item.ID:(item.value if item.exists else 4294967295) }) }}"
+  loop: "{{ MachineKeys.results }}"
+
+- name: Append regedit defaults to the MachineDefaults dictionary
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:
+      MachineDefaults[Sec_Task] |combine(KeyDictionary) }) }}"
+
+- name: Write to MachineDefaults file
+  win_copy:
+    dest: "{{MachineDefaultsPath}}"
+    content: "{{MachineDefaults}}"

@@ -1,0 +1,87 @@
+# == List Script ==
+# Includes all the tasks that fall under
+# the Unclassed AC-8 protocol requirements
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+- name: Set text variables
+  set_fact:
+    LegalCaption: >
+      "Acceptable Use of Electronic Networks Policy
+      DFO (DFO AUP)
+      
+      Politique d’utilisation acceptable
+      des réseaux électroniques du MPO (PUR MPO)"
+    LegalText: >
+      "I acknowledge that both the Treasury Board Secretariat Policy and the 
+      DFO Addendum on Acceptable Use of Electronic Networks apply to me as an 
+      authorized user of DFO electronic networks, including the Internet. I 
+      understand that I am obligated to access all DFO networks in a responsible 
+      and informed way., I am aware that DFO monitors electronic networks as 
+      indicated in the TBS Policy. As using these networks is a privilege, not a 
+      right, I recognize that access may be revoked or a range of other
+      disciplinary or legal actions may be taken for conduct that does not
+      conform to the above policies.
+      
+      ---------------------------------------------
+      
+      Je reconnais que, en tant qu’utilisateur autorisé des réseaux électroniques 
+      du MPO, y compris Internet, je dois respecter la politique du Secrétariat 
+      du Conseil du Trésor (SCT) sur l’utilisation acceptable des réseaux 
+      électroniques ainsi que le supplément du MPO. Je comprends que je dois agir 
+      de manière responsable et réfléchie lorsque j’utilise les réseaux
+      électroniques du MPO. Je sais que le MPO surveille l’usage des réseaux 
+      électroniques conformément à la politique du SCT. Comme il s’agit d’un 
+      privilège, et non d’un droit, je reconnais que l’accès aux réseaux peut 
+      m’être refusé et que le Ministère peut prendre des mesures disciplinaires 
+      ou judiciaires en cas d’infraction."
+
+# Init task dictionaries
+- name: Set AC-8 regedit task dictionary
+  set_fact:
+    UN_AC_8_RegTasks:
+    - { Desc: Set legal warning caption for logon and use of computer,
+      ID: A, Value: "{{ LegalCaption }}", Type: string, Name: legalnoticecaption,
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # ""
+    - { Desc: Set legal warning text for logon and use of computer,
+      ID: B, Value: "{{ LegalText }}", Type: string, Name: legalnoticetext,
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' } # \u0000 or "" (not sure)
+    - { Desc: Restrict domain-cached logon information to 4 or less users,
+      ID: C, Value: 2, Type: string, Name: CachedLogonsCount,
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' } # 10
+    - { Desc: Set 14-day prompt for user to change password,
+      ID: D, Value: 14, Type: dword, Name: PasswordExpiryWarning,
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' } # 5
+    - { Desc: Enforce digitally signing network server communications,
+      ID: E, Value: 1, Type: dword, Name: requiresecuritysignature,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' } # 0
+
+# Init and get defaults
+- name: Check if defaults for AC-8 were loaded
+  set_fact:
+    Loaded_UN_AC_8: "{{ 'UN_AC_8' in MachineDefaults }}"
+
+- name: Initialize UndoList
+  set_fact:
+    UndoList: "{{ UndoList + ['UN_AC_8_'+item.ID] }}"
+  loop: "{{ UN_AC_8_RegTasks }}"
+  when: "'UN_AC_8' in UndoList"
+
+- name: Get AC-8 regedit defaults
+  include_tasks: WinRegStat.yml
+  vars:
+    SecCat: UN
+    TaskCat: AC_8
+    RegTasks: "{{ UN_AC_8_RegTasks }}"
+  when: not Loaded_UN_AC_8
+
+# Run tasks
+- name: Run AC-8 regedit tasks
+  include_tasks: WinRegedit.yml
+  vars:
+    SecCat: UN
+    TaskCat: AC_8
+  loop: "{{ UN_AC_8_RegTasks }}"
+  loop_control:
+    loop_var: RegTask

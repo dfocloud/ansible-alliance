@@ -1,0 +1,49 @@
+# == List Script ==
+# Includes all the tasks that fall under
+# the Unclassed IA-2 protocol requirements
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+# Init task dictionaries
+- name: Set AC-3 regedit task dictionary
+  set_fact:
+    UN_IA_2_RegTasks:
+    - { Desc: Prevent NULL session fallback,
+      ID: A, Value: 0, Type: dword, Name: allownullsessionfallback,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0' } # 4294967295
+    - { Desc: Prevent online identity use for PKU2U authentication requests, 
+      ID: B, Value: 0, Type: dword, Name: allowonlineid, # OwO what's this?
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\pku2u' } # 4294967295
+    - { Desc: Enforce password prompt for RDP,
+      ID: C, Value: 1, Type: dword, Name: fPromptForPassword,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services' } # 4294967295
+
+#Init and get defaults
+- name: Check if defaults for IA-2 were loaded
+  set_fact:
+    Loaded_UN_IA_2: "{{ 'UN_IA_2' in MachineDefaults }}"
+
+- name: Initialize UndoList
+  set_fact:
+    UndoList: "{{ UndoList + ['UN_IA_2_'+item.ID] }}"
+  loop: "{{ UN_IA_2_RegTasks }}"
+  when: "'UN_IA_2' in UndoList"
+
+- name: Get IA-2 regedit defaults
+  include_tasks: WinRegStat.yml
+  vars:
+    SecCat: UN
+    TaskCat: IA_2
+    RegTasks: "{{ UN_IA_2_RegTasks }}"
+  when: not Loaded_UN_IA_2
+
+# Run Tasks
+- name: Run IA-2 regedit tasks
+  include_tasks: WinRegedit.yml
+  vars:
+    SecCat: UN
+    TaskCat: IA_2
+  loop: "{{ UN_IA_2_RegTasks }}"
+  loop_control:
+    loop_var: RegTask

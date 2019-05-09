@@ -1,0 +1,52 @@
+# == List Script ==
+# Includes all the tasks that fall under
+# the Unclassed AC-11 protocol requirements
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+# Init task dictionaries
+- name: Set AC-11 regedit task dictionary
+  set_fact:
+    UN_AC_11_RegTasks:
+    - { Desc: Password-protect screen saver,
+      ID: A, Value: 1, Type: string, Name: ScreenSaverIsSecure,
+      Path: 'HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop' } # 4294967295
+    - { Desc: Screen saver activates after 5 mins of inactivity,
+      ID: B, Value: 600, Type: string, Name: ScreenSaverTimeOut,
+      Path: 'HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop' } # 4294967295
+    - { Desc: Require password when waking computer (AC),
+      ID: C, Value: 1, Type: dword, Name: ACSettingIndex,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51' } # 4294967295
+    - { Desc: Require password when waking computer (DC),
+      ID: D, Value: 1, Type: dword, Name: DCSettingIndex,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51' } # 4294967295
+
+# Init and get defaults
+- name: Check if defaults for AC-11 were loaded
+  set_fact:
+    Loaded_UN_AC_11: "{{ 'UN_AC_11' in MachineDefaults }}"
+
+- name: Initialize UndoList
+  set_fact:
+    UndoList: "{{ UndoList + ['UN_AC_11_'+item.ID] }}"
+  loop: "{{ UN_AC_11_RegTasks }}"
+  when: "'UN_AC_11' in UndoList"
+
+- name: Get AC-11 regedit defaults
+  include_tasks: WinRegStat.yml
+  vars:
+    SecCat: UN
+    TaskCat: AC_11
+    RegTasks: "{{ UN_AC_11_RegTasks }}"
+  when: not Loaded_UN_AC_11
+
+# Run tasks
+- name: Run AC-11 regedit tasks
+  include_tasks: WinRegedit.yml
+  vars:
+    SecCat: UN
+    TaskCat: AC_11
+  loop: "{{ UN_AC_11_RegTasks }}"
+  loop_control:
+    loop_var: RegTask

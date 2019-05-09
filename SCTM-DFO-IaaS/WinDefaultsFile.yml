@@ -1,0 +1,35 @@
+# Task Script
+# Contains Tasks for loading the
+# MachineDefaults dictionary or ensuring
+# the creation of its file on the host
+
+# Expected vars/facts:
+# - MachineDefaults {} (empty or populated)
+# - MachineDefaultsPath
+---
+- name: Search for defaults file
+  win_stat:
+    path: "{{ MachineDefaultsPath }}"
+  register: PathResult
+
+- name: Extract file data
+  slurp: # SLURP
+    src: "{{ MachineDefaultsPath }}"
+  register: DefaultsFile
+  when: PathResult.stat.exists
+
+- name: Decode file contents into reg key dictionary
+  set_fact:
+    MachineDefaults: "{{ DefaultsFile['content'] | b64decode }}" 
+  when: PathResult.stat.exists
+
+- name: Reset MachineDefaults if empty # safety-check if file is empty
+  set_fact:
+    MachineDefaults: {}
+  when: PathResult.stat.exists and MachineDefaults == ""
+
+- name: Create defaults file
+  win_file:
+    path: "{{ MachineDefaultsPath }}"
+    state: touch
+  when: not PathResult.stat.exists

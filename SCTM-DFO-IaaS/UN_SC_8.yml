@@ -1,0 +1,94 @@
+# == List Script ==
+# Includes all the tasks that fall under
+# the Unclassed SC-8 protocol requirements
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+# Init task dictionaries
+- name: Set SC-8 regedit task dictionary
+  set_fact:
+    UN_SC_8_RegTasks:
+    - { Desc: Enforce strong domain session keys,
+      ID: A, Value: 1, Type: dword, Name: RequireStrongKey,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' } # 1
+    - { Desc: Enforce LDAP server signing,
+      ID: B, Value: 2, Type: dword, Name: LDAPServerIntegrity,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters' } # 4294967295
+    - { Desc: Ensure kerberos encryption is supported,
+      ID: C, Value: '0x7ffffff8', Type: dword, Name: SupportedEncryptionTypes,
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\kerberos\parameters' } # 4294967295
+    - { Desc: Ensure UNC paths are hardened (Network Logon),
+      ID: D, Value: 'RequireMutualAuthentication=1, RequireIntegrity=1', Type: string, Name: \\*\NETLOGON,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths' } # 4294967295
+    - { Desc: Ensure UNC paths are hardened (System Volume),
+      ID: E, Value: 'RequireMutualAuthentication=1, RequireIntegrity=1', Type: string, Name: \\*\SYSVOL,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths' } # 4294967295
+    
+    - { Desc: Prevent indexing of encrypted files,
+      ID: F, Value: 0, Type: dword, Name: AllowIndexingEncryptedStoresOrItems,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search' } # 4294967295
+    - { Desc: Prevent unencrypted client traffic (Client),
+      ID: G, Value: 0, Type: dword, Name: AllowUnencryptedTraffic,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client' } # 4294967295
+    - { Desc: Prevent unencrypted service traffic (Service),
+      ID: H, Value: 0, Type: dword, Name: AllowUnencryptedTraffic,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service' } # 4294967295
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: I, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128' } # 0
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: J, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128' } # 4294967295
+    
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: K, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128' } # 4294967295
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: L, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128' } # 0
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: M, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128' } # 4294967295
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: 'N', Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128' } # 0
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: O, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128' } # 4294967295
+    
+    - { Desc: Comply with CSE ITSP.40.062 (Ciphers),
+      ID: P, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL' } # 4294967295
+    - { Desc: Comply with CSE ITSP.40.062 (Hashes),
+      ID: Q, Value: 0, Type: dword, Name: Enabled,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5' } # 4294967295
+
+# Init and get defaults
+- name: Check if defaults for SC-8 were loaded
+  set_fact:
+    Loaded_UN_SC_8: "{{ 'UN_SC_8' in MachineDefaults }}"
+
+- name: Initialize UndoList
+  set_fact:
+    UndoList: "{{ UndoList + ['UN_SC_8_'+item.ID] }}"
+  loop: "{{ UN_SC_8_RegTasks }}"
+  when: "'UN_SC_8' in UndoList"
+
+- name: Get SC-8 regedit defaults
+  include_tasks: WinRegStat.yml
+  vars:
+    SecCat: UN
+    TaskCat: SC_8
+    RegTasks: "{{ UN_SC_8_RegTasks }}"
+  when: not Loaded_UN_SC_8
+
+# Run tasks
+- name: Run SC-8 regedit tasks
+  include_tasks: WinRegedit.yml
+  vars:
+    SecCat: UN
+    TaskCat: SC_8
+  loop: "{{ UN_SC_8_RegTasks }}"
+  loop_control:
+    loop_var: RegTask

@@ -1,0 +1,67 @@
+# == List Script ==
+# Includes all the tasks that fall under
+# the Unclassed AU-9 protocol requirements
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+# Init task dictionaries
+- name: Set AU-9 regedit task dictionary
+  set_fact:
+    UN_AU_9_RegTasks:
+    - { Desc: Ensure firewalls log to correct files (domain),
+      ID: A, Value: '%SYSTEMROOT%\\System32\\logfiles\\firewall\\domainfw.log',
+      Type: string, Name: NoAutoRebootWithLoggedOnUsers,
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging' } # 4294967295
+    - { Desc: Ensure firewalls log to correct files (private),
+      ID: B, Value: '%SYSTEMROOT%\\System32\\logfiles\\firewall\\privatefw.log',
+      Type: string, Name: TcpMaxDataRetransmissions,
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging' } # 4294967295
+    - { Desc: Ensure firewalls log to correct files (public),
+      ID: C, Value: '%SYSTEMROOT%\\System32\\logfiles\\firewall\\publicfw.log',
+      Type: string, Name: TcpMaxDataRetransmissions,
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging' } # 4294967295
+
+- name: Set AU-9 user rights task dictionary
+  set_fact:
+    UN_AU_9_RightsTasks:
+    - { Desc: "Restrict audit and secutiry log management to no one (we put Admins)",
+      ID: D, Name: SeSecurityPrivilege, 
+      Users: ['Administrators'] }
+
+# Init and get defaults
+- name: Check if defaults for AU-9 were loaded
+  set_fact:
+    Loaded_UN_AU_9: "{{ 'UN_AU_9' in MachineDefaults }}"
+
+- name: Initialize UndoList
+  set_fact:
+    UndoList: "{{ UndoList + ['UN_AU_9_'+item.ID] }}"
+  loop: "{{ UN_AU_9_RegTasks |union(UN_AU_9_RightsTasks) }}"
+  when: "'UN_AU_9' in UndoList"
+
+- name: Get AU-9 regedit defaults
+  include_tasks: WinRegStat.yml
+  vars:
+    SecCat: UN
+    TaskCat: AU_9
+    RegTasks: "{{ UN_AU_9_RegTasks }}"
+  when: not Loaded_UN_AU_9
+
+# Run tasks
+- name: Run AU-9 regedit tasks
+  include_tasks: WinRegedit.yml
+  vars:
+    SecCat: UN
+    TaskCat: AU_9
+  loop: "{{ UN_AU_9_RegTasks }}"
+  loop_control:
+    loop_var: RegTask
+
+- name: Run user rights tasks # simultaneously saves defaults
+  include_tasks: WinUserRights.yml
+  vars:
+    SecCat: UN
+    TaskCat: AU_9
+    Loaded: Loaded_UN_AU_9
+    RightsTasks: "{{ UN_AU_9_RightsTasks }}"

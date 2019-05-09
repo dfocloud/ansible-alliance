@@ -1,0 +1,51 @@
+# == Task Script ==
+# Contains Tasks for handling all windows command editing.
+# Called from a List Script
+
+# Due to a bug with either Windows or Ansible, running commands as part of
+# a loop seems to cause problems. Any command after the first risks producing
+# a failure (error code 87) for unknown reasons. Thus, this scrips instead
+# builds command strings which include all the necessary parameters
+# and executes them together. More debugging is needed to determine the core
+# issue, at which point the script may be changed to better fit the problem.
+# == Possible bug sources ==
+# Windows Server OS, 'net accounts' commands,
+# 'win_command' ansible module, ansible command execution
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated and with SecCat_TaskCat: {} entry)
+# - UndoList []
+# - SkipList []
+# - SecCat
+# - TaskCat
+# - ComTasks [{}] (one object)
+#   - Desc
+#   - ID
+#   - LineIdx
+#   - Strip
+#   - Command
+#   - Parameter
+#   - Value
+---
+- name: Initialize facts
+  set_fact:
+    Sec_Task: "{{ SecCat+'_'+TaskCat }}"
+    SkipIDs: []
+    CommandString: "net accounts"
+
+- name: Load which tasks to skip
+  set_fact:
+    SkipIDs: "{{ SkipIDs + [item.lstrip(Sec_Task+'_')]
+      if Sec_Task in item else SkipIDs }}"
+  loop: "{{ SkipList }}"
+
+- name: Build new command string
+  set_fact:
+    CommandString: "{{ CommandString + item.Parameter + ( item.Value
+    if (Sec_Task+'_'+item.ID not in UndoList) else 
+    MachineDefaults[Sec_Task][item.ID] )|string }}"
+  loop: "{{ ComTasks }}"
+  when: item.ID not in SkipIDs
+
+- name: Run command
+  win_command: "{{ CommandString }}"
