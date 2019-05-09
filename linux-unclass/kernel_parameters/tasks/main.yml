@@ -1,0 +1,55 @@
+---
+- name: Adding kernel parameters with value 1 to CentOS/RHEL (TBS compliance)
+  sysctl:
+    name: "{{ item.name }}"
+    value: 1
+    state: present
+    sysctl_file: /etc/sysctl.d/10-kernel-hardening.conf
+    reload: yes
+  with_items:
+    - "{{ centos_kernel_params_1 }}"
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+ 
+- name: Adding kernel parameters with value 0 to CentOS/RHEL (TBS compliance)
+  sysctl:
+    name: "{{ item.name }}"
+    value: 0
+    state: present
+    sysctl_file: /etc/sysctl.d/10-kernel-hardening.conf
+    reload: yes
+  with_items:
+    - "{{ centos_kernel_params_0 }}"
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+- name: Adding kernel parameters with value 2 to Ubuntu (TBS compliance)
+  sysctl:
+    name: "{{ item.name }}"
+    value: 2
+    state: present
+    sysctl_file: /etc/sysctl.d/10-kernel-hardening.conf
+    reload: yes
+  with_items:
+    - "{{ ubuntu_kernel_params_2 }}"
+  when: ansible_distribution == "Ubuntu"
+    
+- name: Adding kernel parameters with value 1 to Ubuntu (TBS compliance)
+  sysctl:
+    name: "{{ item.name }}"
+    value: 1
+    state: present
+    sysctl_file: /etc/sysctl.d/10-kernel-hardening.conf
+    reload: yes
+  with_items:
+    - "{{ ubuntu_kernel_params_1 }}"
+  when: ansible_distribution == "Ubuntu"
+   
+- name: Adding kernel parameters with value 0 to Ubuntu (TBS compliance)
+  sysctl:
+    name: "{{ item.name }}"
+    value: 0
+    state: present
+    sysctl_file: /etc/sysctl.d/10-kernel-hardening.conf
+    reload: yes
+  with_items:
+    - "{{ ubuntu_kernel_params_0 }}"
+  when: ansible_distribution == "Ubuntu"

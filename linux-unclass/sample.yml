@@ -1,0 +1,20 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: yes
+  name: Linux hardening - unclassified
+  roles:
+    - ../ansible-alliance/linux-unclass/auditd_setup
+    - ../ansible-alliance/linux-unclass/banner_setup
+    - ../ansible-alliance/linux-unclass/cron_permissions
+    - ../ansible-alliance/linux-unclass/grub_permissions
+    - ../ansible-alliance/linux-unclass/kernel_parameters
+    - ../ansible-alliance/linux-unclass/misc_file_updates
+    - ../ansible-alliance/linux-unclass/ntp_setup
+    - ../ansible-alliance/linux-unclass/package_install
+    - ../ansible-alliance/linux-unclass/package_remove
+    - ../ansible-alliance/linux-unclass/password_settings
+    - ../ansible-alliance/linux-unclass/profile_updates
+    - ../ansible-alliance/linux-unclass/ssh_updates 
+    - ../ansible-alliance/linux-unclass/syslog_updates
+    - ../ansible-alliance/linux-unclass/tcp_wrappers

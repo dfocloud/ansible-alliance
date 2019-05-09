@@ -1,0 +1,47 @@
+---
+- name: Setting ownership and permission bits on crontab file (TBS compliance)
+  file:
+    path: /etc/crontab
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Setting ownership and permission bits on cron.hourly files (TBS compliance)
+  file:
+    path: /etc/cron.hourly
+    mode: 0600
+    owner: root
+    group: root
+    recurse: yes
+
+- name: Setting ownership and permission bits on cron.daily files (TBS compliance)
+  file:
+    path: /etc/cron.daily
+    mode: 0600
+    owner: root
+    group: root
+    recurse: yes
+
+- name: Setting ownership and permission bits on cron.weekly files (TBS compliance)
+  file:
+    path: /etc/cron.weekly
+    mode: 0600
+    owner: root
+    group: root
+    recurse: yes
+
+- name: Setting ownership and permission bits on cron.monthly files (TBS compliance)
+  file:
+    path: /etc/cron.monthly
+    mode: 0600
+    owner: root
+    group: root
+    recurse: yes
+
+- name: Setting ownership and permission bits on cron.d files (TBS compliance)
+  file:
+    path: /etc/cron.d
+    mode: 0600
+    owner: root
+    group: root
+    recurse: yes

@@ -1,0 +1,30 @@
+---
+- name: Setting ownership and permission bits on TCP Wrappers deny file (TBS compliance)
+  file:
+    path: /etc/hosts.deny
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Setting ownership and permission bits on TCP Wrappers allow file (TBS compliance)
+  file:
+    path: /etc/hosts.allow
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Blocking all access to all services via TCP Wrappers (TBS compliance)
+  blockinfile:
+    path: /etc/hosts.deny
+    insertafter: EOF
+    state: present
+    block: |
+      ALL: ALL
+
+- name: Allowing ssh-only access to the VM via TCP Wrappers (TBS compliance)
+  blockinfile:
+    path: /etc/hosts.allow
+    insertafter: EOF
+    state: present
+    block: |
+      sshd: ALL

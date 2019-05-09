@@ -1,0 +1,14 @@
+---
+- name: Removing packages from CentOS/RHEL (TBS compliance)
+  yum:
+    name: "{{ rm_el7_packages }}"
+    state: absent
+    update_cache: yes
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+- name: Removing packages from Ubuntu (TBS compliance)
+  apt:
+    name: "{{ rm_deb_packages }}"
+    state: absent
+    update_cache: yes
+  when: ansible_distribution == "Ubuntu"
