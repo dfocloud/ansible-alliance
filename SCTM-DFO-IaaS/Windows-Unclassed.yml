@@ -33,23 +33,23 @@
 #========== List Script Includes ==========#
   # AC
   - name: Execute UN_AC_3 tasks
-    include_tasks: UN_AC_3.yml
+    include_tasks: WinUnclassed/UN_AC_3.yml
     when: "'UN_AC_3' not in SkipList"
 
   - name: Execute UN_AC_4 tasks
-    include_tasks: UN_AC_4.yml
+    include_tasks: WinUnclassed/UN_AC_4.yml
     when: "'UN_AC_4' not in SkipList"
 
   - name: Execute UN_AC_7 tasks
-    include_tasks: UN_AC_7.yml
+    include_tasks: WinUnclassed/UN_AC_7.yml
     when: "'UN_AC_7' not in SkipList"
 
   - name: Execute UN_AC_8 tasks
-    include_tasks: UN_AC_8.yml
+    include_tasks: WinUnclassed/UN_AC_8.yml
     when: "'UN_AC_8' not in SkipList"
 
   - name: Execute UN_AC_11 tasks
-    include_tasks: UN_AC_11.yml
+    include_tasks: WinUnclassed/UN_AC_11.yml
     when: "'UN_AC_11' not in SkipList"
 
   # AU
@@ -72,15 +72,15 @@
 
   # SC
   - name: Execute UN_SC_2_7_10 tasks
-    include_tasks: UN_SC_2_7_10.yml
+    include_tasks: WinUnclassed/UN_SC_2_7_10.yml
     when: "'UN_SC' not in SkipList"
 
   - name: Execute UN_SC_5 tasks
-    include_tasks: UN_SC_5.yml
+    include_tasks: WinUnclassed/UN_SC_5.yml
     when: "'UN_SC_5' not in SkipList"
 
   - name: Execute UN_SC_8 tasks
-    include_tasks: UN_SC_8.yml
+    include_tasks: WinUnclassed/UN_SC_8.yml
     when: "'UN_SC_8' not in SkipList"
 
   # SI
