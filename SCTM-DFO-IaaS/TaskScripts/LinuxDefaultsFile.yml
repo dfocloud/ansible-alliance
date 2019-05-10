@@ -1,0 +1,10 @@
+# Task Script
+# Contains Tasks for loading the
+# MachineDefaults dictionary or ensuring
+# the creation of its file on the Linux
+# host
+
+# Expected vars/facts:
+# - MachineDefaults {} (empty or populated)
+# - MachineDefaultsPath
+---

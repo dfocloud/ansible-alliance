@@ -22,7 +22,7 @@
       OnlyRun: "{{ OnlyRun|default('None') }}"
 
   - name: Initialize MachineDefaults dictionary
-    include_tasks: TaskScripts/WinDefaultsFile.yml
+    include_tasks: TaskScripts/LinuxDefaultsFile.yml
 
   - name: Initialize SkipList array
     include_tasks: TaskScripts/InitSkips.yml
