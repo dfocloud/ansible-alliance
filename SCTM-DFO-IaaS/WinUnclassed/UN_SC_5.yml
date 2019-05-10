@@ -61,7 +61,7 @@
   when: "'UN_SC_5' in UndoList"
 
 - name: Get SC-5 regedit defaults
-  include_tasks: WinRegStat.yml
+  include_tasks: TaskScripts/WinRegStat.yml
   vars:
     SecCat: UN
     TaskCat: SC_5
@@ -70,7 +70,7 @@
 
 # Run tasks
 - name: Run SC-5 regedit tasks
-  include_tasks: WinRegedit.yml
+  include_tasks: TaskScripts/WinRegedit.yml
   vars:
     SecCat: UN
     TaskCat: SC_5
@@ -79,7 +79,7 @@
     loop_var: RegTask
 
 - name: Run SC-5 user rights tasks # simultaneously saves defaults
-  include_tasks: WinUserRights.yml
+  include_tasks: TaskScripts/WinUserRights.yml
   vars:
     SecCat: UN
     TaskCat: SC_5

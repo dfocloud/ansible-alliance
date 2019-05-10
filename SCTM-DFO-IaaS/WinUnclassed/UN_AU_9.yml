@@ -41,7 +41,7 @@
   when: "'UN_AU_9' in UndoList"
 
 - name: Get AU-9 regedit defaults
-  include_tasks: WinRegStat.yml
+  include_tasks: TaskScripts/WinRegStat.yml
   vars:
     SecCat: UN
     TaskCat: AU_9
@@ -50,7 +50,7 @@
 
 # Run tasks
 - name: Run AU-9 regedit tasks
-  include_tasks: WinRegedit.yml
+  include_tasks: TaskScripts/WinRegedit.yml
   vars:
     SecCat: UN
     TaskCat: AU_9
@@ -59,7 +59,7 @@
     loop_var: RegTask
 
 - name: Run user rights tasks # simultaneously saves defaults
-  include_tasks: WinUserRights.yml
+  include_tasks: TaskScripts/WinUserRights.yml
   vars:
     SecCat: UN
     TaskCat: AU_9

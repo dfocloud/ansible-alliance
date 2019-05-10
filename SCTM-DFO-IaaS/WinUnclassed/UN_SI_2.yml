@@ -28,7 +28,7 @@
   when: "'UN_SI_2' in UndoList"
 
 - name: Get SI-2 regedit defaults
-  include_tasks: WinRegStat.yml
+  include_tasks: TaskScripts/WinRegStat.yml
   vars:
     SecCat: UN
     TaskCat: SI_2
@@ -37,7 +37,7 @@
 
 # Run tasks
 - name: Run SI-2 regedit tasks
-  include_tasks: WinRegedit.yml
+  include_tasks: TaskScripts/WinRegedit.yml
   vars:
     SecCat: UN
     TaskCat: SI_2
