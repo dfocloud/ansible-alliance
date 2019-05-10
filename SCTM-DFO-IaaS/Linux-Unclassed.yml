@@ -1,0 +1,41 @@
+# == Orchestrator Script ==
+# STCM-DFO-IaaS compliant configuration for
+# a Linux virtual machine in Azure Cloud
+# Based on RFP 16-42051B <- Check if true
+#
+# A Linux VM in Azure Cloud with this
+# configuration may contain Government of
+# Canada 'Unclassed' information
+---
+- hosts: all
+  become_method: runas
+  vars:
+    MachineDefaults: {}
+    MachineDefaultsPath: \AnsibleMachineDefaults.yml
+  tasks:
+
+  - name: Initialize template facts
+    set_fact:
+      SkipList: "{{ Skip|default([]) }}"
+      UndoList: "{{ Undo|default([]) }}"
+      CustomDict: "{{ Custom|default({}) }}"
+      OnlyRun: "{{ OnlyRun|default('None') }}"
+
+  - name: Initialize MachineDefaults dictionary
+    include_tasks: TaskScripts/WinDefaultsFile.yml
+
+  - name: Initialize SkipList array
+    include_tasks: TaskScripts/InitSkips.yml
+
+  - name: Initialize UndoList array
+    include_tasks: TaskScripts/InitUndos.yml
+
+#========== List Script Includes ==========#
+  # AC
+  - name: Execute UN_AC_3 tasks
+    include_tasks: LinuxUnclassed/UN_AC_3.yml
+    when: "'UN_AC_3' not in SkipList"
+  
+  - name: Execute UN_AC_8 tasks
+    include_tasks: LinuxUnclassed/UN_AC_8.yml
+    when: "'UN_AC_8' not in SkipList"
