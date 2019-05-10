@@ -22,13 +22,13 @@
       OnlyRun: "{{ OnlyRun|default('None') }}"
 
   - name: Initialize MachineDefaults dictionary
-    include_tasks: WinDefaultsFile.yml
+    include_tasks: TaskScripts/WinDefaultsFile.yml
 
   - name: Initialize SkipList array
-    include_tasks: InitSkips.yml
+    include_tasks: TaskScripts/InitSkips.yml
 
   - name: Initialize UndoList array
-    include_tasks: InitUndos.yml
+    include_tasks: TaskScripts/InitUndos.yml
 
 #========== List Script Includes ==========#
   # AC

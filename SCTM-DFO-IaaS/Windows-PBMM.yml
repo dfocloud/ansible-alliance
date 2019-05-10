@@ -1,0 +1,33 @@
+# == Orchestrator Script ==
+# STCM-DFO-IaaS compliant configuration for
+# a Windows virtual machine in Azure Cloud
+# Based on RFP 16-42051B <- Check
+#
+# A Windows VM in Azure Cloud with this
+# configuration may contain Government of
+# Canada 'Protected B' information
+---
+- hosts: all
+  become_method: runas
+  vars:
+    MachineDefaults: {}
+    MachineDefaultsPath: C:\AnsibleMachineDefaults.yml
+  tasks:
+
+  - name: Initialize template facts
+    set_fact:
+      SkipList: "{{ Skip|default([]) }}"
+      UndoList: "{{ Undo|default([]) }}"
+      CustomDict: "{{ Custom|default({}) }}"
+      OnlyRun: "{{ OnlyRun|default('None') }}"
+
+  - name: Initialize MachineDefaults dictionary
+    include_tasks: TaskScripts/WinDefaultsFile.yml
+
+  - name: Initialize SkipList array
+    include_tasks: TaskScripts/InitSkips.yml
+
+  - name: Initialize UndoList array
+    include_tasks: TaskScripts/InitUndos.yml
+
+#========== List Script Includes ==========#

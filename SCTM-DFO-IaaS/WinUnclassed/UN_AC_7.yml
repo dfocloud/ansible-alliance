@@ -31,7 +31,7 @@
   when: "'UN_AC_7' in UndoList"
 
 - name: Get AC-7 network account defaults
-  include_tasks: NetAccountDef.yml
+  include_tasks: TaskScripts/NetAccountDef.yml
   vars:
     SecCat: UN
     TaskCat: AC_7
@@ -40,7 +40,7 @@
 
 # Run tasks
 - name: Run AC-7 windows command tasks
-  include_tasks: WinNetCommand.yml
+  include_tasks: TaskScripts/WinNetCommand.yml
   vars:
     SecCat: UN
     TaskCat: AC_7
