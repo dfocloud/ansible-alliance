@@ -29,7 +29,8 @@
     group: root
     mode: 0600
 
-- name: Adding execute permission bit to the directory that stores user login message files (TBS compliance)
+- name: Adding execute permission bit to the directory that stores
+    user login message files (TBS compliance)
   file:
     path: /etc/update-motd.d
     mode: 0755
@@ -43,7 +44,8 @@
   register: motdfiles
   when: ansible_distribution == "Ubuntu"
 
-- name: Removing execute permission bit from files that display messages at user login (TBS compliance)
+- name: Removing execute permission bit from files that display messages
+    at user login (TBS compliance)
   file:
     path: "{{ item.path }}"
     mode: 0644

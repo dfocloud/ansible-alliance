@@ -6,6 +6,10 @@
 # A Windows VM in Azure Cloud with this
 # configuration may contain Government of
 # Canada 'Unclassed' information
+
+# ansible_connection: winrm
+# ansible_winrm_server_cert_validation: ignore
+# ansible_winrm_transport: ntlm
 ---
 - hosts: all
   become_method: runas
