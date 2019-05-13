@@ -9,8 +9,7 @@
 ---
 - hosts: all
   become: yes
-  become_method: su
-  become_user: root
+  become_method: sudo
   vars:
     MachineDefaults: {}
     MachineDefaultsPath: \AnsibleMachineDefaults.yml
