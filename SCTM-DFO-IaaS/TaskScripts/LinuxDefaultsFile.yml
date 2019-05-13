@@ -30,7 +30,7 @@
   when: PathResult.stat.exists and MachineDefaults == ""
 
 - name: Create defaults file
-  win_file:
+  file:
     path: "{{ MachineDefaultsPath }}"
     state: touch
   when: not PathResult.stat.exists
