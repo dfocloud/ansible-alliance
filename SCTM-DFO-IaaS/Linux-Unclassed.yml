@@ -2,13 +2,15 @@
 # STCM-DFO-IaaS compliant configuration for
 # a Linux virtual machine in Azure Cloud
 # Based on RFP 16-42051B <- Check if true
-#
+
 # A Linux VM in Azure Cloud with this
 # configuration may contain Government of
 # Canada 'Unclassed' information
 ---
 - hosts: all
-  become_method: runas
+  become: yes
+  become_method: su
+  become_user: root
   vars:
     MachineDefaults: {}
     MachineDefaultsPath: \AnsibleMachineDefaults.yml
