@@ -22,7 +22,7 @@
 #   when: not 'UN_AC_3_A' in SkipList
 
 - set_fact:
-    DeleteFile: "{{ 'UN_AC_3_A' in UndoList }}"
+    FullID: "{{ 'UN'+'_'+'AC_3'+'_'+'A' }}"
 
 - name: UN_AC_3 A > Write file contents
   copy:
@@ -30,13 +30,13 @@
     mode: 0600
     content: "\n\t\t   Fisheries and Oceans Canada / Pêches et Océans Canada
     \n\n\t\tUnauthorized Access Prohibited / Accès non-autorisé interdit\n"
-  when: not DeleteFile and not 'UN_AC_3_A' in SkipList
+  when: not FullID in SkipList and not FullID in UndoList
 
 - name: UN_AC_3 A > Delete file
   file:
     path: /etc/motd
     state: absent
-  when: DeleteFile and not 'UN_AC_3_A' in SkipList
+  when: not FullID in SkipList and FullID in UndoList
 
 
 

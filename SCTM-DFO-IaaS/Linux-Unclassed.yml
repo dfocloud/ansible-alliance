@@ -12,8 +12,11 @@
   become_method: sudo
   vars:
     MachineDefaults: {}
-    MachineDefaultsPath: \AnsibleMachineDefaults.yml
+    MachineDefaultsPath: /AnsibleMachineDefaults.yml
   tasks:
+
+  - debug:
+      var: hostvars
 
   - name: Initialize template facts
     set_fact:
