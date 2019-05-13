@@ -5,13 +5,30 @@
 # Expected vars/facts:
 # - MachineDefaults {} (populated)
 ---
-- name: UN_AC_3 A > Copying /etc/motd file (TBS compliance)
-  copy:
-    src: LinuxUnclassed/motd
-    dest: /etc/
-    owner: root
-    group: root
+# - name: UN_AC_3 A > Copying /etc/motd file (TBS compliance)
+#   copy:
+#     src: LinuxUnclassed/motd
+#     dest: /etc/
+#     owner: root
+#     group: root
+#     mode: 0600
+
+- name: UN_AC_3 A > Creating a motd file if needed
+  file:
+    path: /etc/motd
+    state: touch
     mode: 0600
+    register: fileState
+
+- debug:
+    var: fileState
+
+# - name: UN_AC_3 B > Write file contents
+#   copy:
+#     dest: /etc/motd
+#     content: "\n\t\t\tFisheries and Oceans Canada / Pêches et Océans Canada
+#     \n\n\t\tUnauthorized Access Prohibited / Accès non-autorisé interdit"
+
 
 # - name: UN_AC_3 B > Copying /etc/issue file (TBS compliance)
 #   copy:
