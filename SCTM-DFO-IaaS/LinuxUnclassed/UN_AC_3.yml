@@ -24,12 +24,12 @@
 - debug:
     var: fileState
 
-- name: UN_AC_3 B > Write file contents
+- name: UN_AC_3 A > Write file contents
   copy:
     dest: /etc/motd
     content: "\n\t\t\tFisheries and Oceans Canada / Pêches et Océans Canada
     \n\n\t\tUnauthorized Access Prohibited / Accès non-autorisé interdit"
-  when: not fileState.diff.after.state == 'absent'
+  when: not fileState.diff.after.state == 'absent' and not 'UN_AC_3_A' in SkipList
 
 
 # - name: UN_AC_3 B > Copying /etc/issue file (TBS compliance)
