@@ -18,7 +18,7 @@
     path: /etc/motd
     state: touch
     mode: 0600
-    register: fileState
+  register: fileState
 
 - debug:
     var: fileState
