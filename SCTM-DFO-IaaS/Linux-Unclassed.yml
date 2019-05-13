@@ -16,7 +16,7 @@
   tasks:
 
   - debug:
-      var: hostvars
+      var: hostvars[inventory_hostname].ansible_system
 
   - name: Initialize template facts
     set_fact:
