@@ -20,6 +20,9 @@
   register: PathResult
   when: hostvars[inventory_hostname].ansible_system == 'Windows'
 
+- debug:
+    var: PathResult
+
 - name: Extract file data
   slurp: # SLUUUUURP
     src: "{{ MachineDefaultsPath }}"
