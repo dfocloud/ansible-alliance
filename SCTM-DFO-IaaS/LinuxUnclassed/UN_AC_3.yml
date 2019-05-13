@@ -16,9 +16,10 @@
 - name: UN_AC_3 A > Creating a motd file if needed
   file:
     path: /etc/motd
-    state: touch
+    state: "{{ 'touch' if 'UN_AC_3_A' not in UndoList else 'absent' }}"
     mode: 0600
   register: fileState
+  when: not 'UN_AC_3_A' in SkipList
 
 - debug:
     var: fileState
