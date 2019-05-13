@@ -24,7 +24,7 @@
   #   set_fact:
 
   - name: Initialize MachineDefaults dictionary
-    include_tasks: TaskScripts/DefaultsFile.yml
+    include_tasks: TaskScripts/LinuxDefaultsFile.yml
 
   - name: Initialize SkipList array
     include_tasks: TaskScripts/InitSkips.yml

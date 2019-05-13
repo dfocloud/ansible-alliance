@@ -8,20 +8,10 @@
 # - MachineDefaults {} (empty or populated)
 # - MachineDefaultsPath
 ---
-- name: Search for defaults file (Linux)
+- name: Search for defaults file
   stat:
     path: "{{ MachineDefaultsPath }}"
   register: PathResult
-  when: hostvars[inventory_hostname].ansible_system == 'Linux'
-
-- name: Search for defaults file (Windows)
-  win_stat:
-    path: "{{ MachineDefaultsPath }}"
-  register: PathResult
-  when: hostvars[inventory_hostname].ansible_system == 'Windows'
-
-- debug:
-    var: PathResult
 
 - name: Extract file data
   slurp: # SLUUUUURP
@@ -39,16 +29,8 @@
     MachineDefaults: {}
   when: PathResult.stat.exists and MachineDefaults == ""
 
-- name: Create defaults file (Linux)
+- name: Create defaults file
   file:
     path: "{{ MachineDefaultsPath }}"
     state: touch
-  when: not PathResult.stat.exists and
-    hostvars[inventory_hostname].ansible_system == 'Linux'
-
-- name: Create defaults file (Windows)
-  win_file:
-    path: "{{ MachineDefaultsPath }}"
-    state: touch
-  when: not PathResult.stat.exists and
-    hostvars[inventory_hostname].ansible_system == 'Windows'
+  when: not PathResult.stat.exists
