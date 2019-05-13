@@ -14,17 +14,14 @@
     MachineDefaults: {}
     MachineDefaultsPath: /AnsibleMachineDefaults.yml
     SkipList: "{{ Skip|default([]) }}"
+    UndoList: "{{ Undo|default([]) }}"
+    CustomDict: "{{ Custom|default({}) }}"
+    IsLinux: "{{ (hostvars[inventory_hostname].ansible_system == 'Linux')|bool }}"
   tasks:
-
-  - debug:
-      var: SkipList
 
   - name: Initialize template facts
     set_fact:
-      UndoList: "{{ Undo|default([]) }}"
-      CustomDict: "{{ Custom|default({}) }}"
       OnlyRun: "{{ OnlyRun|default('None') }}"
-      IsLinux: "{{ (hostvars[inventory_hostname].ansible_system == 'Linux')|bool }}"
 
   - name: Initialize MachineDefaults dictionary
     include_tasks: TaskScripts/LinuxDefaultsFile.yml
