@@ -24,10 +24,10 @@
 - name: UN_AC_3 A > Write file contents
   copy:
     dest: /etc/motd
-    content: "\n\t\t\tFisheries and Oceans Canada / Pêches et Océans Canada
+    mode: 0600
+    content: "\n\t\t   Fisheries and Oceans Canada / Pêches et Océans Canada
     \n\n\t\tUnauthorized Access Prohibited / Accès non-autorisé interdit\n"
   when: not 'UN_AC_3_A' in SkipList
-  ignore_errors: yes
 
 
 # - name: UN_AC_3 B > Copying /etc/issue file (TBS compliance)
