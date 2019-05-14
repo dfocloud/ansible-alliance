@@ -36,7 +36,7 @@
 
 # Run tasks
 - name: Run file tasks
-  include_tasks: LinuxWriteFile.yml
+  include_tasks: TaskScripts/LinuxWriteFile.yml
   vars:
     SecCat: UN
     TaskCat: AC_3
