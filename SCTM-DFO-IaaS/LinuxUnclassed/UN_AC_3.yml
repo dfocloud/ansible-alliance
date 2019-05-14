@@ -22,8 +22,8 @@
     UN_AC_3_ChmodTasks:
     - { Desc: Set 'update-motd.d' to recommended directory,
       ID: A, Mode: '755', Path: /etc/update-motd.d }
-    - { Desc: Set mode for files within /etc/update-motd.d/,
-      ID: AA, Mode: '644', Path: /etc/update-motd.d/ }
+    # - { Desc: Set mode for files within /etc/update-motd.d/,
+    #   ID: AA, Mode: '644', Path: /etc/update-motd.d/ }
 
 # Init and get defaults
 - name: Check if defaults for AC-3 were loaded
