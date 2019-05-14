@@ -19,7 +19,7 @@
 - name: "{{ SecCat+'_'+TaskCat+' '+FileTask.ID+' (write) > '+FileTask.Desc }}"
   copy:
     dest: "{{ FileTask.Path }}"
-    mode: "{{ FileTask.Mode|int }}"
+    mode: "{{ FileTask.Mode|string }}"
     content: "{{ FileTask.Content }}"
   when: not fullID in SkipList and not fullID in UndoList
 
