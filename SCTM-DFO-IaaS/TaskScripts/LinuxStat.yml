@@ -1,0 +1,18 @@
+# Task Script
+# Contains tasks for retrieving defaults for files
+
+# Expected vars/facts:
+# - MachineDefaults {} (empty or populated)
+# - SecCat
+# - TaskCat
+# - StatTask {} (looped) ? [{}] (one object)
+#   - ID
+#   - Path
+#   - Desc (unused)
+#   - Mode (unused)
+---
+- name: Initialize facts
+  set_fact: 
+
+- name: Get defaults
+  

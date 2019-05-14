@@ -5,7 +5,7 @@
 # - MachineDefaults {} (empty or populated)
 # - SecCat
 # - TaskCat
-# - ChmodTask []
+# - ChmodTask {} (looped)
 #   - ID
 #   - Desc
 #   - Path
@@ -17,6 +17,7 @@
 - name: "{{ SecCat+'_'+TaskCat+' '+ChmodTask.ID+' > '+ChmodTask.Desc }}"
   file:
     path: "{{ ChmodTask.Path }}"
-    mode: "{{ ChmodTask.Mode if fullID not in UndoList
+    mode: "{{ ( ChmodTask.Mode if fullID not in CustomDict
+      else CustomDict[fullID] ) if fullID not in UndoList
       else MachineDefaults[SecCat+'_'+TaskCat][ChmodTask.ID] }}"
   when: not fullID in SkipList

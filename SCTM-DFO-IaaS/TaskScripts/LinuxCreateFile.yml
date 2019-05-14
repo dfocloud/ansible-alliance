@@ -5,7 +5,7 @@
 # - MachineDefaults {} (empty or populated)
 # - SecCat
 # - TaskCat
-# - CreateTask []
+# - CreateTask {} (looped)
 #   - ID
 #   - Desc
 #   - Path
@@ -15,14 +15,17 @@
 - set_fact:
     fullID: "{{ SecCat+'_'+TaskCat+'_'+CreateTask.ID }}"
 
-- name: "{{ SecCat+'_'+TaskCat+' '+CreateTask.ID+' > '+CreateTask.Desc+' (write)' }}"
+- name: "{{ SecCat+'_'+TaskCat+' '+CreateTask.ID+
+    ' > '+CreateTask.Desc+' (write)' }}"
   copy:
     dest: "{{ CreateTask.Path }}"
     mode: "{{ CreateTask.Mode }}"
-    content: "{{ CreateTask.Content }}"
+    content: "{{ CreateTask.Content if not fullID in CustomDict
+      else CustomDict[fullID] }}"
   when: not fullID in SkipList and not fullID in UndoList
 
-- name: "{{ SecCat+'_'+TaskCat+' '+CreateTask.ID+' > '+CreateTask.Desc+' (delete)' }}"
+- name: "{{ SecCat+'_'+TaskCat+' '+CreateTask.ID+
+    ' > '+CreateTask.Desc+' (delete)' }}"
   file:
     path: "{{ CreateTask.Path }}"
     state: absent

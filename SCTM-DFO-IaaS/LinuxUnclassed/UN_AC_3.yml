@@ -50,13 +50,13 @@
   loop: "{{ UN_AC_3_CreateTasks |union(UN_AC_3_ChmodTasks) }}"
   when: "'UN_AC_3' in UndoList"
 
-# - name: Get AC-3 file defaults
-#   include_tasks: TaskScripts/WinRegStat.yml
-#   vars:
-#     SecCat: UN
-#     TaskCat: AC_3
-#     RegTasks: "{{ UN_AC_3_RegTasks }}"
-#   when: not Loaded_UN_AC_3
+- name: Get AC-3 file defaults
+  include_tasks: TaskScripts/LinuxStat.yml
+  vars:
+    SecCat: UN
+    TaskCat: AC_3
+    RegTasks: "{{ UN_AC_3_RegTasks }}"
+  when: not Loaded_UN_AC_3
 
 # Run tasks
 - name: Run AC-3 create tasks
