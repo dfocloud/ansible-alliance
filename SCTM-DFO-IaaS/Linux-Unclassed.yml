@@ -16,12 +16,12 @@
     SkipList: "{{ Skip|default([]) }}"
     UndoList: "{{ Undo|default([]) }}"
     CustomDict: "{{ Custom|default({}) }}"
-    OnlyRun: "{{ OnlyRun|default('None') }}"
     IsLinux: "{{ (hostvars[inventory_hostname].ansible_system == 'Linux')|bool }}"
   tasks:
 
-  # - name: Initialize template facts
-  #   set_fact:
+  - name: Initialize template facts
+    set_fact:
+      OnlyRun: "{{ OnlyRun|default('None') }}"
 
   - name: Initialize MachineDefaults dictionary
     include_tasks: TaskScripts/LinuxDefaultsFile.yml

@@ -2,7 +2,7 @@
 # Appends to the SkipList array based on
 # supercategory and global skip variables
 ---
-- name: Check excusive run variable
+- name: Check exclusive run variable
   set_fact:
     SkipList: "{{ SkipList + ['All'] }}"
   when: not OnlyRun == "None"
