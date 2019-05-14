@@ -1,0 +1,29 @@
+# Task Script
+# Contains tasks for creating or deleting files on a Linux host
+
+# Expected vars/facts:
+# - MachineDefaults {} (empty or populated)
+# - SecCat
+# - TaskCat
+# - CreateTask []
+#   - ID
+#   - Desc
+#   - Path
+#   - Content
+#   - Mode
+---
+- set_fact:
+    fullID: "{{ SecCat+'_'+TaskCat+'_'+CreateTask.ID }}"
+
+- name: "{{ SecCat+'_'+TaskCat+' '+CreateTask.ID+' > '+CreateTask.Desc+' (write)' }}"
+  copy:
+    dest: "{{ CreateTask.Path }}"
+    mode: "{{ CreateTask.Mode }}"
+    content: "{{ CreateTask.Content }}"
+  when: not fullID in SkipList and not fullID in UndoList
+
+- name: "{{ SecCat+'_'+TaskCat+' '+CreateTask.ID+' > '+CreateTask.Desc+' (delete)' }}"
+  file:
+    path: "{{ CreateTask.Path }}"
+    state: absent
+  when: not fullID in SkipList and fullID in UndoList

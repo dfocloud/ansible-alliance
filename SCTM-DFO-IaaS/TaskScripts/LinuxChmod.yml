@@ -1,0 +1,22 @@
+# Task Script
+# Contains tasks for writing to files on a Linux host
+
+# Expected vars/facts:
+# - MachineDefaults {} (empty or populated)
+# - SecCat
+# - TaskCat
+# - ChmodTask []
+#   - ID
+#   - Desc
+#   - Path
+#   - Mode
+---
+- set_fact:
+    fullID: "{{ SecCat+'_'+TaskCat+'_'+ChmodTask.ID }}"
+
+- name: "{{ SecCat+'_'+TaskCat+' '+ChmodTask.ID+' > '+ChmodTask.Desc }}"
+  file:
+    path: "{{ ChmodTask.Path }}"
+    mode: "{{ ChmodTask.Mode if fullID not in UndoList
+      else MachineDefaults[SecCat+'_'+TaskCat][ChmodTask.ID] }}"
+  when: not fullID in SkipList

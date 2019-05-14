@@ -6,14 +6,24 @@
 # - MachineDefaults {} (populated)
 ---
 # Init task dictionaries
-- name: Set AC-3 file task dictionary
+- name: Set AC-3 file task dictionaries
   set_fact:
-    UN_AC_3_FileTasks:
+    UN_AC_3_CreateTasks:
     - { Desc: Set 'message of the day' file,
       ID: A, Mode: '600', Path: /etc/motd,
       Content: "\n\t\t   Fisheries and Oceans Canada / Pêches et Océans Canada
-      \n\n\t\tUnauthorized Access Prohibited / Accès non-autorisé interdit\n"
-      }
+      \n\n\t\tUnauthorized Access Prohibited / Accès non-autorisé interdit\n" }
+    - { Desc: Set issue file,
+      ID: B, Mode: '600', Path: /etc/issue,
+      Content: "Ubuntu 18.04.2 LTS \\n \\l" }
+    - { Desc: Set issue.net file,
+      ID: C, Mode: '600', Path: /etc/issue.net,
+      Content: "\t Unauthorized Access Prohibited / Acces non-autorise interdit" }
+    UN_AC_3_ChmodTasks:
+    - { Desc: Set 'update-motd.d' to recommended directory,
+      ID: A, Mode: '755', Path: /etc/update-motd.d }
+    - { Desc: Set mode for files within /etc/update-motd.d/,
+      ID: AA, Mode: '644', Path: /etc/update-motd.d/ }
 
 # Init and get defaults
 - name: Check if defaults for AC-3 were loaded
@@ -23,7 +33,7 @@
 - name: Initialize UndoList
   set_fact:
     UndoList: "{{ UndoList + ['UN_AC_3_'+item.ID] }}"
-  loop: "{{ UN_AC_3_FileTasks }}"
+  loop: "{{ UN_AC_3_CreateTasks |union(UN_AC_3_ChmodTasks) }}"
   when: "'UN_AC_3' in UndoList"
 
 # - name: Get AC-3 file defaults
@@ -35,14 +45,23 @@
 #   when: not Loaded_UN_AC_3
 
 # Run tasks
-- name: Run file tasks
-  include_tasks: TaskScripts/LinuxWriteFile.yml
+- name: Run AC-3 create tasks
+  include_tasks: TaskScripts/LinuxCreateFile.yml
   vars:
     SecCat: UN
     TaskCat: AC_3
-  loop: "{{ UN_AC_3_FileTasks }}"
+  loop: "{{ UN_AC_3_CreateTasks }}"
   loop_control:
-    loop_var: FileTask
+    loop_var: CreateTask
+
+- name: Run AC-3 chmod tasks
+  include_tasks: TaskScripts/LinuxChmod.yml
+  vars:
+    SecCat: UN
+    TaskCat: AC_3
+  loop: "{{ UN_AC_3_ChmodTasks }}"
+  loop_control:
+    loop_var: ChmodTask
 
 # - name: UN_AC_3 A > Copying /etc/motd file (TBS compliance)
 #   copy:
