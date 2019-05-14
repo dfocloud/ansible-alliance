@@ -22,8 +22,29 @@
     UN_AC_3_ChmodTasks:
     - { Desc: Set 'update-motd.d' to recommended directory,
       ID: A, Mode: '755', Path: /etc/update-motd.d }
-    # - { Desc: Set mode for files within /etc/update-motd.d/,
-    #   ID: AA, Mode: '644', Path: /etc/update-motd.d/ }
+
+- name: Retrieve file list in /etc/update-motd.d/
+  find:
+    paths: /etc/update-motd.d
+    file_type: file
+    recurse: yes
+  register: motdfiles
+
+- debug:
+    var: motdfiles
+
+- name: Dynamically append to ChmodTasks dictionary
+  set_fact:
+    UN_AC_3_ChmodTasks: "{{ UN_AC_3_ChmodTasks + [{
+      'Desc': 'Set mode for file in folder',
+      'ID': idx|string, 'Mode': '644',
+      'Path': item.path }] }}"
+  loop: "{{ motdfiles.files }}"
+  loop_control:
+    index_var: idx
+
+- debug:
+    var: UN_AC_3_ChmodTasks
 
 # Init and get defaults
 - name: Check if defaults for AC-3 were loaded
@@ -62,53 +83,6 @@
   loop: "{{ UN_AC_3_ChmodTasks }}"
   loop_control:
     loop_var: ChmodTask
-
-# - name: UN_AC_3 A > Copying /etc/motd file (TBS compliance)
-#   copy:
-#     src: LinuxUnclassed/motd
-#     dest: /etc/
-#     owner: root
-#     group: root
-#     mode: 0600
-
-# - name: UN_AC_3 A > Creating a motd file
-#   file:
-#     path: /etc/motd
-#     state: "{{ 'touch' if 'UN_AC_3_A' not in UndoList else 'absent' }}"
-#     mode: 0600
-#   register: fileState
-#   when: not 'UN_AC_3_A' in SkipList
-
-# - name: UN_AC_3 B > Copying /etc/issue file (TBS compliance)
-#   copy:
-#     src: LinuxUnclassed/issue
-#     dest: /etc/
-#     owner: root
-#     group: root
-#     mode: 0600
-
-# - name: UN_AC_3 C > Copying /etc/issue.net file (TBS compliance)
-#   copy:
-#     src: LinuxUnclassed/issue.net
-#     dest: /etc/
-#     owner: root
-#     group: root
-#     mode: 0600
-
-# - name: Adding execute permission bit to the directory that stores
-#     user login message files (TBS compliance)
-#   file:
-#     path: /etc/update-motd.d
-#     mode: 0755
-#   when: ansible_distribution == "Ubuntu"
-
-# - name: Get all files in /etc/update-motd.d
-#   find:
-#     paths: /etc/update-motd.d
-#     file_type: file
-#     recurse: yes
-#   register: motdfiles
-#   when: ansible_distribution == "Ubuntu"
 
 # - name: Removing execute permission bit from files that display messages
 #     at user login (TBS compliance)
