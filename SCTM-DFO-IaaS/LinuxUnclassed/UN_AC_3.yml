@@ -10,7 +10,7 @@
   set_fact:
     UN_AC_3_FileTasks:
     - { Desc: Set 'message of the day' file,
-      ID: A, Mode: 0600, Path: /etc/motd,
+      ID: A, Mode: '600', Path: /etc/motd,
       Content: "\n\t\t   Fisheries and Oceans Canada / Pêches et Océans Canada
       \n\n\t\tUnauthorized Access Prohibited / Accès non-autorisé interdit\n"
       }
