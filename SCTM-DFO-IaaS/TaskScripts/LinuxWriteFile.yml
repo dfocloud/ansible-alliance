@@ -21,10 +21,10 @@
     dest: "{{ FileTask.Path }}"
     mode: "{{ FileTask.Mode }}"
     content: "{{ FileTask.Content }}"
-  when: not FullID in SkipList and not FullID in UndoList
+  when: not fullID in SkipList and not fullID in UndoList
 
 - name: "{{ SecCat+'_'+TaskCat+' '+FileTask.ID+' (delete) > '+FileTask.Desc }}"
   file:
     path: "{{ FileTask.Path }}"
     state: absent
-  when: not FullID in SkipList and FullID in UndoList
+  when: not fullID in SkipList and fullID in UndoList
