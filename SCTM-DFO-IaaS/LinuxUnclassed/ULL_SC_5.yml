@@ -1,0 +1,10 @@
+# == List Script ==
+# Includes all the tasks that fall under the
+# Unclassed-Low-Low SC-5 protocol requirements
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+# Init task dictionaries
+- name: Set SC-5 file task dictionaries
+  set_fact:

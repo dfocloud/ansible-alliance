@@ -1,0 +1,10 @@
+# == List Script ==
+# Includes all the tasks that fall under the
+# Unclassed-Low-Low AC-4 protocol requirements
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+# Init task dictionaries
+- name: Set AC-4 file task dictionaries
+  set_fact:
