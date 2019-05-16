@@ -5,14 +5,47 @@
 # - MachineDefaults {} (empty or populated)
 # - SecCat
 # - TaskCat
-# - StatTask {} (looped) ? [{}] (one object)
+# - StatTasks [{}] (one object)
 #   - ID
 #   - Path
 #   - Desc (unused)
 #   - Mode (unused)
+#   - Content (checked)
 ---
 - name: Initialize facts
-  set_fact: 
+  set_fact:
+    Sec_Task: "{{ SecCat }}_{{ TaskCat }}"
+    FileDict: {}
 
-- name: Get defaults
-  
+- name: "Retrieve {{ Sec_Task }} file defaults"
+  stat:
+    path: "{{ item.Path }}"
+    get_attributes: false
+    get_checksum: false
+    get_md5: false
+    get_mime: false
+  register: FileStats
+  loop: "{{ StatTasks }}"
+
+# May require a more complex jinja2 statement at its core in the future
+- name: Add {{ Sec_Task }} file defaults to temp dictionary
+  set_fact:
+    FileDict: "{{ FileDict |combine({ item.item.ID:
+    ( item.stat.exists if item.item.Content is defined else item.stat.mode ) }) }}"
+  loop: "{{ FileStats.results }}"
+
+- debug:
+    var: FileDict
+
+- name: Append {{ Sec_Task }} file defaults to MachineDefaults dictionary
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:
+      MachineDefaults[Sec_Task] |combine( FileDict ) }) }}"
+
+- debug:
+    var: MachineDefaults
+
+- name: "Write {{ Sec_Task }} file defaults to MachineDefaults file"
+  copy:
+    dest: "{{ MachineDefaultsPath }}"
+    content: "{{ MachineDefaults }}"

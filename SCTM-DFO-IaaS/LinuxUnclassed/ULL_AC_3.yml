@@ -1,6 +1,6 @@
 # == List Script ==
 # Includes all the tasks that fall under
-# the Unclassed AC-3 protocol requirements
+# the Unclassed-Low-Low AC-3 protocol requirements
 
 # Expected vars/facts:
 # - MachineDefaults {} (populated)
@@ -8,7 +8,7 @@
 # Init task dictionaries
 - name: Set AC-3 file task dictionaries
   set_fact:
-    UN_AC_3_CreateTasks:
+    ULL_AC_3_CreateTasks:
     - { Desc: Set 'message of the day' file,
       ID: A, Mode: '600', Path: /etc/motd,
       Content: "\n\t\t   Fisheries and Oceans Canada / Pêches et Océans Canada
@@ -19,7 +19,7 @@
     - { Desc: Set issue.net file,
       ID: C, Mode: '600', Path: /etc/issue.net,
       Content: "\t Unauthorized Access Prohibited / Acces non-autorise interdit" }
-    UN_AC_3_ChmodTasks:
+    ULL_AC_3_ChmodTasks:
     - { Desc: Set 'update-motd.d' to access 755,
       ID: AA, Mode: '755', Path: /etc/update-motd.d }
 
@@ -32,7 +32,7 @@
 
 - name: Dynamically append to ChmodTasks dictionary
   set_fact:
-    UN_AC_3_ChmodTasks: "{{ UN_AC_3_ChmodTasks + [{
+    ULL_AC_3_ChmodTasks: "{{ ULL_AC_3_ChmodTasks + [{
       'Desc': 'Set access mode 644 for file in folder',
       'ID': idx|string, 'Mode': '644', 'Path': item.path }] }}"
   loop: "{{ motdfiles.files }}"
@@ -42,37 +42,37 @@
 # Init and get defaults
 - name: Check if defaults for AC-3 were loaded
   set_fact:
-    Loaded_UN_AC_3: "{{ 'UN_AC_3' in MachineDefaults }}"
+    Loaded_ULL_AC_3: "{{ 'UN_AC_3' in MachineDefaults }}"
 
 - name: Initialize UndoList
   set_fact:
-    UndoList: "{{ UndoList + ['UN_AC_3_'+item.ID] }}"
-  loop: "{{ UN_AC_3_CreateTasks |union(UN_AC_3_ChmodTasks) }}"
-  when: "'UN_AC_3' in UndoList"
+    UndoList: "{{ UndoList + ['ULL_AC_3_'+item.ID] }}"
+  loop: "{{ ULL_AC_3_CreateTasks |union(ULL_AC_3_ChmodTasks) }}"
+  when: "'ULL_AC_3' in UndoList"
 
 - name: Get AC-3 file defaults
   include_tasks: TaskScripts/LinuxStat.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AC_3
-    RegTasks: "{{ UN_AC_3_RegTasks }}"
-  when: not Loaded_UN_AC_3
+    RegTasks: "{{ ULL_AC_3_CreateTasks |union(ULL_AC_3_ChmodTasks) }}"
+  when: not Loaded_ULL_AC_3
 
 # Run tasks
 - name: Run AC-3 create tasks
   include_tasks: TaskScripts/LinuxCreateFile.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AC_3
-  loop: "{{ UN_AC_3_CreateTasks }}"
+  loop: "{{ ULL_AC_3_CreateTasks }}"
   loop_control:
     loop_var: CreateTask
 
 - name: Run AC-3 chmod tasks
   include_tasks: TaskScripts/LinuxChmod.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AC_3
-  loop: "{{ UN_AC_3_ChmodTasks }}"
+  loop: "{{ ULL_AC_3_ChmodTasks }}"
   loop_control:
     loop_var: ChmodTask

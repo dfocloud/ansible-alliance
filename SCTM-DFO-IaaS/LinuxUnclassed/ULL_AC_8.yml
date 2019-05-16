@@ -1,6 +1,6 @@
 # == List Script ==
 # Includes all the tasks that fall under
-# the Unclassed AC-8 protocol requirements
+# the Unclassed-Low-Low AC-8 protocol requirements
 
 # Expected vars/facts:
 # - MachineDefaults {} (populated)
