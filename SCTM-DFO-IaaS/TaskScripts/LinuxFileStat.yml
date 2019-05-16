@@ -1,5 +1,7 @@
-# Task Script
-# Contains tasks for retrieving status defaults for files
+# == Task Script ==
+# Contains tasks for retrieving status defaults for files,
+# appending them to MachineDefaults, and writing to defaults file
+# Called from a List script
 
 # Expected vars/facts:
 # - MachineDefaults {} (empty or populated)
