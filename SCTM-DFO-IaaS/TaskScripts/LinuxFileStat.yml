@@ -17,6 +17,11 @@
     Sec_Task: "{{ SecCat }}_{{ TaskCat }}"
     FileDict: {}
 
+- name: "Initialize {{Sec_Task}} regedit defaults"
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
+  when: not Sec_Task in MachineDefaults
+
 - name: "Retrieve {{ Sec_Task }} file status defaults"
   stat:
     path: "{{ item.Path }}"
