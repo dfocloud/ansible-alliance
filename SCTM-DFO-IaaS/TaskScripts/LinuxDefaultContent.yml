@@ -1,0 +1,52 @@
+# == Task Script ==
+# Contains tasks for retrieving Linux file default contents, 
+# appending them to MachineDefaults and writing it to the defaults file
+# Called from a List script
+
+# Expected vars/facts:
+# - MachineDefaults {} (empty or populated)
+# - SecCat
+# - TaskCat
+# - WriteTasks [{}] (one object)
+#   - ID
+#   - Path
+#   - Desc (unused)
+#   - Content (unused)
+---
+- name: Initialize facts
+  set_fact:
+    Sec_Task: "{{ SecCat+'_'+TaskCat }}"
+    DefContDict: {}
+
+- name: "Initialize {{Sec_Task}} MachineDefaults entry"
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
+  when: not Sec_Task in MachineDefaults
+
+- name: "Retrieve {{ Sec_Task }} files default contents"
+  slurp: # SLINURP
+    src: "{{ item.Path }}"
+  register: FileContents
+  loop: "{{ WriteTasks }}"
+
+- name: "Decode {{ Sec_Task }} files' contents into temp dictionary"
+  set_fact:
+    DefContDict: "{{ DefContDict |combine(
+      item.item.ID: (item.content | b64decode) ) }}"
+  loop: "{{ FileContents.results }}"
+
+- debug:
+    var: DefContDict
+
+- name: Append {{ Sec_Task }} file content defaults to MachineDefaults dictionary
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:
+      MachineDefaults[Sec_Task] |combine( DefContDict ) }) }}"
+
+- debug:
+    var: MachineDefaults
+
+- name: "Write to MachineDefaults file ({{ Sec_Task }})"
+  copy:
+    dest: "{{ MachineDefaultsPath }}"
+    content: "{{ MachineDefaults }}\n"

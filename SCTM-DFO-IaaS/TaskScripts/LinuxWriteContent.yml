@@ -1,0 +1,25 @@
+# == Task Script ==
+# Contains tasks for writing file content on a Linux host
+# Called from a List script
+
+# Expected vars/facts:
+# - MachineDefaults {} (empty or populated)
+# - SecCat
+# - TaskCat
+# - WriteTask {} (looped)
+#   - ID
+#   - Desc
+#   - Path
+#   - Content
+---
+- set_fact:
+    fullID: "{{ SecCat+'_'+TaskCat+'_'+WriteTask.ID }}"
+
+- name: "{{ SecCat+'_'+TaskCat+' '+WriteTask.ID+ ' > '+WriteTask.Desc }}"
+  copy:
+    dest: "{{ WriteTask.Path }}"
+    content: "{{ (WriteTask.Content
+    if not fullID in CustomDict else CustomDict[fullID])
+    if not fullID in UndoList else
+    MachineDefaults[SecCat+'_'+TaskCat][WriteTask.ID] }}"
+  when: not fullID in SkipList
