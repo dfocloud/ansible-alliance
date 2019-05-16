@@ -61,6 +61,7 @@
   set_fact:
     SkipList: "{{ SkipList + [item] }}"
   loop:
+    - ULL_SC_5
     - UN_SC_2
     - UN_SC_5
     - UN_SC_7
