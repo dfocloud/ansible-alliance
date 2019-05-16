@@ -1,0 +1,58 @@
+# == Task Script ==
+# Contains tasks for retrieving Linux file default statuses,
+# appending them to MachineDefaults, and writing to defaults file
+# Called from a List script
+
+# Expected vars/facts:
+# - MachineDefaults {} (empty or populated)
+# - SecCat
+# - TaskCat
+# - StatTasks [{}] (one object)
+#   - ID
+#   - Path
+#   - Desc (unused)
+#   - Mode (unused)
+#   - Content (checked)
+---
+- name: Initialize facts
+  set_fact:
+    Sec_Task: "{{ SecCat }}_{{ TaskCat }}"
+    DefStatDict: {}
+
+- name: "Initialize {{Sec_Task}} MachineDefaults entry"
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
+  when: not Sec_Task in MachineDefaults
+
+- name: "Retrieve {{ Sec_Task }} files default statuses"
+  stat:
+    path: "{{ item.Path }}"
+    get_attributes: false
+    get_checksum: false
+    get_md5: false
+    get_mime: false
+  register: FileStats
+  loop: "{{ StatTasks }}"
+
+# May need to update Jinja2 statement to account for future file stat tasks...
+- name: Add {{ Sec_Task }} files' statuses to temp dictionary
+  set_fact:
+    DefStatDict: "{{ DefStatDict |combine({ item.item.ID:
+    ( item.stat.exists if item.item.Content is defined else item.stat.mode ) }) }}"
+  loop: "{{ FileStats.results }}"
+
+- debug:
+    var: DefStatDict
+
+- name: Append {{ Sec_Task }} file status defaults to MachineDefaults dictionary
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:
+      MachineDefaults[Sec_Task] |combine( DefStatDict ) }) }}"
+
+- debug:
+    var: MachineDefaults
+
+- name: "Write to MachineDefaults file ({{ Sec_Task }})"
+  copy:
+    dest: "{{ MachineDefaultsPath }}"
+    content: "{{ MachineDefaults }}\n"

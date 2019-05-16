@@ -1,4 +1,4 @@
-# Task Script
+# == Task Script ==
 # Contains tasks for creating or deleting files on a Linux host
 
 # Expected vars/facts:
@@ -16,7 +16,7 @@
     fullID: "{{ SecCat+'_'+TaskCat+'_'+CreateTask.ID }}"
 
 - name: "{{ SecCat+'_'+TaskCat+' '+CreateTask.ID+
-    ' > '+CreateTask.Desc+' (write)' }}"
+    ' > '+CreateTask.Desc+' (create)' }}"
   copy:
     dest: "{{ CreateTask.Path }}"
     mode: "{{ CreateTask.Mode }}"
