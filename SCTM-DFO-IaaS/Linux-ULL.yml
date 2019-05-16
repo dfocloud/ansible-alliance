@@ -5,14 +5,14 @@
 
 # A Linux VM in Azure Cloud with this
 # configuration may contain Government of
-# Canada 'Unclassed' information
+# Canada Unclassed-Low-Low information
 ---
 - hosts: all
   become: yes
   become_method: sudo
   vars:
     MachineDefaults: {}
-    MachineDefaultsPath: /AnsibleMachineDefaults.yml
+    MachineDefaultsPath: /etc/AnsibleMachineDefaults.yml
     SkipList: "{{ Skip|default([]) }}"
     UndoList: "{{ Undo|default([]) }}"
     CustomDict: "{{ Custom|default({}) }}"
