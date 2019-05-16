@@ -11,6 +11,11 @@
   set_fact:
     SkipList: "{{ SkipList + [item] }}"
   loop:
+    - ULL_AC
+    - ULL_AU
+    - ULL_IA
+    - ULL_SC
+    - ULL_SI
     - UN_AC
     - UN_AU
     - UN_IA
@@ -27,6 +32,8 @@
   set_fact:
     SkipList: "{{ SkipList + [item] }}"
   loop:
+    - ULL_AC_3
+    - ULL_AC_8
     - UN_AC_3
     - UN_AC_4
     - UN_AC_7

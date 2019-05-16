@@ -42,7 +42,7 @@
 # Init and get defaults
 - name: Check if defaults for AC-3 were loaded
   set_fact:
-    Loaded_ULL_AC_3: "{{ 'UN_AC_3' in MachineDefaults }}"
+    Loaded_ULL_AC_3: "{{ 'ULL_AC_3' in MachineDefaults }}"
 
 - name: Initialize UndoList
   set_fact:
