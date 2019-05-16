@@ -55,7 +55,7 @@
   vars:
     SecCat: ULL
     TaskCat: AC_3
-    RegTasks: "{{ ULL_AC_3_CreateTasks |union(ULL_AC_3_ChmodTasks) }}"
+    StatTasks: "{{ ULL_AC_3_CreateTasks |union(ULL_AC_3_ChmodTasks) }}"
   when: not Loaded_ULL_AC_3
 
 # Run tasks

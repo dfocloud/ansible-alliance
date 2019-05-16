@@ -1,5 +1,5 @@
 # Task Script
-# Contains tasks for retrieving defaults for files
+# Contains tasks for retrieving status defaults for files
 
 # Expected vars/facts:
 # - MachineDefaults {} (empty or populated)
@@ -17,7 +17,7 @@
     Sec_Task: "{{ SecCat }}_{{ TaskCat }}"
     FileDict: {}
 
-- name: "Retrieve {{ Sec_Task }} file defaults"
+- name: "Retrieve {{ Sec_Task }} file status defaults"
   stat:
     path: "{{ item.Path }}"
     get_attributes: false
@@ -28,7 +28,7 @@
   loop: "{{ StatTasks }}"
 
 # May require a more complex jinja2 statement at its core in the future
-- name: Add {{ Sec_Task }} file defaults to temp dictionary
+- name: Add {{ Sec_Task }} file status defaults to temp dictionary
   set_fact:
     FileDict: "{{ FileDict |combine({ item.item.ID:
     ( item.stat.exists if item.item.Content is defined else item.stat.mode ) }) }}"
@@ -37,7 +37,7 @@
 - debug:
     var: FileDict
 
-- name: Append {{ Sec_Task }} file defaults to MachineDefaults dictionary
+- name: Append {{ Sec_Task }} file status defaults to MachineDefaults dictionary
   set_fact:
     MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:
       MachineDefaults[Sec_Task] |combine( FileDict ) }) }}"
@@ -45,7 +45,7 @@
 - debug:
     var: MachineDefaults
 
-- name: "Write {{ Sec_Task }} file defaults to MachineDefaults file"
+- name: "Write {{ Sec_Task }} file status defaults to MachineDefaults file"
   copy:
     dest: "{{ MachineDefaultsPath }}"
     content: "{{ MachineDefaults }}"
