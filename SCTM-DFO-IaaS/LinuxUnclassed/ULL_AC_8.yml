@@ -5,3 +5,40 @@
 # Expected vars/facts:
 # - MachineDefaults {} (populated)
 ---
+# Init task dictionaries
+- name: Set AC-8 file task dictionaries
+  set_fact:
+    ULL_AC_8_WriteTasks:
+    - { Desc: Set 'message of the day' file,
+      ID: A, Path: /etc/motd,
+      Content: "\n\t\t   Fisheries and Oceans Canada / Pêches et Océans Canada
+      \n\n\t\tUnauthorized Access Prohibited / Accès non-autorisé interdit\n" }
+    - { Desc: Set issue file,
+      ID: B, Path: /etc/issue,
+      Content: "Ubuntu 18.04.2 LTS \\n \\l" }
+    - { Desc: Set issue.net file,
+      ID: C, Path: /etc/issue.net,
+      Content: "\t Unauthorized Access Prohibited / Acces non-autorise interdit" }
+
+# Init and get defaults
+- name: Check if defaults for AC-8 were loaded
+  set_fact:
+    Loaded_ULL_AC_8: "{{ 'ULL_AC_8' in MachineDefaults }}"
+
+- name: Get AC-8 file defaults
+  include_tasks: TaskScripts/LinuxDefaultContent.yml
+  vars:
+    SecCat: ULL
+    TaskCat: AC_8
+    WriteTasks: "{{ ULL_AC_8_WriteTasks }}"
+  when: not Loaded_ULL_AC_8
+
+# Run tasks
+- name: Run AC-8 write tasks
+  include_tasks: TaskScripts/LinuxWriteContent.yml
+  vars:
+    SecCat: ULL
+    TaskCat: AC_8
+  loop: "{{ ULL_AC_8_WriteTasks }}"
+  loop_control:
+    loop_var: WriteTask

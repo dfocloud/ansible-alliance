@@ -8,17 +8,6 @@
 # Init task dictionaries
 - name: Set AC-3 file task dictionaries
   set_fact:
-    ULL_AC_3_CreateTasks:
-    - { Desc: Set 'message of the day' file,
-      ID: A, Mode: '600', Path: /etc/motd,
-      Content: "\n\t\t   Fisheries and Oceans Canada / Pêches et Océans Canada
-      \n\n\t\tUnauthorized Access Prohibited / Accès non-autorisé interdit\n" }
-    - { Desc: Set issue file,
-      ID: B, Mode: '600', Path: /etc/issue,
-      Content: "Ubuntu 18.04.2 LTS \\n \\l" }
-    - { Desc: Set issue.net file,
-      ID: C, Mode: '600', Path: /etc/issue.net,
-      Content: "\t Unauthorized Access Prohibited / Acces non-autorise interdit" }
     ULL_AC_3_ChmodTasks:
     - { Desc: Set 'update-motd.d' to access 755,
       ID: AA, Mode: '755', Path: /etc/update-motd.d }
@@ -47,27 +36,18 @@
 - name: Initialize UndoList
   set_fact:
     UndoList: "{{ UndoList + ['ULL_AC_3_'+item.ID] }}"
-  loop: "{{ ULL_AC_3_CreateTasks |union(ULL_AC_3_ChmodTasks) }}"
+  loop: "{{ ULL_AC_3_ChmodTasks }}"
   when: "'ULL_AC_3' in UndoList"
 
-- name: Get AC-3 file defaults
-  include_tasks: TaskScripts/LinuxFileStat.yml
+- name: Get AC-3 file status defaults
+  include_tasks: TaskScripts/LinuxDefaultStat.yml
   vars:
     SecCat: ULL
     TaskCat: AC_3
-    StatTasks: "{{ ULL_AC_3_CreateTasks |union(ULL_AC_3_ChmodTasks) }}"
+    StatTasks: "{{ ULL_AC_3_ChmodTasks }}"
   when: not Loaded_ULL_AC_3
 
 # Run tasks
-- name: Run AC-3 create tasks
-  include_tasks: TaskScripts/LinuxCreateFile.yml
-  vars:
-    SecCat: ULL
-    TaskCat: AC_3
-  loop: "{{ ULL_AC_3_CreateTasks }}"
-  loop_control:
-    loop_var: CreateTask
-
 - name: Run AC-3 chmod tasks
   include_tasks: TaskScripts/LinuxChmod.yml
   vars:
