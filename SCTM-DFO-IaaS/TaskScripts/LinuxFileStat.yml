@@ -55,4 +55,4 @@
 - name: "Write {{ Sec_Task }} file status defaults to MachineDefaults file"
   copy:
     dest: "{{ MachineDefaultsPath }}"
-    content: "{{ MachineDefaults }}"
+    content: "{{ MachineDefaults }}\n"
