@@ -14,9 +14,9 @@
 #   - Line
 ---
 - set_fact:
-    fullID: "{{ SecCat'_'TaskCat+'_'+SwapTask.ID }}"
+    fullID: "{{ SecCat+'_'+TaskCat+'_'+SwapTask.ID }}"
 
-- name: "{{ Sec_Task+'_'+SwapTask.ID+' > '+SwapTask.Desc }}"
+- name: "{{ fullID+' > '+SwapTask.Desc }}"
   replace:
     path: "{{ SwapTask.Path }}"
     regexp: "{{ SwapTask.Regex }}"
