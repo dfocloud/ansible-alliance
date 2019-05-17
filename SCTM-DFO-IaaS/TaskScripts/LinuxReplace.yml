@@ -11,7 +11,7 @@
 #   - Value
 #   - Path
 #   - Regex
-#   - Line
+#   - Replace
 ---
 - set_fact:
     fullID: "{{ SecCat+'_'+TaskCat+'_'+SwapTask.ID }}"
@@ -20,8 +20,7 @@
   replace:
     path: "{{ SwapTask.Path }}"
     regexp: "{{ SwapTask.Regex }}"
-    line: "{{ SwapTask.Line + SwapTask.Value }}"
-    state: present
+    replace: "{{ SwapTask.Replace + SwapTask.Value }}"
   register: thing
   when: not fullID in SkipList
 

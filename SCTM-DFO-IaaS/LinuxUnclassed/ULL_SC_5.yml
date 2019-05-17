@@ -12,11 +12,11 @@
     - { Desc: Disable 'chargen' in config file,
       ID: A, Value: 'yes', Path: /etc/xinetd.conf,
       Regex: "service\\s(chargen)\\n{\\n\\s+disable\\s+=\\s(yes|no)",
-      Line: "service chargen\n{\n        disable         = " }
+      Replace: "service chargen\n{\n        disable         = " }
     - { Desc: Disable 'echo' in config file,
       ID: B, Value: 'yes', Path: /etc/xinetd.conf,
       Regex: "service\\s(echo)\\n{\\n\\s+disable\\s+=\\s(yes|no)",
-      Line: "service echo\n{\n        disable         = " }
+      Replace: "service echo\n{\n        disable         = " }
 
 # - name: Dynamically append folder files to SwapTasks dictionary
 
