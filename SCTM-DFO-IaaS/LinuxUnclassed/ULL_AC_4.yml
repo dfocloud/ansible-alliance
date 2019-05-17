@@ -6,5 +6,8 @@
 # - MachineDefaults {} (populated)
 ---
 # Init task dictionaries
-- name: Set AC-4 file task dictionaries
-  set_fact:
+# - name: Set AC-4 file task dictionaries
+#   set_fact:
+
+- name: Apply the correct ntp restrictions
+  shell: grep "^restrict" /etc/ntp.conf

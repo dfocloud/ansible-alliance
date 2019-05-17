@@ -1,0 +1,29 @@
+# == Task Script ==
+# Contains tasks for modifying parts of Linux files
+
+# Expected vars/facts:
+# - MachineDefaults {} (empty or populated)
+# - SecCat
+# - TaskCat
+# - SwapTask {} (looped)
+#   - Desc
+#   - ID
+#   - Value
+#   - Path
+#   - Regex
+#   - Line
+---
+- set_fact:
+    fullID: "{{ SecCat'_'TaskCat+'_'+item.ID }}"
+
+- name: "{{ Sec_Task+'_'+item.ID+' > '+item.Desc }}"
+  replace:
+    path: "{{ item.Path }}"
+    regexp: "{{ item.Regex }}"
+    line: "{{ item.Line + item.Value }}"
+    state: present
+  register: thing
+  when: not fullID in SkipList
+
+- debug:
+    var: thing

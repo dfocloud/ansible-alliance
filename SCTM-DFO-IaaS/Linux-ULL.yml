@@ -37,7 +37,12 @@
   - name: Execute ULL_AC_3 tasks
     include_tasks: LinuxUnclassed/ULL_AC_3.yml
     when: "'ULL_AC_3' not in SkipList"
-  
+
   # - name: Execute UN_AC_8 tasks
   #   include_tasks: LinuxUnclassed/UN_AC_8.yml
   #   when: "'UN_AC_8' not in SkipList"
+
+  # SC
+  - name: Execute ULL_SC_5 tasks
+    include_tasks: LinuxUnclassed/ULL_SC_5.yml
+    when: "'ULL_SC_5' not in SkipList"

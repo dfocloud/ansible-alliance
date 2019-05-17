@@ -6,5 +6,35 @@
 # - MachineDefaults {} (populated)
 ---
 # Init task dictionaries
-- name: Set SC-5 file task dictionaries
+- name: Set SC-5 file editing tasks
   set_fact:
+    ULL_SC_5_SwapTasks:
+    - { Desc: Disable 'chargen' in config file,
+      ID: A, Value: 'yes', Path: /etc/xinetd.conf,
+      Regex: "service\\s(chargen)\\n{\\n\\s+disable\\s+=\\s(yes|no)",
+      Line: "service chargen\n{\n        disable         = " }
+    - { Desc: Disable 'echo' in config file,
+      ID: B, Value: 'yes', Path: /etc/xinetd.conf,
+      Regex: "service\\s(echo)\\n{\\n\\s+disable\\s+=\\s(yes|no)",
+      Line: "service echo\n{\n        disable         = " }
+
+# - name: Dynamically append folder files to SwapTasks dictionary
+
+
+
+# - name: Disable chargen from running
+#   replace:
+#     path: /etc/xinetd.d/chargen
+#     regexp: "service\\s(chargen)\\n{\\n\\s+disable\\s+=\\s(yes|no)"
+#     line: "service chargen\n{\n        disable         = yes"
+#     state: present
+
+# Run tasks
+- name: Run SC-5 file editing tasks
+  include_tasks: TaskScripts/LinuxReplace.yml
+  vars:
+    SecCat: ULL
+    TaskCat: SC_5
+  loop: "{{ ULL_SC_5_SwapTasks }}"
+  loop_control:
+    loop_var: SwapTask
