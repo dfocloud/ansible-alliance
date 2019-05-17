@@ -14,13 +14,13 @@
 #   - Line
 ---
 - set_fact:
-    fullID: "{{ SecCat'_'TaskCat+'_'+item.ID }}"
+    fullID: "{{ SecCat'_'TaskCat+'_'+SwapTask.ID }}"
 
-- name: "{{ Sec_Task+'_'+item.ID+' > '+item.Desc }}"
+- name: "{{ Sec_Task+'_'+SwapTask.ID+' > '+SwapTask.Desc }}"
   replace:
-    path: "{{ item.Path }}"
-    regexp: "{{ item.Regex }}"
-    line: "{{ item.Line + item.Value }}"
+    path: "{{ SwapTask.Path }}"
+    regexp: "{{ SwapTask.Regex }}"
+    line: "{{ SwapTask.Line + SwapTask.Value }}"
     state: present
   register: thing
   when: not fullID in SkipList
