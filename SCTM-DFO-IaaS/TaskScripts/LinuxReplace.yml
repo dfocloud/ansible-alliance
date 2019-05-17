@@ -8,8 +8,8 @@
 # - SwapTask {} (looped)
 #   - Desc
 #   - ID
-#   - Value
 #   - Path
+#   - Value
 #   - Regex
 #   - Replace
 ---

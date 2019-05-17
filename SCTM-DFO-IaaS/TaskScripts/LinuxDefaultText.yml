@@ -1,0 +1,41 @@
+# == Task Script ==
+# Contains tasks for retrieving Linux file data from regex,
+# appending them to MachineDefaults, and writing to defaults file
+# Called from a List script
+
+# Expected vars/facts:
+# - MachineDefaults {} (empty or populated)
+# - SecCat
+# - TaskCat
+# - SwapTasks [{}] (one object)
+#   - Desc (unused)
+#   - ID
+#   - Path
+#   - Value
+#   - Regex
+#   - Replace
+---
+- name: Init facts
+  set_fact:
+    Sec_Task: "{{ SecCat }}_{{ TaskCat }}"
+    DefSwapVals: {}
+
+- name: "Initialize {{Sec_Task}} MachineDefaults entry"
+  set_fact:
+    MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
+  when: not Sec_Task in MachineDefaults
+
+- name: Get lines for things
+  shell: "grep {{ item.Regex }} {{ item.Path }}"
+  loop: "{{ SwapTasks }}"
+  register: SwapDefaults
+
+- debug:
+    var: SwapDefaults
+
+- name: Parse and extract
+  set_fact:
+    DefSwapVals: "{{ DefSwapVals |combine
+      
+    }}"
+  loop: "{{ SwapDefaults }}"

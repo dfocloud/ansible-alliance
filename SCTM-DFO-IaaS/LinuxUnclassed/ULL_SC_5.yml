@@ -29,6 +29,25 @@
 #     line: "service chargen\n{\n        disable         = yes"
 #     state: present
 
+# Init and get defaults
+- name: Check if defaults for SC-5 were loaded
+  set_fact:
+    Loaded_ULL_SC_5: "{{ 'ULL_SC_5' in MachineDefaults }}"
+
+- name: Initialize UndoList
+  set_fact:
+    UndoList: "{{ UndoList + ['ULL_SC_5_'+item.ID] }}"
+  loop: "{{ ULL_SC_5_SwapTasks }}"
+  when: "'ULL_SC_5' in UndoList"
+
+- name: Get SC-5 file replacement defaults
+  include_tasks: TaskScripts/LinuxDefaultText.yml
+  vars:
+    SecCat: ULL
+    TaskCat: SC_5
+    SwapTasks: "{{ ULL_SC_5_SwapTasks }}"
+  when: not Loaded_ULL_SC_5
+
 # Run tasks
 - name: Run SC-5 file editing tasks
   include_tasks: TaskScripts/LinuxReplace.yml

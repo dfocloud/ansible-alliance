@@ -25,6 +25,12 @@
   set_fact:
     Loaded_ULL_AC_8: "{{ 'ULL_AC_8' in MachineDefaults }}"
 
+- name: Initialize UndoList
+  set_fact:
+    UndoList: "{{ UndoList + ['ULL_AC_8_'+item.ID] }}"
+  loop: "{{ ULL_AC_8_WriteTasks }}"
+  when: "'ULL_AC_8' in UndoList"
+
 - name: Get AC-8 file defaults
   include_tasks: TaskScripts/LinuxDefaultContent.yml
   vars:
