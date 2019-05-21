@@ -16,8 +16,9 @@
 #   - Replace
 ---
 - name: Check installation of 'pcregrep'
-  shell: "hash pcregrep"
+  shell: "pcregrep"
   register: hasCommand
+  ignore_errors: yes
 
 - debug:
     var: hasCommand
