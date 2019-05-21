@@ -8,7 +8,7 @@
 # Init task dictionaries
 - name: Set SC-2-7-10 regedit task dictionary
   set_fact:
-    UN_SC_2710_RegTasks:
+    ULL_SC_2710_RegTasks:
     - { Desc: Prohibit IP source routing,
       ID: '2', Value: 2, Type: dword, Name: DisableIPSourceRouting,
       Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters' } # 4294967295
@@ -22,22 +22,22 @@
 # Init and get defaults
 - name: Check if defaults for SC-2-7-10 were loaded
   set_fact:
-    Loaded_UN_SC: "{{ 'UN_SC' in MachineDefaults }}"
+    Loaded_ULL_SC: "{{ 'ULL_SC' in MachineDefaults }}"
 
 - name: Get SC-2-7-10 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: SC
-    RegTasks: "{{ UN_SC_2710_RegTasks }}"
-  when: not Loaded_UN_SC
+    RegTasks: "{{ ULL_SC_2710_RegTasks }}"
+  when: not Loaded_ULL_SC
 
 # Run tasks
 - name: Run SC-2-7-10 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: SC
-  loop: "{{ UN_SC_2710_RegTasks }}"
+  loop: "{{ ULL_SC_2710_RegTasks }}"
   loop_control:
     loop_var: RegTask

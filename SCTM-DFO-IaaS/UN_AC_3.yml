@@ -8,7 +8,7 @@
 # Init task dictionaries
 - name: Set AC-3 regedit task dictionary
   set_fact:
-    UN_AC_3_RegTasks:
+    ULL_AC_3_RegTasks:
     - { Desc: Restrict use of blank passwords,
       ID: A, Value: 1, Type: dword, Name: LimitBlankPasswordUse, 
       Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' } # 1
@@ -98,7 +98,7 @@
 
 - name: Set AC-3 user rights task dictionary
   set_fact:
-    UN_AC_3_RightsTasks:
+    ULL_AC_3_RightsTasks:
     - { Desc: Set no one to act as part of the operating system,
       ID: U, Name: SeTcbPrivilege, 
       Users: [] } # []
@@ -163,36 +163,36 @@
 # Init and get defaults
 - name: Check if defaults for AC-3 were loaded
   set_fact:
-    Loaded_UN_AC_3: "{{ 'UN_AC_3' in MachineDefaults }}"
+    Loaded_ULL_AC_3: "{{ 'ULL_AC_3' in MachineDefaults }}"
 
 - name: Initialize UndoList
   set_fact:
-    UndoList: "{{ UndoList + ['UN_AC_3_'+item.ID] }}"
-  loop: "{{ UN_AC_3_RegTasks |union(UN_AC_3_RightsTasks) }}"
-  when: "'UN_AC_3' in UndoList"
+    UndoList: "{{ UndoList + ['ULL_AC_3_'+item.ID] }}"
+  loop: "{{ ULL_AC_3_RegTasks |union(ULL_AC_3_RightsTasks) }}"
+  when: "'ULL_AC_3' in UndoList"
 
 - name: Get AC-3 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AC_3
-    RegTasks: "{{ UN_AC_3_RegTasks }}"
-  when: not Loaded_UN_AC_3
+    RegTasks: "{{ ULL_AC_3_RegTasks }}"
+  when: not Loaded_ULL_AC_3
 
 # Run tasks
 - name: Run AC-3 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AC_3
-  loop: "{{ UN_AC_3_RegTasks }}"
+  loop: "{{ ULL_AC_3_RegTasks }}"
   loop_control:
     loop_var: RegTask
 
 - name: Run AC-3 user rights tasks # simultaneously saves defaults
   include_tasks: WinUserRights.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AC_3
-    Loaded: "{{ Loaded_UN_AC_3 }}"
-    RightsTasks: "{{ UN_AC_3_RightsTasks }}"
+    Loaded: "{{ Loaded_ULL_AC_3 }}"
+    RightsTasks: "{{ ULL_AC_3_RightsTasks }}"

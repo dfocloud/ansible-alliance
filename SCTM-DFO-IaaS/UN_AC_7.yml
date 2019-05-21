@@ -8,7 +8,7 @@
 # Init task dictionaries
 - name: Set AC-7 command task dictionary
   set_fact:
-    UN_AC_7_ComTasks:
+    ULL_AC_7_ComTasks:
       - { Desc: Set password attempts before lockout to 5,
         ID: A, LineIdx: 5, Strip: "Lockout threshold:",
         Command: 'net accounts', Parameter: ' /lockoutthreshold:', Value: 5, } # 0
@@ -22,26 +22,26 @@
 # Init and get defaults
 - name: Check if defaults for AC-7 were loaded
   set_fact:
-    Loaded_UN_AC_7: "{{ 'UN_AC_7' in MachineDefaults }}"
+    Loaded_ULL_AC_7: "{{ 'ULL_AC_7' in MachineDefaults }}"
 
 - name: Initialize UndoList
   set_fact:
-    UndoList: "{{ UndoList + ['UN_AC_7_'+item.ID] }}"
-  loop: "{{ UN_AC_7_ComTasks }}"
-  when: "'UN_AC_7' in UndoList"
+    UndoList: "{{ UndoList + ['ULL_AC_7_'+item.ID] }}"
+  loop: "{{ ULL_AC_7_ComTasks }}"
+  when: "'ULL_AC_7' in UndoList"
 
 - name: Get AC-7 network account defaults
   include_tasks: NetAccountDef.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AC_7
-    ComTasks: "{{ UN_AC_7_ComTasks }}"
-  when: not Loaded_UN_AC_7
+    ComTasks: "{{ ULL_AC_7_ComTasks }}"
+  when: not Loaded_ULL_AC_7
 
 # Run tasks
 - name: Run AC-7 windows command tasks
   include_tasks: WinNetCommand.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AC_7
-    ComTasks: "{{ UN_AC_7_ComTasks }}"
+    ComTasks: "{{ ULL_AC_7_ComTasks }}"

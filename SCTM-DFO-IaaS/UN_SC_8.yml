@@ -8,7 +8,7 @@
 # Init task dictionaries
 - name: Set SC-8 regedit task dictionary
   set_fact:
-    UN_SC_8_RegTasks:
+    ULL_SC_8_RegTasks:
     - { Desc: Enforce strong domain session keys,
       ID: A, Value: 1, Type: dword, Name: RequireStrongKey,
       Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' } # 1
@@ -67,28 +67,28 @@
 # Init and get defaults
 - name: Check if defaults for SC-8 were loaded
   set_fact:
-    Loaded_UN_SC_8: "{{ 'UN_SC_8' in MachineDefaults }}"
+    Loaded_ULL_SC_8: "{{ 'ULL_SC_8' in MachineDefaults }}"
 
 - name: Initialize UndoList
   set_fact:
-    UndoList: "{{ UndoList + ['UN_SC_8_'+item.ID] }}"
-  loop: "{{ UN_SC_8_RegTasks }}"
-  when: "'UN_SC_8' in UndoList"
+    UndoList: "{{ UndoList + ['ULL_SC_8_'+item.ID] }}"
+  loop: "{{ ULL_SC_8_RegTasks }}"
+  when: "'ULL_SC_8' in UndoList"
 
 - name: Get SC-8 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: SC_8
-    RegTasks: "{{ UN_SC_8_RegTasks }}"
-  when: not Loaded_UN_SC_8
+    RegTasks: "{{ ULL_SC_8_RegTasks }}"
+  when: not Loaded_ULL_SC_8
 
 # Run tasks
 - name: Run SC-8 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: SC_8
-  loop: "{{ UN_SC_8_RegTasks }}"
+  loop: "{{ ULL_SC_8_RegTasks }}"
   loop_control:
     loop_var: RegTask

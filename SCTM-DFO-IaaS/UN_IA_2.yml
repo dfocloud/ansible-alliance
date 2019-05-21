@@ -8,7 +8,7 @@
 # Init task dictionaries
 - name: Set AC-3 regedit task dictionary
   set_fact:
-    UN_IA_2_RegTasks:
+    ULL_IA_2_RegTasks:
     - { Desc: Prevent NULL session fallback,
       ID: A, Value: 0, Type: dword, Name: allownullsessionfallback,
       Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0' } # 4294967295
@@ -22,28 +22,28 @@
 #Init and get defaults
 - name: Check if defaults for IA-2 were loaded
   set_fact:
-    Loaded_UN_IA_2: "{{ 'UN_IA_2' in MachineDefaults }}"
+    Loaded_ULL_IA_2: "{{ 'ULL_IA_2' in MachineDefaults }}"
 
 - name: Initialize UndoList
   set_fact:
-    UndoList: "{{ UndoList + ['UN_IA_2_'+item.ID] }}"
-  loop: "{{ UN_IA_2_RegTasks }}"
-  when: "'UN_IA_2' in UndoList"
+    UndoList: "{{ UndoList + ['ULL_IA_2_'+item.ID] }}"
+  loop: "{{ ULL_IA_2_RegTasks }}"
+  when: "'ULL_IA_2' in UndoList"
 
 - name: Get IA-2 regedit defaults
   include_tasks: WinRegStat.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: IA_2
-    RegTasks: "{{ UN_IA_2_RegTasks }}"
-  when: not Loaded_UN_IA_2
+    RegTasks: "{{ ULL_IA_2_RegTasks }}"
+  when: not Loaded_ULL_IA_2
 
 # Run Tasks
 - name: Run IA-2 regedit tasks
   include_tasks: WinRegedit.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: IA_2
-  loop: "{{ UN_IA_2_RegTasks }}"
+  loop: "{{ ULL_IA_2_RegTasks }}"
   loop_control:
     loop_var: RegTask
