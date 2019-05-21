@@ -41,7 +41,7 @@
     var: SwapTasks
 
 - name: Get lines for things
-  shell: "grep {{ item.Regex }} {{ item.Path }}"
+  shell: "pcregrep -M {{ item.Regex }} {{ item.Path }}"
   loop: "{{ SwapTasks }}"
   register: SwapDefaults
 
