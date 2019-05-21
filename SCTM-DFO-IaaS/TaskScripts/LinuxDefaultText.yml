@@ -25,6 +25,9 @@
     MachineDefaults: "{{ MachineDefaults |combine({ Sec_Task:{} }) }}"
   when: not Sec_Task in MachineDefaults
 
+- debug:
+    var: SwapTasks
+
 - name: Get lines for things
   shell: "grep {{ item.Regex }} {{ item.Path }}"
   loop: "{{ SwapTasks }}"
