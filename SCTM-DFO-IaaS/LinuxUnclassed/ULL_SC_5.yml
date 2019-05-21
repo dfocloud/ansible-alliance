@@ -11,7 +11,7 @@
     ULL_SC_5_SwapTasks:
     - { Desc: Disable 'chargen' in config file,
       ID: A, Value: 'yes', Path: /etc/xinetd.conf,
-      Regex: "service.(chargen)\n{\n.+disable.+=.(yes|no)",
+      Regex: "\"service.(chargen)\n{\n.+disable.+=.(yes|no)\"",
       #Regex: "\"service\\s(chargen)\\n{\\n\\s+disable\\s+=\\s(yes|no)\"",
       Replace: "service chargen\n{\n        disable         = " }
     - { Desc: Disable 'echo' in config file,
