@@ -33,9 +33,12 @@
 - debug:
     var: SwapDefaults
 
-- name: Parse and extract
-  set_fact:
-    DefSwapVals: "{{ DefSwapVals |combine
+# - name: Parse and extract
+#   set_fact:
+#     DefSwapVals: "{{ DefSwapVals |combine
       
-    }}"
-  loop: "{{ SwapDefaults }}"
+#     }}"
+#   loop: "{{ SwapDefaults }}"
+
+# - debug:
+#     var: DefSwapVals

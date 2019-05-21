@@ -10,24 +10,42 @@
   set_fact:
     ULL_SC_5_SwapTasks:
     - { Desc: Disable 'chargen' in config file,
-      ID: A, Value: 'yes', Path: /etc/xinetd.d/chargen,
+      ID: A, Value: 'yes', Path: /etc/xinetd.config,
       Regex: "service\\s(chargen)\\n{\\n\\s+disable\\s+=\\s(yes|no)",
       Replace: "service chargen\n{\n        disable         = " }
     - { Desc: Disable 'echo' in config file,
-      ID: B, Value: 'yes', Path: /etc/xinetd.d/echo,
+      ID: B, Value: 'yes', Path: /etc/xinetd.config,
       Regex: "service\\s(echo)\\n{\\n\\s+disable\\s+=\\s(yes|no)",
       Replace: "service echo\n{\n        disable         = " }
 
-# - name: Dynamically append folder files to SwapTasks dictionary
+- name: Retrieve files from directories
+  find:
+    paths: /etc/xinetd.d
+    file_type: file
+    recurse: yes
+  register: xinetdFiles
 
+# - name: Dynamically append folder files to SwapTasks dictionary (chargen)
+#   set_fact:
+#     ULL_SC_5_SwapTasks: "{{ ULL_SC_5_SwapTasks + [{
+#       'Desc': 'Disable chargen in config file',
+#       'ID': 'A'+idx|string, 'Value': 'yes', 'Path': item.path,
+#       'Regex': 'service\\s(chargen)\\n{\\n\\s+disable\\s+=\\s(yes|no)',
+#       'Replace': 'service chargen\n{\n        disable         = ' }] }}"
+#   loop: "{{ xinetdFiles }}"
+#   loop_control:
+#     index_var: idx
 
-
-# - name: Disable chargen from running
-#   replace:
-#     path: /etc/xinetd.d/chargen
-#     regexp: "service\\s(chargen)\\n{\\n\\s+disable\\s+=\\s(yes|no)"
-#     line: "service chargen\n{\n        disable         = yes"
-#     state: present
+# - name: Dynamically append folder files to SwapTasks dictionary (echo)
+#   set_fact:
+#     ULL_SC_5_SwapTasks: "{{ ULL_SC_5_SwapTasks + [{
+#       'Desc': 'Disable echo in config file',
+#       'ID': 'B'+idx|string, 'Value': 'yes', 'Path': item.path,
+#       'Regex': 'service\\s(echo)\\n{\\n\\s+disable\\s+=\\s(yes|no)',
+#       'Replace': 'service echo\n{\n        disable         = ' }] }}"
+#   loop: "{{ xinetdFiles }}"
+#   loop_control:
+#     index_var: idx
 
 # Init and get defaults
 - name: Check if defaults for SC-5 were loaded
