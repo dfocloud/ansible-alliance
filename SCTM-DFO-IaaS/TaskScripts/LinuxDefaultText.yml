@@ -15,6 +15,17 @@
 #   - Regex
 #   - Replace
 ---
+- name: Check installation of 'pcregrep'
+  shell: "hash pcregrep"
+  register: hasCommand
+
+- debug:
+    var: hasCommand
+
+- name: Install pcregrep module for default stuff
+  shell: "apt install pcregrep"
+  when: not hasCommand == ""
+
 - name: Init facts
   set_fact:
     Sec_Task: "{{ SecCat }}_{{ TaskCat }}"
