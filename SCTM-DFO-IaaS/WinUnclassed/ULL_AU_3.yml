@@ -1,0 +1,49 @@
+# == List Script ==
+# Includes all the tasks that fall under
+# the Unclassed AU-3 protocol requirements
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+# Init task dictionaries
+- name: Set AU-3 regedit task dictionary
+  set_fact:
+    ULL_AU_3_RegTasks:
+    - { Desc: Ensure firewalls log dropped packets (domain),
+      ID: A, Value: 1, Type: dword, Name: LogDroppedPackets,
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging' } # 4294967295
+    - { Desc: Ensure firewalls log dropped packets (private),
+      ID: B, Value: 1, Type: dword, Name: LogDroppedPackets,
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging' } # 4294967295
+    - { Desc: Ensure firewalls log dropped packets (public),
+      ID: C, Value: 1, Type: dword, Name: LogDroppedPackets,
+      Path: 'HKLM:\Software\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging' } # 4294967295
+
+# Init and get defaults
+- name: Check if defaults for AU-3 were loaded
+  set_fact:
+    Loaded_ULL_AU_3: "{{ 'ULL_AU_3' in MachineDefaults }}"
+
+- name: Initialize UndoList
+  set_fact:
+    UndoList: "{{ UndoList + ['ULL_AU_3_'+item.ID] }}"
+  loop: "{{ ULL_AU_3_RegTasks }}"
+  when: "'ULL_AU_3' in UndoList"
+
+- name: Get AU-3 regedit defaults
+  include_tasks: TaskScripts/WinRegStat.yml
+  vars:
+    SecCat: ULL
+    TaskCat: AU_3
+    RegTasks: "{{ ULL_AU_3_RegTasks }}"
+  when: not Loaded_ULL_AU_3
+
+# Run tasks
+- name: Run AU-3 regedit tasks
+  include_tasks: TaskScripts/WinRegedit.yml
+  vars:
+    SecCat: ULL
+    TaskCat: AU_3
+  loop: "{{ ULL_AU_3_RegTasks }}"
+  loop_control:
+    loop_var: RegTask

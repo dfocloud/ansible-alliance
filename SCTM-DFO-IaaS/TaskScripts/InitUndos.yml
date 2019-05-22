@@ -1,0 +1,60 @@
+# == Task Script ==
+# Appends to the UndoList array based on
+# supercategory and global skip variables
+---
+- name: Append global undos
+  set_fact:
+    UndoList: "{{ UndoList + [item] }}"
+  loop:
+    - ULL_AC
+    - ULL_AU
+    - ULL_IA
+    - ULL_SC
+    - ULL_SI
+  when: "'All' in UndoList"
+
+- name: Append AC supercategory undos
+  set_fact:
+    UndoList: "{{ UndoList + [item] }}"
+  loop:
+    - ULL_AC_3
+    - ULL_AC_4
+    - ULL_AC_7
+    - ULL_AC_8
+    - ULL_AC_11
+  when: "'ULL_AC' in UndoList"
+
+- name: Append AU supercategory undos
+  set_fact:
+    UndoList: "{{ UndoList + [item] }}"
+  loop:
+    - ULL_AU_3
+    - ULL_AU_9
+  when: "'ULL_AU' in UndoList"
+
+- name: Append IA supercategory undos
+  set_fact:
+    UndoList: "{{ UndoList + [item] }}"
+  loop:
+    - ULL_IA_2
+    - ULL_IA_5
+  when: "'ULL_IA' in UndoList"
+
+- name: Append SC supercategory undos
+  set_fact:
+    UndoList: "{{ UndoList + [item] }}"
+  loop:
+    - ULL_SC_2
+    - ULL_SC_5
+    - ULL_SC_7
+    - ULL_SC_8
+    - ULL_SC_10
+  when: "'ULL_SC' in UndoList"
+
+- name: Append SI supercategory undos
+  set_fact:
+    UndoList: "{{ UndoList + [item] }}"
+  loop:
+    - ULL_SI_2
+    - ULL_SI_3
+  when: "'ULL_SI' in UndoList"

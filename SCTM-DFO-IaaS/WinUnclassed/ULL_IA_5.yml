@@ -1,0 +1,78 @@
+# == List Script ==
+# Includes all the tasks that fall under
+# the Unclassed IA-5 protocol requirements
+
+# Expected vars/facts:
+# - MachineDefaults {} (populated)
+---
+# Init task dictionaries
+- name: Set IA-5 regedit task dictionary
+  set_fact:
+    ULL_IA_5_RegTasks:
+    - { Desc: Allow domain members to change their account passwords,
+      ID: A, Value: 0, Type: dword, Name: DisablePasswordChange,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' } # 0
+    - { Desc: Prevent plaintext storage of credentials,
+      ID: B, Value: 0, Type: dword, Name: UseLogonCredential,
+      Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest' } # 4294967295
+    - { Desc: "Enforce better client authentication than 'Basic'",
+      ID: C, Value: 0, Type: dword, Name: AllowBasic,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client' } # 4294967295
+    - { Desc: "Enforce better client authentication than 'Digest'",
+      ID: D, Value: 0, Type: dword, Name: AllowDigest,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client' } # 4294967295
+    - { Desc: "Enforce better service authentication than 'Basic'",
+      ID: E, Value: 0, Type: dword, Name: AllowBasic,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service' } # 4294967295
+    
+    - { Desc: "Prevent storage of RunAs credentials",
+      ID: F, Value: 1, Type: dword, Name: DisableRunAs,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service' } # 4294967295
+    - { Desc: "Ensure installation of password handling extension",
+      ID: G, Value: 'C:\\Program Files\\LAPS\\CSE\\AdmPwd.dll', Type: string, Name: DllName,
+      Path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\{D76B9641-3288-4f75-942D-087DE603E3EA}' } # 4294967295
+    - { Desc: "Restrict password expiration time",
+      ID: H, Value: 1, Type: dword, Name: PwdExpirationProtectionEnabled,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft Services\AdmPwd' } # 4294967295
+    - { Desc: "Set local admin to manage password",
+      ID: I, Value: 1, Type: dword, Name: AmdPwdEnabled,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft Services\AdmPwd' } # 4294967295
+    - { Desc: "Enforce password complexity",
+      ID: J, Value: 1, Type: dword, Name: PasswordComplexity,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft Services\AdmPwd' } # 4294967295
+    
+    - { Desc: "Set min password length to 15",
+      ID: K, Value: 15, Type: dword, Name: PasswordLength,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft Services\AdmPwd' } # 4294967295
+    - { Desc: "Enforce changing passwords every 30 days minimum",
+      ID: L, Value: 30, Type: dword, Name: PasswordAgeDays,
+      Path: 'HKLM:\SOFTWARE\Policies\Microsoft Services\AdmPwd' } # 4294967295
+
+# Init and get defaults
+- name: Check if defaults for IA-5 were loaded
+  set_fact:
+    Loaded_ULL_IA_5: "{{ 'ULL_IA_5' in MachineDefaults }}"
+
+- name: Initialize UndoList
+  set_fact:
+    UndoList: "{{ UndoList + ['ULL_IA_5_'+item.ID] }}"
+  loop: "{{ ULL_IA_5_RegTasks }}"
+  when: "'ULL_IA_5' in UndoList"
+
+- name: Get IA-5 regedit defaults
+  include_tasks: TaskScripts/WinRegStat.yml
+  vars:
+    SecCat: ULL
+    TaskCat: IA_5
+    RegTasks: "{{ ULL_IA_5_RegTasks }}"
+  when: not Loaded_ULL_IA_5
+
+# Run tasks
+- name: Run IA-5 regedit tasks
+  include_tasks: TaskScripts/WinRegedit.yml
+  vars:
+    SecCat: ULL
+    TaskCat: IA_5
+  loop: "{{ ULL_IA_5_RegTasks }}"
+  loop_control:
+    loop_var: RegTask
