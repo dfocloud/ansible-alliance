@@ -60,7 +60,7 @@
   when: "'ULL_IA_5' in UndoList"
 
 - name: Get IA-5 regedit defaults
-  include_tasks: WinRegStat.yml
+  include_tasks: TaskScripts/WinRegStat.yml
   vars:
     SecCat: ULL
     TaskCat: IA_5
@@ -69,7 +69,7 @@
 
 # Run tasks
 - name: Run IA-5 regedit tasks
-  include_tasks: WinRegedit.yml
+  include_tasks: TaskScripts/WinRegedit.yml
   vars:
     SecCat: ULL
     TaskCat: IA_5

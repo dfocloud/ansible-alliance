@@ -76,7 +76,7 @@
   when: "'ULL_SC_8' in UndoList"
 
 - name: Get SC-8 regedit defaults
-  include_tasks: WinRegStat.yml
+  include_tasks: TaskScripts/WinRegStat.yml
   vars:
     SecCat: ULL
     TaskCat: SC_8
@@ -85,7 +85,7 @@
 
 # Run tasks
 - name: Run SC-8 regedit tasks
-  include_tasks: WinRegedit.yml
+  include_tasks: TaskScripts/WinRegedit.yml
   vars:
     SecCat: ULL
     TaskCat: SC_8

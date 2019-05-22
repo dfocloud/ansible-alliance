@@ -25,69 +25,69 @@
     include_tasks: WinDefaultsFile.yml
 
   - name: Initialize SkipList array
-    include_tasks: InitSkips.yml
+    include_tasks: TaskScripts/InitSkips.yml
 
   - name: Initialize UndoList array
-    include_tasks: InitUndos.yml
+    include_tasks: TaskScripts/InitUndos.yml
 
 #========== List Script Includes ==========#
   # AC
   - name: Execute ULL_AC_3 tasks
-    include_tasks: ULL_AC_3.yml
+    include_tasks: WinUnclassed/ULL_AC_3.yml
     when: "'ULL_AC_3' not in SkipList"
 
   - name: Execute ULL_AC_4 tasks
-    include_tasks: ULL_AC_4.yml
+    include_tasks: WinUnclassed/ULL_AC_4.yml
     when: "'ULL_AC_4' not in SkipList"
 
   - name: Execute ULL_AC_7 tasks
-    include_tasks: ULL_AC_7.yml
+    include_tasks: WinUnclassed/ULL_AC_7.yml
     when: "'ULL_AC_7' not in SkipList"
 
   - name: Execute ULL_AC_8 tasks
-    include_tasks: ULL_AC_8.yml
+    include_tasks: WinUnclassed/ULL_AC_8.yml
     when: "'ULL_AC_8' not in SkipList"
 
   - name: Execute ULL_AC_11 tasks
-    include_tasks: ULL_AC_11.yml
+    include_tasks: WinUnclassed/ULL_AC_11.yml
     when: "'ULL_AC_11' not in SkipList"
 
   # AU
   - name: Execute ULL_AU_3 tasks
-    include_tasks: ULL_AU_3.yml
+    include_tasks: WinUnclassed/ULL_AU_3.yml
     when: "'ULL_AU_3' not in SkipList"
 
   - name: Execute ULL_AU_9 tasks
-    include_tasks: ULL_AU_9.yml
+    include_tasks: WinUnclassed/ULL_AU_9.yml
     when: "'ULL_AU_9' not in SkipList"
 
   # IA
   - name: Execute ULL_IA_2 tasks
-    include_tasks: ULL_IA_2.yml
+    include_tasks: WinUnclassed/ULL_IA_2.yml
     when: "'ULL_IA_2' not in SkipList"
 
   - name: Execute ULL_IA_5 tasks
-    include_tasks: ULL_IA_5.yml
+    include_tasks: WinUnclassed/ULL_IA_5.yml
     when: "'ULL_IA_5' not in SkipList"
 
   # SC
   - name: Execute ULL_SC_2_7_10 tasks
-    include_tasks: ULL_SC_2_7_10.yml
+    include_tasks: WinUnclassed/ULL_SC_2_7_10.yml
     when: "'ULL_SC' not in SkipList"
 
   - name: Execute ULL_SC_5 tasks
-    include_tasks: ULL_SC_5.yml
+    include_tasks: WinUnclassed/ULL_SC_5.yml
     when: "'ULL_SC_5' not in SkipList"
 
   - name: Execute ULL_SC_8 tasks
-    include_tasks: ULL_SC_8.yml
+    include_tasks: WinUnclassed/ULL_SC_8.yml
     when: "'ULL_SC_8' not in SkipList"
 
   # SI
   - name: Execute ULL_SI_2 tasks
-    include_tasks: ULL_SI_2.yml
+    include_tasks: WinUnclassed/ULL_SI_2.yml
     when: "'ULL_SI_2' not in SkipList"
 
   - name: Execute ULL_SI_3 tasks
-    include_tasks: ULL_SI_3.yml
+    include_tasks: WinUnclassed/ULL_SI_3.yml
     when: "'ULL_SI_3' not in SkipList"

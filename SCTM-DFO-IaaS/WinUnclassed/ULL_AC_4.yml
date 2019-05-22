@@ -44,7 +44,7 @@
   when: "'ULL_AC_4' in UndoList"
 
 - name: Get AC-4 regedit defaults
-  include_tasks: WinRegStat.yml
+  include_tasks: TaskScripts/WinRegStat.yml
   vars:
     SecCat: ULL
     TaskCat: AC_4
@@ -53,7 +53,7 @@
 
 # Run tasks
 - name: Run AC-4 regedit tasks
-  include_tasks: WinRegedit.yml
+  include_tasks: TaskScripts/WinRegedit.yml
   vars:
     SecCat: ULL
     TaskCat: AC_4
