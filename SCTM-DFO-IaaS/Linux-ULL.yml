@@ -7,7 +7,7 @@
 # configuration may contain Government of
 # Canada Unclassed-Low-Low information
 ---
-- hosts: all
+- hosts: linux
   become: yes
   become_method: sudo
   vars:
