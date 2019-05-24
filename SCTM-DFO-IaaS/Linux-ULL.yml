@@ -7,8 +7,7 @@
 # configuration may contain Government of
 # Canada Unclassed-Low-Low information
 ---
-- hosts: linux:!FGCAC-B:!FGCAEVM:!FGMCAEVM
-  gather_facts: yes
+- hosts: all
   become: yes
   become_method: sudo
   vars:
