@@ -15,22 +15,20 @@
 #   - Regex
 #   - Replace
 ---
-- name: Check installation of 'pcregrep'
-  shell: "pcregrep"
-  register: hasCommand
-  ignore_errors: yes
-
-- debug:
-    var: hasCommand
-
-- name: Install pcregrep module for default stuff
-  shell: "apt install pcregrep"
-  when: not hasCommand == ""
-
 - name: Init facts
   set_fact:
     Sec_Task: "{{ SecCat }}_{{ TaskCat }}"
     DefSwapVals: {}
+    HasCommand: "{{ HasCommand|default('') }}"
+
+- name: Check installation of 'pcregrep'
+  shell: "pcregrep"
+  register: HasCommand
+  ignore_errors: yes
+
+- name: Install pcregrep module for default stuff
+  shell: "apt install pcregrep"
+  when: not HasCommand == ""
 
 - name: "Initialize {{Sec_Task}} MachineDefaults entry"
   set_fact:
@@ -41,7 +39,7 @@
     var: SwapTasks
 
 - name: Get lines for things
-  shell: "pcregrep -M {{ item.Regex }} {{ item.Path }}"
+  shell: "pcregrep -M \"{{ item.Regex }}\" {{ item.Path }}"
   loop: "{{ SwapTasks }}"
   register: SwapDefaults
 
