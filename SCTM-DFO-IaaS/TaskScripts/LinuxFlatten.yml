@@ -1,0 +1,22 @@
+# == Task Script ==
+# Contains tasks for flattening Linux files, effectively allowing
+# use of single-line tools over multiple lines
+
+# Expected Vars/Facts
+# 
+# 
+---
+- name: Load file contents
+  slurp:
+    src: /etc/xinetd.d/fakechargen
+  register: fakeStuff
+
+- debug:
+    var: fakeStuff
+
+- name:
+  set_fact:
+    fakeStuff: "{{ fakeStuff | replace('\n', '/n') }}"
+
+- debug:
+    var: fakeStuff
