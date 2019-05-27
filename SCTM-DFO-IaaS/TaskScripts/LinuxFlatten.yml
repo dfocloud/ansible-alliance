@@ -11,7 +11,10 @@
     src: /etc/xinetd.d/fakechargen
   register: fakeStuff
 
-- name: Getting 
+- debug:
+    var: fakeStuff
+
+- name: Decode contents
   set_fact:
     flatText: "{{ fakeStuff | b64decode }}"
 
