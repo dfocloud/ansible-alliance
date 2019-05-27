@@ -38,7 +38,8 @@
 - name: Add {{ Sec_Task }} files' statuses to temp dictionary
   set_fact:
     DefStatDict: "{{ DefStatDict |combine({ item.item.ID:
-    ( item.stat.exists if item.item.Content is defined else item.stat.mode ) }) }}"
+    ( item.stat.exists if item.item.Content is defined else
+    { 'M': item.stat.mode, 'O': item.stat.owner, 'G': item.stat.group } ) }) }}"
   loop: "{{ FileStats.results }}"
 
 - debug:

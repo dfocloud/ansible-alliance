@@ -9,7 +9,10 @@
 #   - ID
 #   - Desc
 #   - Path
+#   - Recurse
 #   - Mode
+#   - Owner
+#   - Group
 ---
 - set_fact:
     fullID: "{{ SecCat+'_'+TaskCat+'_'+ChmodTask.ID }}"
@@ -20,4 +23,6 @@
     mode: "{{ ( ChmodTask.Mode if fullID not in CustomDict
       else CustomDict[fullID] ) if fullID not in UndoList
       else MachineDefaults[SecCat+'_'+TaskCat][ChmodTask.ID] }}"
+    state: "{{ 'file' if ChmodTask.Recurse is not defined else 'directory' }}"
+    recurse: "{{ ChmodTask.Recurse is defined }}"
   when: not fullID in SkipList

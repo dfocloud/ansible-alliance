@@ -9,24 +9,46 @@
 - name: Set AC-3 file task dictionaries
   set_fact:
     ULL_AC_3_ChmodTasks:
-    - { Desc: Set 'update-motd.d' to access 755,
-      ID: AA, Mode: '755', Path: /etc/update-motd.d }
+    - { Desc: Set 'update-motd.d' permissions to 755,
+      ID: A, Path: /etc/update-motd.d, Recurse: ,
+      Mode: '755', Owner: root, Group: root }
+    - { Desc: Set files in update-motd.d permissions to 644,
+      ID: B, Path: /etc/update-motd.d,  Recurse: ,
+      Mode: '644', Owner: root, Group: root }
+    - { Desc: Set 'hosts.allow' permissions to 644,
+      ID: C, Path: /etc/hosts.allow,
+      Mode: '644', Owner: root, Group: root }
+    - { Desc: Set 'hosts.deny' permissions to 644,
+      ID: D, Path: /etc/hosts.deny,
+      Mode: '644', Owner: root, Group: root }
+    - { Desc: Set 'crontab' permissions to 600,
+      ID: E, Path: /etc/crontab,
+      Mode: '600', Owner: root, Group: root }
 
-- name: Retrieve file list in /etc/update-motd.d/
-  find:
-    paths: /etc/update-motd.d
-    file_type: file
-    recurse: yes
-  register: motdfiles
+    - { Desc: Set 'cron.hourly' content permissions to 600,
+      ID: F, Path: /etc/cron.hourly, Recurse: ,
+      Mode: '600', Owner: root, Group: root }
+    - { Desc: Set 'cron.daily' content permissions to 600,
+      ID: G, Recurse: yes, Path: /etc/cron.daily,
+      Mode: '600', Owner: root, Group: root }
+    - { Desc: Set 'cron.weekly' content permissions to 600,
+      ID: H, Path: /etc/cron.weekly, Recurse: ,
+      Mode: '600', Owner: root, Group: root }
+    - { Desc: Set 'cron.monthly' content permissions to 600,
+      ID: I, Path: /etc/cron.monthly, Recurse: ,
+      Mode: '600', Owner: root, Group: root }
+    - { Desc: Set 'cron.d' content permissions to 600,
+      ID: F, Path: /etc/cron.d, Recurse: ,
+      Mode: '600', Owner: root, Group: root }
 
-- name: Dynamically append to ChmodTasks dictionary
-  set_fact:
-    ULL_AC_3_ChmodTasks: "{{ ULL_AC_3_ChmodTasks + [{
-      'Desc': 'Set access mode 644 for file in folder',
-      'ID': idx|string, 'Mode': '644', 'Path': item.path }] }}"
-  loop: "{{ motdfiles.files }}"
-  loop_control:
-    index_var: idx
+    - { Desc: Set 'sshd_config' permissions to 600,
+      ID: G, Path: /etc/ssh/sshd_config,
+      Mode: '600', Owner: root, Group: root }
+
+    ULL_AC_3_AddLineTasks:
+    - { Desc: Restrict use of 'su' to wheel group users,
+      ID: T, ToAdd: 'auth required pam_wheel.so' }
+
 
 # Init and get defaults
 - name: Check if defaults for AC-3 were loaded
