@@ -23,7 +23,14 @@
 
 - name:
   set_fact:
-    flatText: "{{ flatText | replace('\n', '/n') }}"
+    matchedText: flatText | match("\\nservice chargen\\n{\\n        disable         = (yes|no)\\n")
 
 - debug:
-    var: flatText
+    var: matchedText
+
+- name:
+  set_fact:
+    specificLine: "{{ flatText | select('\\nservice chargen\\n{\\n        disable         = (yes|no)\\n') }}"
+
+- debug:
+    var: specificLine
