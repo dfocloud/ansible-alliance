@@ -16,7 +16,7 @@
 
 - name: Decode contents
   set_fact:
-    flatText: "{{ fakeStuff | b64decode }}"
+    flatText: "{{ fakeStuff.content | b64decode }}"
 
 - debug:
     var: flatText
