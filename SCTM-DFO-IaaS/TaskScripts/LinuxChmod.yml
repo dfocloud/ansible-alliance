@@ -23,6 +23,8 @@
     mode: "{{ ( ChmodTask.Mode if fullID not in CustomDict
       else CustomDict[fullID] ) if fullID not in UndoList
       else MachineDefaults[SecCat+'_'+TaskCat][ChmodTask.ID] }}"
+    owner: "{{ ChmodTask.Owner }}"
+    group: "{{ ChmodTask.Group }}"
     state: "{{ 'file' if ChmodTask.Directory is not defined and 
     ChmodTask.Recurse is not defined else 'directory' }}"
     recurse: "{{ 'yes' if ChmodTask.Recurse is defined else 'no' }}"
