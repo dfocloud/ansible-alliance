@@ -10,7 +10,7 @@
   set_fact:
     ULL_AC_3_ChmodTasks:
     - { Desc: Set 'update-motd.d' permissions to 755,
-      ID: A, Path: /etc/update-motd.d,
+      ID: A, Path: /etc/update-motd.d, Directory: ,
       Mode: '755', Owner: root, Group: root }
     - { Desc: Set 'update-motd.d' content permissions to 644,
       ID: B, Path: /etc/update-motd.d,  Recurse: ,
