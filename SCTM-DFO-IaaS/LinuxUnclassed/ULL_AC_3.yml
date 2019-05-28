@@ -38,17 +38,71 @@
       ID: I, Path: /etc/cron.monthly, Recurse: ,
       Mode: '600', Owner: root, Group: root }
     - { Desc: Set 'cron.d' content permissions to 600,
-      ID: F, Path: /etc/cron.d, Recurse: ,
+      ID: J, Path: /etc/cron.d, Recurse: ,
       Mode: '600', Owner: root, Group: root }
 
     - { Desc: Set 'sshd_config' permissions to 600,
-      ID: G, Path: /etc/ssh/sshd_config,
+      ID: K, Path: /etc/ssh/sshd_config,
       Mode: '600', Owner: root, Group: root }
+    - { Desc: Set password access rules to 644,
+      ID: L, Path: /etc/passwd,
+      Mode: '644', Owner: root, Group: root }
+    - { Desc: Set user account info access rules to 640,
+      ID: M, Path: /etc/shadow,
+      Mode: '640', Owner: root, Group: shadow }
+    - { Desc: Set group list access rules to 644,
+      ID: 'N', Path: /etc/group,
+      Mode: '644', Owner: root, Group: root }
+    - { Desc: Set group account info access rules to 640,
+      ID: O, Path: /etc/gshadow,
+      Mode: '640', Owner: root, Group: shadow }
 
-    ULL_AC_3_AddLineTasks:
+    - { Desc: Set password backup access rules to 644,
+      ID: P, Path: /etc/passwd-,
+      Mode: '644', Owner: root, Group: root }
+    - { Desc: Set account info backup access rules to 640,
+      ID: Q, Path: /etc/shadow-,
+      Mode: '640', Owner: root, Group: shadow }
+    - { Desc: Set group list backup access rules to 644,
+      ID: R, Path: /etc/group-,
+      Mode: '644', Owner: root, Group: root }
+    - { Desc: Set group account info backup access rules to 644,
+      ID: S, Path: /etc/gshadow-,
+      Mode: '644', Owner: root, Group: root }
+
+    ULL_AC_3_EditTextTasks:
     - { Desc: Restrict use of 'su' to wheel group users,
-      ID: T, ToAdd: 'auth required pam_wheel.so' }
+      ID: AA, ToAdd: 'auth required pam_wheel.so' }
+    - { Desc: Prevent X11 traffic tunnelling,
+      ID: BB, ToEnsure: 'X11Forwarding no' }
+    - { Desc: Set SSH user access parameters,
+      ID: CC, ToEnsure: 'AllowUsers\nAllowGroups\nDenyUsers\nDenyGroups' }
 
+    ULL_AC_3_SetFileUMask:
+    # umask027  /etc/bash.bachrc  /etc/profile  /etc/profile.d/*sh
+
+    ULL_AC_3_Command:
+    # Make sure files are not world-writeable
+    # df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002
+    # Make sure files don't have unlisted owners or groups
+    # df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nogroup
+    # Find and audit rogue SUID programs
+    # df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -4000
+    # Find and audit rogue SGID programs
+    # df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -2000
+    # Ensure users' accounts are password-protected
+    # cat /etc/shadow | awk -F: '($2 == "" ) { print $1 " does not have a password "}'
+    # Ensure users' home directories exist
+    # cat /etc/passwd | egrep -v '^(root|halt|sync|shutdown)' | awk -F: '($7 != "/usr/sbin/nologin" & do
+    # if [ ! -d "$dir" ]; then echo "The home directory ($dir) of user $user does not exist."
+    # Ensure users' home directories are restricted to chmod 750 minimum
+    # Ensure users' dot files not group or world writeable
+    # Ensure .netrc files are access-restricted access and monitored
+    # Ensure users have no .rhosts files in their home directories
+    # Monitor packaged system files and dirs to ensure no discrepancies
+    # 
+    # 
+    # 
 
 # Init and get defaults
 - name: Check if defaults for AC-3 were loaded
