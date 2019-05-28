@@ -11,8 +11,8 @@
 #   - ID
 #   - Path
 #   - Desc (unused)
-#   - Mode (unused)
 #   - Content (checked)
+#   - Mode (unused)
 ---
 - name: Initialize facts
   set_fact:
@@ -34,12 +34,16 @@
   register: FileStats
   loop: "{{ StatTasks }}"
 
+- debug:
+    var: FileStats
+
 # May need to update Jinja2 statement to account for future file stat tasks...
 - name: Add {{ Sec_Task }} files' statuses to temp dictionary
   set_fact:
     DefStatDict: "{{ DefStatDict |combine({ item.item.ID:
     ( item.stat.exists if item.item.Content is defined else
-    { 'M': item.stat.mode, 'O': item.stat.owner, 'G': item.stat.group } ) }) }}"
+    { 'M': item.stat.mode, 'O': item.stat.pw_name, 'G': item.stat.gr_name }
+    ) }) }}"
   loop: "{{ FileStats.results }}"
 
 - debug:
