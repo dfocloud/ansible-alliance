@@ -31,8 +31,8 @@
 
 - name: "Decode {{ Sec_Task }} files' contents into temp dictionary"
   set_fact:
-    DefContDict: "{{ DefContDict |combine(
-      item.item.ID: (item.content | b64decode) ) }}"
+    DefContDict: "{{ DefContDict |combine({
+      item.item.ID: (item.content | b64decode) }) }}"
   loop: "{{ FileContents.results }}"
 
 - debug:
