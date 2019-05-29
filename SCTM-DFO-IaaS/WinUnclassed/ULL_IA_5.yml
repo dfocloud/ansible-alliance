@@ -8,7 +8,7 @@
 # Init task dictionaries
 - name: Set IA-5 regedit task dictionary
   set_fact:
-    UN_IA_5_RegTasks:
+    ULL_IA_5_RegTasks:
     - { Desc: Allow domain members to change their account passwords,
       ID: A, Value: 0, Type: dword, Name: DisablePasswordChange,
       Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters' } # 0
@@ -51,28 +51,28 @@
 # Init and get defaults
 - name: Check if defaults for IA-5 were loaded
   set_fact:
-    Loaded_UN_IA_5: "{{ 'UN_IA_5' in MachineDefaults }}"
+    Loaded_ULL_IA_5: "{{ 'ULL_IA_5' in MachineDefaults }}"
 
 - name: Initialize UndoList
   set_fact:
-    UndoList: "{{ UndoList + ['UN_IA_5_'+item.ID] }}"
-  loop: "{{ UN_IA_5_RegTasks }}"
-  when: "'UN_IA_5' in UndoList"
+    UndoList: "{{ UndoList + ['ULL_IA_5_'+item.ID] }}"
+  loop: "{{ ULL_IA_5_RegTasks }}"
+  when: "'ULL_IA_5' in UndoList"
 
 - name: Get IA-5 regedit defaults
   include_tasks: TaskScripts/WinRegStat.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: IA_5
-    RegTasks: "{{ UN_IA_5_RegTasks }}"
-  when: not Loaded_UN_IA_5
+    RegTasks: "{{ ULL_IA_5_RegTasks }}"
+  when: not Loaded_ULL_IA_5
 
 # Run tasks
 - name: Run IA-5 regedit tasks
   include_tasks: TaskScripts/WinRegedit.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: IA_5
-  loop: "{{ UN_IA_5_RegTasks }}"
+  loop: "{{ ULL_IA_5_RegTasks }}"
   loop_control:
     loop_var: RegTask

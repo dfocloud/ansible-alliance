@@ -8,7 +8,7 @@
 # Init task dictionaries
 - name: Set AC-4 regedit task dictionary
   set_fact:
-    UN_AC_4_RegTasks:
+    ULL_AC_4_RegTasks:
     - { Desc: Prevent storing LAN Manager hash value,
       ID: A, Value: 1, Type: dword, Name: NoLmHash,
       Path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' } # 1
@@ -35,28 +35,28 @@
 # Init and get defaults
 - name: Check if defaults for AC-4 were loaded
   set_fact:
-    Loaded_UN_AC_4: "{{ 'UN_AC_4' in MachineDefaults }}"
+    Loaded_ULL_AC_4: "{{ 'ULL_AC_4' in MachineDefaults }}"
 
 - name: Initialize UndoList
   set_fact:
-    UndoList: "{{ UndoList + ['UN_AC_4_'+item.ID] }}"
-  loop: "{{ UN_AC_4_RegTasks }}"
-  when: "'UN_AC_4' in UndoList"
+    UndoList: "{{ UndoList + ['ULL_AC_4_'+item.ID] }}"
+  loop: "{{ ULL_AC_4_RegTasks }}"
+  when: "'ULL_AC_4' in UndoList"
 
 - name: Get AC-4 regedit defaults
   include_tasks: TaskScripts/WinRegStat.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AC_4
-    RegTasks: "{{ UN_AC_4_RegTasks }}"
-  when: not Loaded_UN_AC_4
+    RegTasks: "{{ ULL_AC_4_RegTasks }}"
+  when: not Loaded_ULL_AC_4
 
 # Run tasks
 - name: Run AC-4 regedit tasks
   include_tasks: TaskScripts/WinRegedit.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AC_4
-  loop: "{{ UN_AC_4_RegTasks }}"
+  loop: "{{ ULL_AC_4_RegTasks }}"
   loop_control:
     loop_var: RegTask

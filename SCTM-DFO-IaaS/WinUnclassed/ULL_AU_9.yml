@@ -8,7 +8,7 @@
 # Init task dictionaries
 - name: Set AU-9 regedit task dictionary
   set_fact:
-    UN_AU_9_RegTasks:
+    ULL_AU_9_RegTasks:
     - { Desc: Ensure firewalls log to correct files (domain),
       ID: A, Value: '%SYSTEMROOT%\\System32\\logfiles\\firewall\\domainfw.log',
       Type: string, Name: NoAutoRebootWithLoggedOnUsers,
@@ -24,7 +24,7 @@
 
 - name: Set AU-9 user rights task dictionary
   set_fact:
-    UN_AU_9_RightsTasks:
+    ULL_AU_9_RightsTasks:
     - { Desc: "Restrict audit and secutiry log management to no one (we put Admins)",
       ID: D, Name: SeSecurityPrivilege, 
       Users: ['Administrators'] }
@@ -32,36 +32,36 @@
 # Init and get defaults
 - name: Check if defaults for AU-9 were loaded
   set_fact:
-    Loaded_UN_AU_9: "{{ 'UN_AU_9' in MachineDefaults }}"
+    Loaded_ULL_AU_9: "{{ 'ULL_AU_9' in MachineDefaults }}"
 
 - name: Initialize UndoList
   set_fact:
-    UndoList: "{{ UndoList + ['UN_AU_9_'+item.ID] }}"
-  loop: "{{ UN_AU_9_RegTasks |union(UN_AU_9_RightsTasks) }}"
-  when: "'UN_AU_9' in UndoList"
+    UndoList: "{{ UndoList + ['ULL_AU_9_'+item.ID] }}"
+  loop: "{{ ULL_AU_9_RegTasks |union(ULL_AU_9_RightsTasks) }}"
+  when: "'ULL_AU_9' in UndoList"
 
 - name: Get AU-9 regedit defaults
   include_tasks: TaskScripts/WinRegStat.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AU_9
-    RegTasks: "{{ UN_AU_9_RegTasks }}"
-  when: not Loaded_UN_AU_9
+    RegTasks: "{{ ULL_AU_9_RegTasks }}"
+  when: not Loaded_ULL_AU_9
 
 # Run tasks
 - name: Run AU-9 regedit tasks
   include_tasks: TaskScripts/WinRegedit.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AU_9
-  loop: "{{ UN_AU_9_RegTasks }}"
+  loop: "{{ ULL_AU_9_RegTasks }}"
   loop_control:
     loop_var: RegTask
 
 - name: Run user rights tasks # simultaneously saves defaults
   include_tasks: TaskScripts/WinUserRights.yml
   vars:
-    SecCat: UN
+    SecCat: ULL
     TaskCat: AU_9
-    Loaded: Loaded_UN_AU_9
-    RightsTasks: "{{ UN_AU_9_RightsTasks }}"
+    Loaded: Loaded_ULL_AU_9
+    RightsTasks: "{{ ULL_AU_9_RightsTasks }}"
