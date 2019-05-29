@@ -7,7 +7,7 @@
 # configuration may contain Government of
 # Canada 'Unclassed-Low-Low' information
 ---
-- hosts: all
+- hosts: windows:!EFM-365-Alpha:!EFM-Integration:!TempEfmJumpBox:!TempJumpBox
   become_method: runas
   vars:
     MachineDefaults: {}
