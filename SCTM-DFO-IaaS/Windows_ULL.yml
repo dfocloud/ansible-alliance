@@ -23,6 +23,7 @@
 
   - name: Initialize MachineDefaults dictionary
     include_tasks: TaskScripts/WinDefaultsFile.yml
+    when: not 'All' in SkipList
 
   - name: Initialize SkipList array
     include_tasks: TaskScripts/InitSkips.yml
