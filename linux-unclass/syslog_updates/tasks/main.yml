@@ -36,9 +36,11 @@
 
 - name: Ensure log directories are 0755
   command: find /var/log -type d -exec chmod 0755 {} \;
+  changed_when: false
   
 - name: Ensure files are 0640
   command: find /var/log -type f -exec chmod 0640 {} \;
+  changed_when: false
 
 - name: Setting ownership and permission bits on syslog configuration file (TBS compliance)
   file:
