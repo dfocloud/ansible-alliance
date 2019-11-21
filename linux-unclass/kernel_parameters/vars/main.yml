@@ -15,6 +15,10 @@ centos_kernel_params_0:
 
 ubuntu_kernel_params_2:
   - name: kernel.randomize_va_space
+  
+ubuntu_kernel_params_1_workaround:
+  - name: net.ipv4.route.flush
+  - name: net.ipv6.route.flush
 
 ubuntu_kernel_params_1:
   - name: net.ipv4.conf.all.log_martians
@@ -24,8 +28,6 @@ ubuntu_kernel_params_1:
   - name: net.ipv4.icmp_echo_ignore_broadcasts
   - name: net.ipv4.conf.default.rp_filter
   - name: net.ipv4.conf.all.rp_filter
-  - name: net.ipv4.route.flush
-  - name: net.ipv6.route.flush
 
 ubuntu_kernel_params_0:
   - name: net.ipv4.ip_forward
